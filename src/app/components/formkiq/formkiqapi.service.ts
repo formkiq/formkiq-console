@@ -19,7 +19,6 @@ import {
 	ObservableInput
 } from 'rxjs'
 import {
-	map,
 	catchError
 } from 'rxjs/operators';
 
@@ -34,26 +33,30 @@ export class FormkiqapiService {
 		this.noAuthhttpClient = new HttpClient(handler);
 	}
 
+	getDocument(documentId: string, error: ErrorResponseCallback): Observable < FkDocument > {
+		let url = this.getUrl() + "/documents/" + documentId;
+		return this.httpClient.get < FkDocument > (url);
+	}
+
 	getDocuments(error: ErrorResponseCallback): Observable < FkDocument[] > {
 		let url = this.getUrl() + "/documents";
 		return this.httpClient.get < FkDocument[] > (url);
 	}
 
-	search(searchTag: SearchTag, error: ErrorResponseCallback): Observable < FkDocument[] > {
+	search(searchTag: SearchTag, error: ErrorResponseCallback): Observable < any > {
 
-		let url = this.getUrl() + "/search";
 		const httpOptions = {};
-		console.log(httpOptions);
+		let url = this.getUrl() + "/search";
+
 		let sq = new SearchQuery(searchTag);
 		let search = new Search(sq);
-		console.log("search: " + url);
+
 		return this.httpClient.post < FkDocument[] > (url, search, httpOptions);
 	}
 
 	upload(file: File) {
 
-		this.getUploadUrl().subscribe((data: FkUploadDocument) => {
-			console.log(data.url);
+		this.getUploadUrl(file.name).subscribe((data: FkUploadDocument) => {
 
 			let httpHeaders = new HttpHeaders({
 				'Content-Type': 'multipart/form-data',
@@ -69,17 +72,12 @@ export class FormkiqapiService {
 			this.noAuthhttpClient.put(data.url, formData, options).subscribe(
 				data => console.log('success'),
 				error => console.log(error)
-			);;
-			//				.catchError(error => Observable.throw(error))
-			//				.subscribe(
-			//					data => console.log('success'),
-			//					error => console.log(error)
-			//				);
+			);
 		});
 	}
 
-	getUploadUrl(): Observable < FkUploadDocument > {
-		let url = this.getUrl() + "/documents/upload";
+	getUploadUrl(filename): Observable < FkUploadDocument > {
+		let url = this.getUrl() + "/documents/" + filename + "/upload";
 		return this.httpClient.get < FkUploadDocument > (url);
 	}
 
