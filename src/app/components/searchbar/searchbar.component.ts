@@ -35,7 +35,9 @@ export class SearchbarComponent implements OnInit, ErrorResponseCallback {
 
 	ngOnInit() {
 		this.tagsearchForm = this.formBuilder.group({
-			tagKey: ['', Validators.required]
+			tagKey: ['', Validators.required],
+			searchType: [],
+			tagValue: []
 		});
 	}
 
@@ -45,7 +47,19 @@ export class SearchbarComponent implements OnInit, ErrorResponseCallback {
 			return;
 		}
 
-		let search = new SearchTag(this.tagsearchForm.controls.tagKey.value, "", "");
+		let key = this.tagsearchForm.controls.tagKey.value;
+		let value = this.tagsearchForm.controls.tagValue.value;
+		var search = new SearchTag(key, null, null);
+
+		if (value != null && value.trim().length > 0) {
+			let searchType = this.tagsearchForm.controls.searchType.value;
+			if (searchType == "beginsWith") {
+				search = new SearchTag(key, null, value.trim());
+			} else {
+				search = new SearchTag(key, value.trim(), null);
+			}
+		}
+
 		this.results$ = this.formkiqService.search(search, this);
 	}
 

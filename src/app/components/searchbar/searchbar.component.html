@@ -26,12 +26,12 @@
         </div>
         <input type="text" class="form-control" formControlName="tagKey" placeholder="Tag Key" [ngClass]="{ 'is-invalid': submitted && f.tagKey.errors }" />
       </div>
-      <select class="form-control mr-sm-2" id="exampleFormControlSelect1">
+      <select class="form-control mr-sm-2" formControlName="searchType">
         <option value="eq">Equals</option>
         <option value="beginsWith">Begins With</option>
       </select>
       <div class="input-group mr-sm-2">
-        <input type="text" class="form-control" placeholder="Tag Value" aria-label="Tag Value" aria-describedby="btnGroupAddon">
+        <input type="text" class="form-control" formControlName="tagValue" placeholder="Tag Value">
       </div>
       <button type="submit" class="btn btn-secondary">Search</button>
     </form>
@@ -54,8 +54,8 @@
         <tr *ngIf="results.documents.length == 0"><td>No Data Available</td></tr>      
         <tr *ngFor="let result of results.documents">
           <td>{{result.documentId}}</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
+          <td>{{result.path}}&nbsp;</td>
+          <td>{{result.inserteddate}}&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
       </tbody>
