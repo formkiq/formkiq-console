@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-12 px-4">
+    <h5>Sign In</h5>
+  </div>
+</div>
+<form [formGroup]="form" class="px-2 py-2">
+  <div class="form-group">
+    <label for="field-email">Email Address</label>
+    <input
+      type="email"
+      class="form-control"
+      id="field-email"
+      formControlName="email"
+      [ngClass]="{ 'is-invalid': formSubmitted && f.email.errors }"
+      placeholder="email@example.com"
+      placement="left"
+      ngbTooltip="Email is invalid"
+      [autoClose]="false"
+      triggers="manual"
+      #emailTooltip="ngbTooltip"
+      tooltipClass="warning-tooltip"
+      (keyup)="checkIfEmailStillInvalid(emailTooltip)"
+      >
+  </div>
+  <div class="form-group">
+    <label for="field-password">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="field-password"
+      formControlName="password"
+      [ngClass]="{ 'is-invalid': formSubmitted && f.password.errors }"
+      placeholder="password"
+      placement="left"
+      ngbTooltip="Password is too short"
+      [autoClose]="false"
+      triggers="manual"
+      #passwordTooltip="ngbTooltip"
+      tooltipClass="warning-tooltip"
+      (keyup)="checkIfPasswordStillInvalid(passwordTooltip)"
+      >
+  </div>
+  <button type="submit" class="btn btn-primary" (click)="signIn(emailTooltip, passwordTooltip)">Sign in</button>
+  <span class="px-1"></span>
+  <button *ngIf="isDropdown" type="submit" class="btn btn-primary" (click)="cancel()">Cancel</button>
+</form>

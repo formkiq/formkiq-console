@@ -1,0 +1,386 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'styles-variables';
+@import '../node_modules/bootstrap/scss/bootstrap';
+@import '../node_modules/hamburgers/_sass/hamburgers/hamburgers';
+
+html, body {
+  font-family: 'Arvo' !important;
+  overflow: hidden;
+}
+
+.form-control {
+  font-size: 0.8rem;
+}
+label {
+  font-size: 0.9rem;
+}
+
+.main-content {
+  position: relative;
+  height: 92vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+}
+
+.stretch-width {
+  width: 100%;
+}
+
+.wrapper {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  overflow-y: auto;
+}
+
+#topbar {
+  border-style: solid;
+  border-width: 1px;
+  border-color: $tolopea;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  height: 42px;
+}
+
+.navbar-brand-box-container {
+  position: absolute;
+}
+
+#brand-box {
+  min-width: 190px;
+  max-width: 190px;
+  height: 42px;
+  padding-top: 2px;
+}
+
+#brand-box .navbar-brand {
+  font-size: 118%;
+  color: $white;
+}
+
+.navbar-hamburger-container {
+  padding-top: 5.8px;
+}
+
+.navbar-current-page-title {
+  position: absolute;
+  margin-left: 190px;
+}
+
+.navbar-current-page-title h5 {
+  font-size: 110%;
+  font-weight: bold;
+}
+
+#sidebar {
+  min-width: 190px;
+  max-width: 190px;
+  min-height: 100vh;
+  overflow-y: hidden;
+  border-style: solid;
+  border-width: 1px;
+  border-color: $tolopea;
+  border-top: 0;
+  border-left: 0;
+  border-bottom: 0;
+  align-items: flex-start;
+}
+
+@media screen and (max-width: 480px) {
+
+  #sidebar {
+    min-width: 100vw;
+    max-width: 100vw;
+    width: 100vw;
+  }
+
+  .authentication-container {
+    display: none;
+  }
+
+}
+
+
+#sidebar ul {
+  width: 100%;
+}
+
+.subnav-container {
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: -moz-linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+  background: -webkit-linear-gradient(45deg, rgba(255,255,255,0.1) 0%,rgba(255,255,255,0.05) 100%);
+  background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%,rgba(255,255,255,0.05) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=1 );
+}
+
+.nav-sub-item-header {
+  padding-left: 0.2em;
+  font-size: 86%;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-sub-item {
+  margin-left: 0.3em;
+  font-size: 77%;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+.formkiq-font {
+  font-family: 'Fjalla One';
+}
+
+.formkiq-light-blue {
+  color: $light-steel-blue;
+}
+
+.formkiq-font-highlight {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+
+.formkiq-light-blue-background {
+  background-color: $light-steel-blue;
+}
+
+.formkiq-dark-blue-background {
+  background-color: $tolopea;
+}
+
+.notification-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 400px;
+  z-index: 500;
+}
+
+.warning-tooltip .tooltip-inner {
+  color: $warning-foreground-color;
+  background-color: $warning-background-color;
+  font-size: 90%;
+}
+.warning-tooltip .arrow::before {
+  border-left-color: $warning-background-color;
+}
+
+.collapse-link {
+  cursor: pointer;
+}
+
+.collapse-link:hover {
+  color: $ship-cove-blue;
+}
+
+.tag {
+  display: inline-block;
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+  background-color: $white;
+  color: $cadet-blue;
+  padding: 0.25rem;
+  font-size: 90%;
+  border-style: solid;
+  border-width: 2px;
+  border-color: $cadet-blue;
+  border-radius: 2px;
+}
+
+.tag:hover {
+  background-color: $cadet-blue-half;
+  color: $white;
+  cursor: pointer;
+}
+
+.tag.active {
+  background-color: $cadet-blue;
+  color: $white;
+  border-color: $ship-cove-blue;
+}
+
+.dz-wrapper {
+  height: 400px;
+}
+
+.dz-wrapper .dz-message {
+  height: 80%;
+}
+
+.api-method-parameter {
+  padding-left: 0.8px;
+  padding-right: 2px;
+  font-style: italic;
+  font-family: 'Arvo';
+  font-size: 78%;
+  letter-spacing: -0.1px;
+}
+
+.api-item {
+  border-style: solid;
+  border-width: 2px;
+  border-color: $ship-cove-blue;
+  border-radius: 2px;
+}
+
+.api-item p {
+  font-size: 90%;
+}
+
+.api-item textarea {
+  min-height: 200px;
+  width: 95%;
+  font-size: 80%;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.tln-active, .tln-wrapper, .tln-line {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  outline: 0;
+  box-sizing: border-box;
+  vertical-align: top;
+  list-style: none;
+}
+.tln-active {
+  display: inline-block;
+  padding: 10px;
+  width: calc(100% - 48px);
+  height: 100%;
+  /* line-height: 1.5; */
+  font-size: 80%;
+  font-family: 'Courier New', Courier, monospace;
+  /*word-break: break-all;*/
+  border: 1px solid #aeaeae;
+  background-color: #fff;
+  resize: none;
+  /*overflow-wrap: break-word;*/
+  overflow-x: auto;
+  white-space: pre;
+}
+.tln-wrapper {
+  width: 18px;
+  padding: 11px 5px 35px;
+  height: 100%;
+  /*word-break: break-all;*/
+  overflow: hidden;
+  display: inline-block;
+  counter-reset: line;
+}
+.tln-line {
+  width: 100%;
+  display: block;
+  text-align: right;
+  /* line-height: 1.5; */
+  font-size: 80%;
+  font-family: 'Courier New', Courier, monospace;
+  color: #aeaeae;
+}
+.tln-line::before {
+  counter-increment: line;
+  content: counter(line);
+  font-size: 80%;
+  font-family: 'Courier New', Courier, monospace;
+  user-select: none;
+}
+
+.has-scrollbar::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: $resolution-blue;
+}
+
+.has-scrollbar-light-bg::-webkit-scrollbar-track {
+  background-color: $light-steel-blue;
+}
+
+.has-scrollbar::-webkit-scrollbar
+{
+    width: 10px;
+    background-color: transparent;
+}
+
+.has-scrollbar::-webkit-scrollbar-thumb
+{
+  border-radius: 8px;
+  background-image: -webkit-gradient(linear,
+    left bottom,
+    left top,
+    color-stop(0.44, $ship-cove-blue),
+    color-stop(0.86, $ship-cove-blue-darker));
+}
+
+.http-error-response {
+  color: $danger-foreground-color !important;
+  background-color: $danger-background-color !important;
+}
+
+
+/* CSS - Cascading Style Sheet */
+/* Palette color codes */
+/* Palette URL: http://paletton.com/#uid=53L0u0kllllaFw0g0qFqFg0w0aF */
+
+/* Feel free to copy&paste color codes to your application */
+
+
+/* As hex codes */
+
+.color-primary-0 { color: #2E4272 }	/* Main Primary color */
+.color-primary-1 { color: #7887AB }
+.color-primary-2 { color: #4F628E }
+.color-primary-3 { color: #162955 }
+.color-primary-4 { color: #061539 }
+
+.color-secondary-1-0 { color: #403075 }	/* Main Secondary color (1) */
+.color-secondary-1-1 { color: #887CAF }
+.color-secondary-1-2 { color: #615192 }
+.color-secondary-1-3 { color: #261758 }
+.color-secondary-1-4 { color: #13073A }
+
+.color-secondary-2-0 { color: #226666 }	/* Main Secondary color (2) */
+.color-secondary-2-1 { color: #669999 }
+.color-secondary-2-2 { color: #407F7F }
+.color-secondary-2-3 { color: #0D4D4D }
+.color-secondary-2-4 { color: #003333 }
+
+
+
+/* As RGBa codes */
+
+.rgba-primary-0 { color: rgba( 46, 66,114,1) }	/* Main Primary color */
+.rgba-primary-1 { color: rgba(120,135,171,1) }
+.rgba-primary-2 { color: rgba( 79, 98,142,1) }
+.rgba-primary-3 { color: rgba( 22, 41, 85,1) }
+.rgba-primary-4 { color: rgba(  6, 21, 57,1) }
+
+.rgba-secondary-1-0 { color: rgba( 64, 48,117,1) }	/* Main Secondary color (1) */
+.rgba-secondary-1-1 { color: rgba(136,124,175,1) }
+.rgba-secondary-1-2 { color: rgba( 97, 81,146,1) }
+.rgba-secondary-1-3 { color: rgba( 38, 23, 88,1) }
+.rgba-secondary-1-4 { color: rgba( 19,  7, 58,1) }
+
+.rgba-secondary-2-0 { color: rgba( 34,102,102,1) }	/* Main Secondary color (2) */
+.rgba-secondary-2-1 { color: rgba(102,153,153,1) }
+.rgba-secondary-2-2 { color: rgba( 64,127,127,1) }
+.rgba-secondary-2-3 { color: rgba( 13, 77, 77,1) }
+.rgba-secondary-2-4 { color: rgba(  0, 51, 51,1) }
+
+
+
+/* Generated by Paletton.com © 2002-2014 */
+/* http://paletton.com */

@@ -1,0 +1,65 @@
+<div class="row">
+  <div class="col-12 px-4">
+    <h5>Create Account</h5>
+  </div>
+</div>
+<ngb-alert *ngIf="registrationResponse && !registrationResponse.success">{{ registrationResponse.message }}</ngb-alert>
+<form [formGroup]="form" class="px-2 py-2">
+  <div class="form-group">
+    <label for="field-email">Email Address</label>
+    <input
+      type="email"
+      class="form-control"
+      id="field-email"
+      formControlName="email"
+      [ngClass]="{ 'is-invalid': formSubmitted && f.email.errors }"
+      placeholder="email@example.com"
+      placement="left"
+      ngbTooltip="Email is invalid"
+      [autoClose]="false"
+      triggers="manual"
+      #emailTooltip="ngbTooltip"
+      tooltipClass="warning-tooltip"
+      (keyup)="checkIfEmailStillInvalid(emailTooltip)"
+      >
+  </div>
+  <div class="form-group">
+    <label for="field-password">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="field-password"
+      formControlName="password"
+      [ngClass]="{ 'is-invalid': formSubmitted && f.password.errors }"
+      placeholder="password"
+      placement="left"
+      ngbTooltip="Password is too short"
+      [autoClose]="false"
+      triggers="manual"
+      #passwordTooltip="ngbTooltip"
+      tooltipClass="warning-tooltip"
+      (keyup)="checkIfPasswordStillInvalid(passwordTooltip)"
+      >
+  </div>
+  <div class="form-group">
+    <label for="field-password-confirmation">Repeat Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="field-password-confirmation"
+      formControlName="passwordConfirmation"
+      [ngClass]="{ 'is-invalid': formSubmitted && f.passwordConfirmation.errors }"
+      placeholder="repeat password"
+      placement="left"
+      ngbTooltip="Passwords do not match"
+      [autoClose]="false"
+      triggers="manual"
+      #passwordConfirmationTooltip="ngbTooltip"
+      tooltipClass="warning-tooltip"
+      (keyup)="checkIfPasswordConfirmationStillInvalid(passwordConfirmationTooltip)"
+      >
+  </div>
+  <button type="submit" class="btn btn-primary" (click)="createAccount(emailTooltip, passwordTooltip, passwordConfirmationTooltip)">Create Account</button>
+  <span class="px-1"></span>
+  <button type="submit" class="btn btn-primary" (click)="cancel()">Cancel</button>
+</form>

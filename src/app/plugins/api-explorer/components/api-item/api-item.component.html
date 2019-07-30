@@ -1,0 +1,176 @@
+<div #header class="row px-2 api-item">
+  <div class="col-12 pt-2 pb-1">
+    <h6 class="formkiq-font collapse-link" (click)="isCollapsed = !isCollapsed;navigationService.trigger(apiItem.clickedSubscriptionName, !isCollapsed);">
+      <fa *ngIf="isCollapsed" name="chevron-right"></fa>
+      <fa *ngIf="!isCollapsed" name="chevron-down"></fa>
+      {{ apiItem.method }}
+      {{ apiItem.path }}
+    </h6>
+  </div>
+  <div *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+  <div class="col-12" [ngbCollapse]="isCollapsed">
+    <div class="row mx-0 mt-3">
+      <div class="col-12 col-sm-4">
+        <form [formGroup]="form">
+          <div class="row">
+            <div *ngIf="apiItem.requiresAuthentication" class="col-12 pb-4">
+              <p class="strong pb-1">Authentication</p>
+              <select class="form-control">
+                <option>{{ apiItem.username }}</option>
+              </select>
+            </div>
+            <div class="col-12 pb-4">
+              <p class="strong pb-1">Parameters</p>
+              <div *ngIf="apiItem.requiresDocumentID" class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="field-documentID">Document ID</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="field-documentID"
+                      formControlName="documentID"
+                      [ngClass]="{ 'is-invalid': formSubmitted && f.documentID.errors }"
+                      placement="left"
+                      />
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="apiItem.requiresTagKey" class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="field-tagKey">Tag Key</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="field-tagKey"
+                      formControlName="tagKey"
+                      [ngClass]="{ 'is-invalid': formSubmitted && f.tagKey.errors }"
+                      placement="left"
+                      />
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="apiItem.requiresPostJson" class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="field-postJson">JSON to POST</label>
+                    <textarea
+                      rows="4"
+                      class="form-control"
+                      id="field-postJson"
+                      formControlName="postJson"
+                      [ngClass]="{ 'is-invalid': formSubmitted && f.postJson.errors }"
+                      placement="left"
+                      ></textarea>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="apiItem.allowsDate" class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="field-date">Date (YYYY-MM-dd)</label>
+                    <input type="text"
+                      class="form-control"
+                      id="field-date"
+                      formControlName="date"
+                      [ngClass]="{ 'is-invalid': formSubmitted && f.date.errors }"
+                      placement="left"
+                      />
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="apiItem.requiresFileUpload" class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="field-fileUpload">File to Upload</label>
+                    <input type="file"
+                      class="form-control"
+                      id="field-fileUpload"
+                      formControlName="fileUpload"
+                      [ngClass]="{ 'is-invalid': formSubmitted && f.fileUpload.errors }"
+                      placement="left"
+                      />
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="apiItem.allowsLimit" class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="field-limit">Limit (number)</label>
+                    <input type="text"
+                      class="form-control"
+                      id="field-limit"
+                      formControlName="limit"
+                      [ngClass]="{ 'is-invalid': formSubmitted && f.limit.errors }"
+                      placement="left"
+                      />
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="apiItem.hasPagingTokens" class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="field-previous">prev (paging token)</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="field-previous"
+                      formControlName="previous"
+                      [ngClass]="{ 'is-invalid': formSubmitted && f.previous.errors }"
+                      placement="left"
+                      />
+                  </div>
+                  <div class="form-group">
+                    <label for="field-next">next (paging token)</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="field-next"
+                      formControlName="next"
+                      [ngClass]="{ 'is-invalid': formSubmitted && f.next.errors }"
+                      placement="left"
+                      />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-12 col-sm-8">
+        <div class="row">
+          <div class="col-6">
+            <p class="strong">Request</p>
+          </div>
+          <div class="col-6 text-right">
+            <button class="btn btn-primary" [disabled]="form.status !== 'VALID'" (click)="fetch()">
+                Fetch
+            </button>
+          </div>
+        </div>
+        <ngb-tabset (tabChange)="onTabChange()">
+          <ngb-tab title="HTTP">
+            <ng-template ngbTabContent>
+              <textarea id="http-textarea" class="form-control" readonly>{{ getHttpRequest() }}</textarea>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab title="cURL">
+            <ng-template ngbTabContent>
+              <textarea id="curl-textarea" class="form-control" readonly>{{ getCurlRequest() }}</textarea>
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
+        <div *ngIf="loading$ | async" class="my-3 text-center">
+            <fa name="cog" animation="spin"></fa>
+        </div>
+        <div *ngIf="responseData" class="mt-2">
+          <p class="strong">Response</p>
+          <textarea id="response-textarea" class="form-control" [ngClass]="{ 'is-invalid http-error-response': isErrorResponse }" readonly>{{ responseData | json }}</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
