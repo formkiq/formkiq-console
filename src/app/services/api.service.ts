@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpBackend } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, shareReplay, map } from 'rxjs/operators';
@@ -14,10 +14,14 @@ export class ApiService {
   constructor(
       private httpClient: HttpClient,
       private authenticationService: AuthenticationService,
-      private configurationService: ConfigurationService
-    ) { }
+      private configurationService: ConfigurationService,
+      private httpBackend: HttpBackend
+    ) {
+      this.noAuthHttpClient = new HttpClient(httpBackend);
+    }
 
-  allDocumentsResult$: Observable<Document[]>;
+  // NOTE: not currently in use as the signed S3 URL PUT is not included as a method
+  private noAuthHttpClient: HttpClient;
 
   getHttpOptions() {
     return {
@@ -63,19 +67,6 @@ export class ApiService {
       .pipe(shareReplay(1),
       catchError(callback.handleApiError));
   }
-
-  /*
-  tagDocument(documentID: string, key: string, value: string = ''): Observable<Document> {
-    const body = {
-      key,
-      value
-    };
-    return this.httpClient
-      .post<Document>(this.configurationService.apigateway.url + 'documents/' + documentID + '/tags', body, this.getHttpOptions())
-      .pipe(shareReplay(1));
-  }
-  */
-
   getDocumentTags(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | Array<Tag>> {
     return this.httpClient
       .get<Array<Tag>>(this.configurationService.apigateway.url + 'documents/' + documentID + '/tags' + queryString, this.getHttpOptions())

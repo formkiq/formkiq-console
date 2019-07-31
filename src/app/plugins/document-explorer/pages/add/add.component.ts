@@ -26,17 +26,20 @@ export class AddComponent implements OnInit, AfterViewInit {
       }
     );
     this.dropzone.on('addedfile', (file) => {
-      file.postUrl = '';
+      file.putUrl = '';
       this.apiService.getDocumentsUpload(this).subscribe((data: any) => {
         // TODO: handle error response
-        file.postUrl = data.url;
+        file.putUrl = data.url;
+        console.log(file.putUrl);
         this.dropzone.enqueueFile(file);
       });
     });
     this.dropzone.on('processing', (file) => {
-      this.dropzone.options.url = file.postUrl;
+      this.dropzone.options.url = file.putUrl;
       this.dropzone.headers = {
-        'Content-Type': file.type
+        'Content-Type': file.type,
+        Origin: window.location.host,
+        'Access-Control-Request-Method': 'PUT'
       };
     });
     this.dropzone.on('sending', (file, xhr, formData) => {
