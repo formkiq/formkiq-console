@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { CognitoAuthenticationService } from '../../authentication-cognito/services/cognito-authentication.service';
 
 @Injectable({
@@ -13,6 +13,8 @@ export class AuthenticationService {
     return this.cognitoAuthenticationService;
   }
 
+  public authenticationPageLoadSource = new Subject<any>();
+  public authenticationPageLoad$ = this.authenticationPageLoadSource.asObservable();
   public authenticationChange$ = this.authenticationProviderService.authenticationChangeSource.asObservable();
   public loginResponse$ = this.authenticationProviderService.loginResponseSource.asObservable();
   public logoutResponse$ = this.authenticationProviderService.logoutResponseSource.asObservable();

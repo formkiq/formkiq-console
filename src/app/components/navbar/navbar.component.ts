@@ -22,6 +22,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   routeTitle = '';
 
+  private authenticationPageLoadSubscription: Subscription = null;
   private authenticationChangeSubscription: Subscription = null;
 
   private notificationSubscription: Subscription = null;
@@ -30,7 +31,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private loginResponseSubscription: Subscription = null;
   private loginResponse: LoginResponse = null;
   private logoutResponseSubscription: Subscription = null;
-  private logoutResponse: LogoutResponse = null;
   private forgotPasswordResponseSubscription: Subscription = null;
   private registrationResponseSubscription: Subscription = null;
 
@@ -65,6 +65,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
         }
       }
     );
+    this.authenticationPageLoadSubscription = this.authenticationService.authenticationPageLoad$.subscribe(
+      () => {
+        setTimeout(() => {
+          if (this.isSidebarToggled) {
+            this.toggleSidebar();
+          }
+        });
+      }
+    );
     this.authenticationChangeSubscription = this.authenticationService.authenticationChange$.subscribe(
       () => {
         if (this.currentRouteUrl === '/authenticate') {
@@ -94,7 +103,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       (value: LoginResponse) => {
         this.loginResponse = value;
         // TODO: check for last sidebar toggle status from user (local storage)
-        if (this.loginResponse.success) {
+        if (this.loginResponse.success && this.hasSmallViewport) {
           if (!this.isSidebarToggled) {
             this.toggleSidebar();
           }
@@ -102,7 +111,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
     this.logoutResponseSubscription = this.authenticationService.logoutResponse$.subscribe(
       (value: LogoutResponse) => {
-        this.logoutResponse = value;
         this.notificationService.createNotificationFromAuthenticationResponse(value);
         if (this.requireAuthenticationForRead) {
           this.router.navigate(['/authenticate']);
@@ -119,6 +127,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.authenticationChangeSubscription.unsubscribe();
+    this.authenticationPageLoadSubscription.unsubscribe();
     this.notificationSubscription.unsubscribe();
     this.loginResponseSubscription.unsubscribe();
     this.logoutResponseSubscription.unsubscribe();
@@ -132,6 +142,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   toggleSidebar() {
     this.toggleSidebarEmitter.emit();
+  }
+
+  hasSmallViewport() {
+    return (window.innerWidth <= 380);
   }
 
   signOut() {
