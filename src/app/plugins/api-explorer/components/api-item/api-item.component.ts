@@ -5,6 +5,7 @@ import { Observable, Subscription, Subject } from 'rxjs';
 import { ApiService } from '../../../../services/api.service';
 import { AuthenticationService } from '../../../authentication/services/authentication.service';
 import { NavigationService } from '../../../../services/navigation.service';
+import { NavItemClickData } from '../../../../services/navigation.schema';
 import { NotificationService } from '../../../../services/notification.service';
 import { NotificationInfoType } from '../../../../services/notification.schema';
 import { HttpErrorCallback } from '../../../../services/api.service';
@@ -77,84 +78,17 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     this.form.valueChanges.subscribe(val => {
       this.updateRequestsFromForm();
     });
-    this.navigationService.apiGetDocumentsClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiGetDocumentsClicked');
+    this.navigationService.navItemClicked$.subscribe(
+      (navData: NavItemClickData) => {
+        if (navData.source) {
+          let collapseItem = null;
+          if (navData.collapseItem !== null) {
+            collapseItem = navData.collapseItem;
+          }
+          this.checkClickedSubscription(navData.source, collapseItem);
         }
-    });
-    this.navigationService.apiGetDocumentClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiGetDocumentClicked');
-        }
-    });
-    this.navigationService.apiPostDocumentClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiPostDocumentClicked');
-        }
-    });
-    this.navigationService.apiPatchDocumentClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiPatchDocumentClicked');
-        }
-    });
-    this.navigationService.apiDeleteDocumentClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiDeleteDocumentClicked');
-        }
-    });
-    this.navigationService.apiGetDocumentUrlClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiGetDocumentUrlClicked');
-        }
-    });
-    this.navigationService.apiGetDocumentTagsClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiGetDocumentTagsClicked');
-        }
-    });
-    this.navigationService.apiPostDocumentTagsClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiPostDocumentTagsClicked');
-        }
-    });
-    this.navigationService.apiGetDocumentTagClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiGetDocumentTagClicked');
-        }
-    });
-    this.navigationService.apiDeleteDocumentTagClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiDeleteDocumentTagClicked');
-        }
-    });
-    this.navigationService.apiGetDocumentsUploadClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiGetDocumentsUploadClicked');
-        }
-    });
-    this.navigationService.apiGetDocumentUploadClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiGetDocumentUploadClicked');
-        }
-    });
-    this.navigationService.apiPostSearchClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          this.checkClickedSubscription('apiPostSearchClicked');
-        }
-    });
+      }
+    );
   }
 
   checkJson(control: FormControl) {
@@ -170,9 +104,14 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
 
   }
 
-  checkClickedSubscription(clickedSubscriptionName) {
+  checkClickedSubscription(clickedSubscriptionName, collapseItem) {
+    console.log(collapseItem);
     if (this.apiItem.clickedSubscriptionName === clickedSubscriptionName) {
-      this.isCollapsed = false;
+      if (collapseItem === null) {
+        this.isCollapsed = false;
+      } else {
+        this.isCollapsed = collapseItem;
+      }
       if (window.innerWidth > 480) {
         setTimeout(() => {
           this.headerElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });

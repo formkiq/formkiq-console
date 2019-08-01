@@ -1,6 +1,7 @@
 <div #header class="row px-2 api-item">
   <div class="col-12 pt-2 pb-1">
-    <h6 class="formkiq-font collapse-link" (click)="isCollapsed = !isCollapsed;navigationService.trigger(apiItem.clickedSubscriptionName, !isCollapsed);">
+    <h6 class="formkiq-font collapse-link"
+      (click)="navigationService.collapseSubmenuItem(apiItem.clickedSubscriptionName, !isCollapsed);">
       <fa *ngIf="isCollapsed" name="chevron-right"></fa>
       <fa *ngIf="!isCollapsed" name="chevron-down"></fa>
       {{ apiItem.method }}

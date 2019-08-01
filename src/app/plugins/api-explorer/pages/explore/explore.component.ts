@@ -263,45 +263,24 @@ export class ExploreComponent implements OnInit {
 
 
   ngOnInit() {
-    this.navigationService.apiTopClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          setTimeout(() => {
-            this.headerElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
-          }, 10);
-        }
-    });
-    this.navigationService.apiHeaderDocumentsClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          setTimeout(() => {
-            this.headerDocumentsElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
-          }, 10);
-        }
-    });
-    this.navigationService.apiHeaderSearchClicked$.subscribe(
-      (clicked: boolean) => {
-        if (clicked) {
-          setTimeout(() => {
-            this.headerSearchElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
-          }, 10);
+    this.navigationService.navItemClicked$.subscribe(
+      (navData: any) => {
+        if (navData.source) {
+          if (navData.source === 'apiTopClicked') {
+            setTimeout(() => {
+              this.headerElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+            }, 10);
+          } else if (navData.source === 'apiHeaderDocumentsClicked') {
+            setTimeout(() => {
+              this.headerDocumentsElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+            }, 10);
+          } else if (navData.source === 'apiHeaderSearchClicked') {
+            setTimeout(() => {
+              this.headerSearchElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+            }, 10);
+          }
         }
     });
   }
-
-  /*
-  tagDocument() {
-    this.authenticationService.verifyToken().subscribe((valid: boolean) => {
-      if (valid) {
-        this.apiService.tagDocument('wflsh10.txt', 'testTag', 'goat').subscribe((data: any) => {
-          console.log(data);
-        });
-      } else {
-        console.log('not logged in');
-        this.authenticationService.closeSession();
-      }
-    });
-  }
-  */
 
 }

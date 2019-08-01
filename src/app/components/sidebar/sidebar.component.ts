@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AuthenticationService } from '../../plugins/authentication/services/authentication.service';
 import { NavigationService } from '../../services/navigation.service';
+import { NavItemClickData } from '../../services/navigation.schema';
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -36,9 +37,12 @@ export class SidebarComponent implements OnInit {
     );
   }
 
-  emitSidebarItemClick(clickSource: Subject<any>) {
-    if (clickSource && window.innerWidth > 480) {
-      clickSource.next(true);
+  emitSidebarItemClick(source: string) {
+    if (source && window.innerWidth > 480) {
+      const clickData = new NavItemClickData();
+      clickData.source = source;
+      clickData.collapseItem = false;
+      this.navigationService.navItemClickedSource.next(clickData);
     } else {
       this.sidebarItemClickEmitter.emit();
     }
