@@ -14,10 +14,15 @@ export class NavigationService {
 
   collapseSubmenuItem(source: string, collapseItem: boolean) {
     const clickData = new NavItemClickData();
-    console.log(collapseItem);
     clickData.source = source;
     clickData.collapseItem = collapseItem;
-    console.log(clickData);
+    this.navItemClickedSource.next(clickData);
+  }
+
+  emitInlineNavItemClick(source: string) {
+    const clickData = new NavItemClickData();
+    clickData.source = source;
+    clickData.collapseItem = false;
     this.navItemClickedSource.next(clickData);
   }
 

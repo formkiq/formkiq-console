@@ -2,11 +2,11 @@
   <div #header class="col-12">
     <h6>
       [
-      <a [routerLink]="['/api']" fragment="documents" (click)="navigationService.apiHeaderDocumentsClickedSource.next(true);">
+      <a [routerLink]="['/api']" fragment="documents" (click)="navigationService.emitInlineNavItemClick('apiHeaderDocumentsClicked');">
         Documents
       </a>
       |
-      <a [routerLink]="['/api']" fragment="search" (click)="navigationService.apiHeaderSearchClickedSource.next(true);">
+      <a [routerLink]="['/api']" fragment="search" (click)="navigationService.emitInlineNavItemClick('apiHeaderSearchClicked')">
         Search
       </a>
       ]
