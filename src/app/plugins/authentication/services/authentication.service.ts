@@ -30,6 +30,20 @@ export class AuthenticationService {
     return this.authenticationProviderService.apiAccessToken;
   }
 
+  public get loggedInAccessTokenTimeLeft(): any {
+    return this.authenticationProviderService.apiAccessTokenTimeLeft;
+  }
+
+  checkLoginAndToken(): void {
+    if (this.authenticationProviderService.apiAccessTokenTimeLeft <= 0) {
+      this.verifyToken().subscribe((valid: boolean) => {
+        if (!valid) {
+          this.closeSession();
+        }
+      });
+    }
+  }
+
   verifyToken(): Observable<boolean> {
     return this.authenticationProviderService.verifyToken();
   }

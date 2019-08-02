@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { timer, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AuthenticationService } from '../../plugins/authentication/services/authentication.service';
 import { ConfigurationService } from '../../services/configuration.service';
@@ -49,6 +49,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     ) { }
 
   ngOnInit() {
+    const source = timer(0, 30000);
+    const subscribe = source.subscribe(intervalNum => {
+      if (this.requireAuthenticationForRead) {
+        this.authenticationService.checkLoginAndToken();
+      }
+    });
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
       ).subscribe((value: NavigationEnd) => {

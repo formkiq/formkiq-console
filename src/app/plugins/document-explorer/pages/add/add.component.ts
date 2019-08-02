@@ -30,7 +30,6 @@ export class AddComponent implements OnInit, AfterViewInit {
       this.apiService.getDocumentsUpload(this).subscribe((data: any) => {
         // TODO: handle error response
         file.putUrl = data.url;
-        console.log(file.putUrl);
         this.dropzone.enqueueFile(file);
       });
     });

@@ -3,6 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AuthenticationService } from '../../plugins/authentication/services/authentication.service';
+import { ConfigurationService } from '../../services/configuration.service';
 import { NavigationService } from '../../services/navigation.service';
 import { NavItemClickData } from '../../services/navigation.schema';
 @Component({
@@ -18,11 +19,14 @@ export class SidebarComponent implements OnInit {
   @Input() isSidebarToggled: boolean;
   @Output() sidebarItemClickEmitter: EventEmitter<any> = new EventEmitter();
 
+  private requireAuthenticationForRead: boolean = this.configurationService.authentication.requireAuthenticationForRead;
+
   currentUrl = '/';
   elements: ElementRef<any>[];
 
   constructor(
     private authenticationService: AuthenticationService,
+    private configurationService: ConfigurationService,
     private navigationService: NavigationService,
     private router: Router,
     private renderer: Renderer2
@@ -38,6 +42,9 @@ export class SidebarComponent implements OnInit {
   }
 
   emitSidebarItemClick(source: string) {
+    if (this.requireAuthenticationForRead) {
+      this.authenticationService.checkLoginAndToken();
+    }
     if (source && window.innerWidth > 480) {
       const clickData = new NavItemClickData();
       clickData.source = source;

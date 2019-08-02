@@ -25,7 +25,6 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(private router: Router, private authenticationService: AuthenticationService) {}
 
   intercept(request: HttpRequest<any> , next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('Token Interceptor: ' + this.authenticationService.loggedInAccessToken);
     request = request.clone({
       setHeaders: {
         Authorization: this.authenticationService.loggedInAccessToken

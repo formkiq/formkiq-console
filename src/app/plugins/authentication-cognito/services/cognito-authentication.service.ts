@@ -62,13 +62,24 @@ export class CognitoAuthenticationService {
   public get apiAccessToken(): string {
     return this.idTokenValue;
   }
+  public get apiAccessTokenTimeLeft(): string {
+    return this.idTokenTimeLeftValue;
+  }
 
   public get idTokenValue(): string {
     return this.idTokenSubject.value;
   }
 
+  public get idTokenTimeLeftValue(): any {
+    return this.expiredStorage.getTimeLeft('idToken');
+  }
+
   public get accessTokenValue(): string {
     return this.accessTokenSubject.value;
+  }
+
+  public get accessTokenTimeLeftValue(): any {
+    return this.expiredStorage.getTimeLeft('accessToken');
   }
 
   public get refreshTokenValue(): string {

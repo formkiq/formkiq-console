@@ -105,7 +105,6 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
   }
 
   checkClickedSubscription(clickedSubscriptionName, collapseItem) {
-    console.log(collapseItem);
     if (this.apiItem.clickedSubscriptionName === clickedSubscriptionName) {
       if (collapseItem === null) {
         this.isCollapsed = false;
