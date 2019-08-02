@@ -1,23 +1,79 @@
 
 <div class="row">
-  <div class="col-12">
-    <form [formGroup]="tagsearchForm" class="form-inline ml-auto" (ngSubmit)="search()">
-      <div class="input-group mr-sm-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text" id="btnGroupAddon">Tag Search</div>
-        </div>
-        <input type="text" class="form-control" formControlName="tagKey" placeholder="Tag Key" [ngClass]="{ 'is-invalid': submitted && f.tagKey.errors }" />
-      </div>
-      <select class="form-control mr-sm-2" formControlName="searchType">
-        <option value="eq">Equals</option>
-        <option value="beginsWith">Begins With</option>
-      </select>
-      <div class="input-group mr-sm-2">
-        <input type="text" class="form-control" formControlName="tagValue" placeholder="Tag Value">
-      </div>
-      <button type="submit" class="btn btn-secondary">Search</button>
-    </form>
+  <div class="col-12 my-2">
+    <h5 class="formkiq-font collapse-link"
+      (click)="navigationService.collapseSubmenuItem('documentSearchClicked', !isCollapsed);">
+      <fa *ngIf="isCollapsed" name="chevron-right"></fa>
+      <fa *ngIf="!isCollapsed" name="chevron-down"></fa>
+      Document Search
+    </h5>
   </div>
+  <form [formGroup]="tagsearchForm" (ngSubmit)="search()">
+    <div class="row">
+      <div class="col-12 px-4 mb-2">
+        <div class="row mb-4">
+          <div class="col-12 col-md-3">
+            <label for="dp" class="pt-1">
+              <h6>
+              By Date:
+              </h6>
+            </label>
+          </div>
+          <div class="col-6 col-md-6">
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dp"
+                ngbDatepicker #d="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button"><i class="fa fa-calendar"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <input type="button" class="btn btn-primary" value="Today" (click)="viewTodaysDocuments()" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <label class="pt-1">
+              <h6>
+              By Tag:
+              </h6>
+            </label>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-12 col-md-3 col-lg-2">
+            <label>Tag Search:</label>
+          </div>
+          <div class="col-12 col-md-9 col-lg-3">
+            <input type="text" class="form-control" formControlName="tagKey" placeholder="key name" [ngClass]="{ 'is-invalid': submitted && f.tagKey.errors }" />
+          </div>
+          <div class="col-12 col-md-6 col-lg-4">
+            <select class="form-control mr-sm-2" formControlName="searchType">
+              <option value="eq">Equals</option>
+              <option value="beginsWith">Begins With</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3">
+            <input type="text" class="form-control" formControlName="tagValue" placeholder="tag value">
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="offset-6 offset-md-3 offset-lg-2 col-6 col-md-9 col-lg-10">
+            <input type="button" class="btn btn-primary mr-2" value="Run Tag Search" (click)="runTagSearch()" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 text-center">
+            <input type="button" class="btn btn-primary" value="View All Untagged Documents" (click)="viewAllUntaggedDocuments()" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
 
 <div class="container">

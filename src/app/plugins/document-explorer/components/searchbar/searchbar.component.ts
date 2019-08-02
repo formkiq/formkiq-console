@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
+import { NavigationService } from '../../../../services/navigation.service';
 import { Document } from '../../../../services/api.schema';
 
 @Component({
@@ -16,7 +17,11 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   tagsearchForm: FormGroup;
   submitted = false;
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private apiService: ApiService,
+    private navigationService: NavigationService
+    ) {}
 
   ngOnInit() {
     this.tagsearchForm = this.formBuilder.group({
@@ -52,6 +57,18 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
 
   get f() {
     return this.tagsearchForm.controls;
+  }
+
+  viewTodaysDocuments() {
+
+  }
+
+  viewAllUntaggedDocuments() {
+
+  }
+
+  runTagSearch() {
+
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {
