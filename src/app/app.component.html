@@ -1,1 +1,7 @@
-<router-outlet></router-outlet>
+<app-navbar (toggleSidebarEmitter)="toggleSidebar()" [isSidebarToggled]="isSidebarToggled"></app-navbar>
+<div class="wrapper">
+  <app-sidebar (sidebarItemClickEmitter)="onSidebarItemClick()" [isSidebarToggled]="isSidebarToggled"></app-sidebar>
+  <div class="main-content stretch-width has-scrollbar has-scrollbar-light-bg">
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+{
+  "cognito": {
+    "userPoolId": "us-east-1_fC9EAO1D0",
+    "region": "us-east-1",
+    "clientId": "79eqaraqip1bh1pfi7hbnk6uc3"
+  },
+  "apigateway": {
+    "url": "https://71upvkak4h.execute-api.us-east-1.amazonaws.com/prod/"
+  }
+}

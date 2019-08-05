@@ -1,0 +1,49 @@
+<nav id="topbar" class="navbar navbar-expand-lg navbar-light formkiq-light-blue-background mx-0 px-0 my-0 py-0">
+  <div class="navbar-current-page-title ml-2 pl-6 pt-2">
+    <h5 class="formkiq-font">{{ routeTitle }}</h5>
+  </div>
+  <div class="col-3 navbar-brand-box-container navbar-dark">
+    <div id="brand-box" class="row formkiq-dark-blue-background">
+      <div class="col-8 px-3">
+        <a class="navbar-brand formkiq-font" (click)="runNav">Form<span class="formkiq-light-blue">Kiq</span> <span class="formkiq-font-highlight"> Cloud</span></a>
+      </div>
+      <div class="navbar-hamburger-container col-3 offset-1">
+        <button *ngIf="showHamburgerButton" (click)="toggleSidebar()" [ngClass]="{'is-active': isSidebarToggled}" class="hamburger hamburger--stand" type="button">
+          <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="col-4 offset-5 authentication-container">
+    <div *ngIf="showDropdown && !requireAuthenticationForRead && authenticationService.loggedInUser == null" ngbDropdown placement="bottom-right" #loginDropdown="ngbDropdown" class="d-inline-block stretch-width text-right" [autoClose]="disabled">
+      <button class="btn btn-sm btn-primary" id="login-dropdown" ngbDropdownToggle>
+        Sign In / Create Account
+      </button>
+      <div ngbDropdownMenu aria-labelledby="login-dropdown" class="stretch-width">
+        <app-login *ngIf="currentAuthenticationForm == 'login'" [isDropdown]="true" (cancelDropdownEmitter)="close(loginDropdown)"></app-login>
+        <app-register *ngIf="currentAuthenticationForm == 'register'" (cancelDropdownEmitter)="close(loginDropdown)"></app-register>
+        <app-forgot-password *ngIf="currentAuthenticationForm == 'forgotPassword'" (cancelDropdownEmitter)="close(loginDropdown)"></app-forgot-password>
+        <div class="dropdown-divider"></div>
+        <div class="row">
+          <div class="col-12 pl-4">
+            <button class="btn btn-sm btn-secondary mr-1" *ngIf="currentAuthenticationForm != 'login'" (click)="toggleAuthenticationForm('login')">&larr; Sign In</button>
+            <button class="btn btn-sm btn-secondary mr-1" *ngIf="currentAuthenticationForm != 'register'" (click)="toggleAuthenticationForm('register')">Create Account</button>
+            <button class="btn btn-sm btn-secondary mr-1" *ngIf="currentAuthenticationForm != 'forgotPassword'" (click)="toggleAuthenticationForm('forgotPassword')">Forgot Password?</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="authenticationService.loggedInUser != null" class="stretch-width text-right">
+      <button class="btn btn-sm btn-primary" (click)="signOut()">
+        Sign Out
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="notification-container">
+  <ngb-alert *ngIf="notificationInfo != null" [dismissible]="notificationInfo.isDismissible" (close)="notificationInfo = null">
+    {{ notificationInfo.message }}
+  </ngb-alert>
+</div>

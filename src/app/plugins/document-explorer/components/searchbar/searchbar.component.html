@@ -1,0 +1,115 @@
+
+<div class="row">
+  <div class="col-12 my-2">
+    <h5 class="formkiq-font collapse-link"
+      (click)="navigationService.collapseSubmenuItem('documentSearchClicked', !isCollapsed);">
+      <fa *ngIf="isCollapsed" name="chevron-right"></fa>
+      <fa *ngIf="!isCollapsed" name="chevron-down"></fa>
+      Document Search
+    </h5>
+  </div>
+  <div class="row">
+    <div class="col-12 px-4 mb-2">
+      <form [formGroup]="dateSearchForm">
+        <div class="row mb-4">
+          <div class="col-12 col-md-3">
+            <label for="dp" class="pt-1">
+              <h6>
+              By Date:
+              </h6>
+            </label>
+          </div>
+          <div class="col-6 col-md-6">
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dp"
+                ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelected($event)">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button"><i class="fa fa-calendar"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <input type="button" class="btn btn-primary" value="Today" (click)="viewTodaysDocuments()" />
+          </div>
+        </div>
+      </form>
+      <div class="row">
+        <div class="col-12">
+          <label class="pt-1">
+            <h6>
+            By Tag:
+            </h6>
+          </label>
+        </div>
+      </div>
+      <form [formGroup]="tagSearchForm" (ngSubmit)="runTagSearch()">
+        <div class="row mb-2">
+          <div class="col-12 col-md-3 col-lg-2">
+            <label>Tag Search:</label>
+          </div>
+          <div class="col-12 col-md-9 col-lg-3">
+            <input type="text" class="form-control" formControlName="tagKey" placeholder="key name" [ngClass]="{ 'is-invalid': submitted && f.tagKey.errors }" />
+          </div>
+          <div class="col-12 col-md-6 col-lg-4">
+            <select class="form-control mr-sm-2" formControlName="searchType">
+              <option value="eq">Equals</option>
+              <option value="beginsWith">Begins With</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3">
+            <input type="text" class="form-control" formControlName="tagValue" placeholder="tag value">
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="offset-6 offset-md-3 offset-lg-2 col-6 col-md-9 col-lg-10">
+            <input type="button" class="btn btn-primary mr-2" value="Run Tag Search" (click)="runTagSearch()" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 text-center">
+            <input type="button" class="btn btn-primary" value="View All Untagged Documents" (click)="viewAllUntaggedDocuments()" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <br /><br />
+  <div class="table">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Document</th>
+          <th scope="col">Path</th>
+          <th scope="col">Inserted Date</th>
+          <th scope="col">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="results$ | async as results else divForSubmitQuerySpinner">
+        <tr *ngIf="results.documents.length == 0"><td>No Documents Found</td></tr>
+        <tr *ngFor="let result of results.documents">
+          <td>{{result.documentId}}</td>
+          <td>{{result.path}}&nbsp;</td>
+          <td>{{result.inserteddate}}&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #divForSubmitQuerySpinner>
+  <div class="wrapper divForSpinner" *ngIf="submitted && !submittedCompleted && !this.tagSearchForm.invalid">
+    <div class="overlay">
+      <div class="spinner-wrapper">
+        <app-spinner></app-spinner>
+      </div>
+    </div>
+
+    <ng-content></ng-content>
+  </div>
+</ng-template>

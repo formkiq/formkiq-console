@@ -24,8 +24,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+              "src/styles.scss",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/font-awesome/scss/font-awesome.scss",
+              "src/assets/dist/dropzone/dropzone.scss"
             ],
             "scripts": []
           },
@@ -81,7 +83,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss",
+              "node_modules/font-awesome/scss/font-awesome.scss",
+              "src/assets/dist/dropzone/dropzone.scss"
             ],
             "scripts": []
           }
