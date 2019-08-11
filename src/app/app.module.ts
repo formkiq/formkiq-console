@@ -19,6 +19,7 @@ import { ExploreComponent as ApiExploreComponent } from './plugins/api-explorer/
 import { ApiItemComponent } from './plugins/api-explorer/components/api-item/api-item.component';
 import { ExploreComponent as DocsExploreComponent } from './plugins/document-explorer/pages/explore/explore.component';
 import { AddComponent as DocsAddComponent } from './plugins/document-explorer/pages/add/add.component';
+import { TagsComponent as DocsTagsComponent } from './plugins/document-explorer/pages/tags/tags.component';
 import { SearchbarComponent as DocsSearchbarComponent } from './plugins/document-explorer/components/searchbar/searchbar.component';
 import { ApiService } from './services/api.service';
 import { TokenInterceptor } from './utils/token.interceptor';
@@ -39,6 +40,7 @@ import { TokenInterceptor } from './utils/token.interceptor';
     ApiItemComponent,
     DocsExploreComponent,
     DocsAddComponent,
+    DocsTagsComponent,
     DocsSearchbarComponent
   ],
   imports: [

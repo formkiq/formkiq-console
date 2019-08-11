@@ -1,0 +1,53 @@
+<div class="col-12 mt-2">
+  <h5 class="formkiq-font">
+    Document:
+    {{ documentId }}
+  </h5>
+</div>
+<div class="container mt-2">
+  <div class="table">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Key</th>
+          <th scope="col">Value</th>
+          <th scope="col">Date Inserted</th>
+          <th scope="col">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="results$ | async as results else tagsLoading">
+        <tr *ngIf="results.tags.length == 0"><td>No Tags Found</td></tr>
+        <tr *ngFor="let result of results.tags">
+          <td>{{result.key}}</td>
+          <td>{{result.value}}&nbsp;</td>
+          <td>{{result.inserteddate}}&nbsp;</td>
+          <td *ngIf="f.tagKey.value != result.key">
+            <input type="button" value="Edit" (click)="editTag(result.key, result.value)" />
+            <input type="button" value="Delete" (click)="deleteTag(result.key)" />
+          </td>
+          <td *ngIf="f.tagKey.value == result.key">
+            <input type="button" value="Cancel Edit" (click)="cancelEdit()" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <form [formGroup]="addTagForm" (ngSubmit)="saveTag()">
+    <div class="row mb-2">
+      <div class="col-12">
+        <label *ngIf="isTagEditMode">Edit Tag:</label>
+        <label *ngIf="!isTagEditMode">New Tag:</label>
+      </div>
+      <div class="col-12 col-md-4">
+        <input type="text" class="form-control" formControlName="tagKey" placeholder="key name" [ngClass]="{ 'is-invalid': submitted && f.tagKey.errors }" />
+      </div>
+      <div class="col-12 col-md-4">
+        <input type="text" class="form-control" formControlName="tagValue" placeholder="tag value">
+      </div>
+      <div class="col-12 col-md-4">
+        <input type="button" class="btn btn-primary" [attr.value]="isTagEditMode ? 'Edit' : 'Add'" (click)="saveTag()" />
+        <input *ngIf="isTagEditMode" type="button" class="btn btn-secondary ml-1" value="Cancel" (click)="cancelEdit()" />
+      </div>
+    </div>
+  </form>
+</div>

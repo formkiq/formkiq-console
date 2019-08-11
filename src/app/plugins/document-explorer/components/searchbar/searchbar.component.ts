@@ -1,4 +1,5 @@
 import { Component, OnInit, OnChanges, ElementRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -24,7 +25,8 @@ export class SearchbarComponent implements OnInit, OnChanges, HttpErrorCallback 
   constructor(
     private formBuilder: FormBuilder,
     private apiService: ApiService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private router: Router
     ) {}
 
   ngOnInit() {
@@ -104,6 +106,10 @@ export class SearchbarComponent implements OnInit, OnChanges, HttpErrorCallback 
       }
     };
     this.results$ = this.apiService.postSearch(JSON.stringify(searchQuery), this);
+  }
+
+  viewDocumentTags(documentId) {
+    this.router.navigate(['/documents/' + documentId + '/tags']);
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {

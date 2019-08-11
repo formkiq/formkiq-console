@@ -6,6 +6,7 @@ import { AuthenticateComponent } from './plugins/authentication/pages/authentica
 import { ConfirmUserComponent } from './plugins/authentication/pages/confirm-user/confirm-user.component';
 import { ExploreComponent as DocumentsExploreComponent } from './plugins/document-explorer/pages/explore/explore.component';
 import { AddComponent as DocumentsAddComponent } from './plugins/document-explorer/pages/add/add.component';
+import { TagsComponent as DocumentsTagsComponent } from './plugins/document-explorer/pages/tags/tags.component';
 import { AuthenticationGuardService } from './plugins/authentication/guards/authentication-guard.service';
 
 const routerOptions: ExtraOptions = {
@@ -48,6 +49,12 @@ const routes: Routes = [
     path: 'documents/add',
     component: DocumentsAddComponent,
     data: { title: 'Add Documents' },
+    canActivate: [AuthenticationGuardService]
+  },
+  {
+    path: 'documents/:id/tags',
+    component: DocumentsTagsComponent,
+    data: { title: 'Document Tags' },
     canActivate: [AuthenticationGuardService]
   },
   {
