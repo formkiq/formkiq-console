@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../plugins/authentication/services/authentication.service';
+import { ConfigurationService } from '../../services/configuration.service';
 import { ApiService } from '../../services/api.service';
 
 @Component({
@@ -13,12 +14,15 @@ export class HomeComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private authenticationService: AuthenticationService,
+    private configurationService: ConfigurationService,
     private router: Router
     ) {}
 
   ngOnInit() {
-    if (this.authenticationService.loggedInUser == null) {
-      this.router.navigate(['/authenticate']);
+    if (this.configurationService.authentication.requireAuthenticationForRead) {
+      if (this.authenticationService.loggedInUser == null) {
+        this.router.navigate(['/authenticate']);
+      }
     }
   }
 
