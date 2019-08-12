@@ -4,7 +4,7 @@
     {{ documentId }}
   </h5>
 </div>
-<div class="container mt-2">
+<div class="mt-2">
   <div class="table">
     <table class="table table-hover">
       <thead>
@@ -45,7 +45,7 @@
         <input type="text" class="form-control" formControlName="tagValue" placeholder="tag value">
       </div>
       <div class="col-12 col-md-4">
-        <input type="button" class="btn btn-primary" [attr.value]="isTagEditMode ? 'Edit' : 'Add'" (click)="saveTag()" />
+        <input type="button" class="btn btn-primary" [attr.value]="isTagEditMode ? 'Save' : 'Add'" (click)="saveTag()" />
         <input *ngIf="isTagEditMode" type="button" class="btn btn-secondary ml-1" value="Cancel" (click)="cancelEdit()" />
       </div>
     </div>

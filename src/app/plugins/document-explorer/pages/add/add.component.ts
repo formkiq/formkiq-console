@@ -42,6 +42,7 @@ export class AddComponent implements OnInit, AfterViewInit {
       };
     });
     this.dropzone.on('sending', (file, xhr, formData) => {
+      console.log(xhr);
       const xhrSend = xhr.send;
       xhr.send = () => {
         xhrSend.call(xhr, file);

@@ -42,6 +42,7 @@ export class TagsComponent implements OnInit, AfterViewInit {
     this.route.params.subscribe(params => {
       this.documentId = params.id;
       const container = this;
+      this.isTagEditMode = false;
       this.results$ = this.apiService.getDocumentTags(this.documentId, '', this);
     });
   }
