@@ -12,11 +12,11 @@
     <div class="col-12 px-4 mb-2">
       <form [formGroup]="dateSearchForm">
         <div class="row mb-4">
-          <div class="col-12 col-md-3">
-            <label for="dp" class="pt-1">
-              <h6>
-              By Date:
-              </h6>
+          <div class="col-12 col-md-2">
+            <label for="dp" class="pl-2 pt-1">
+              <h5>
+                By Date
+              </h5>
             </label>
           </div>
           <div class="col-6 col-md-6">
@@ -36,48 +36,42 @@
           </div>
         </div>
       </form>
-      <div class="row">
-        <div class="col-12">
-          <label class="pt-1">
-            <h6>
-            By Tag:
-            </h6>
-          </label>
-        </div>
-      </div>
       <form [formGroup]="tagSearchForm" (ngSubmit)="runTagSearch()">
         <div class="row mb-2">
-          <div class="col-12 col-md-3 col-lg-2">
-            <label>Tag Search:</label>
+          <div class="col-12 col-md-2">
+            <label class="pl-2 pt-1">
+              <h5>
+                By Tag
+              </h5>
+            </label>
           </div>
-          <div class="col-12 col-md-9 col-lg-3">
+          <div class="col-12 col-md-3 col-lg-2 pb-1">
             <input type="text" class="form-control" formControlName="tagKey" placeholder="key name" [ngClass]="{ 'is-invalid': submitted && f.tagKey.errors }" />
           </div>
-          <div class="col-12 col-md-6 col-lg-4">
+          <div class="col-12 col-md-3 col-lg-2 pb-1">
             <select class="form-control mr-sm-2" formControlName="searchType">
               <option value="eq">Equals</option>
               <option value="beginsWith">Begins With</option>
             </select>
           </div>
-          <div class="col-12 col-md-6 col-lg-3">
+          <div class="col-12 col-md-3 col-xl-4 pb-1">
             <input type="text" class="form-control" formControlName="tagValue" placeholder="tag value">
           </div>
-        </div>
-        <div class="row mb-4">
-          <div class="offset-6 offset-md-3 offset-lg-2 col-6 col-md-9 col-lg-10">
+          <div class="offset-0 offset-md-2 offset-lg-0 col-6 col-md-12 col-lg-2">
             <input type="button" class="btn btn-primary mr-2" value="Run Tag Search" (click)="runTagSearch()" />
           </div>
         </div>
         <div class="row">
-          <div class="col-12 text-center">
+          <div class="col-12 text-center pt-2">
             <input type="button" class="btn btn-primary" value="View All Untagged Documents" (click)="viewAllUntaggedDocuments()" />
+
           </div>
         </div>
       </form>
     </div>
   </div>
 </div>
-<div class="container mt-2">
+<div class="mt-2">
   <div class="table">
     <table class="table table-hover">
       <thead>
