@@ -22,7 +22,9 @@ export class AddComponent implements OnInit, AfterViewInit {
     this.dropzone = new Dropzone('div#dropzone', {
         url: '#',
         autoQueue: false,
-        method: 'PUT'
+        method: 'PUT',
+        dictDefaultMessage: 'Drop files here or click to upload (up to 100 files at a time)',
+        maxFiles: 100
       }
     );
     this.dropzone.on('addedfile', (file) => {
