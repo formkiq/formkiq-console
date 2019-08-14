@@ -61,7 +61,6 @@ export class SearchbarComponent implements OnInit, OnChanges, HttpErrorCallback 
     this.dateSearchForm.get('dp').setValue(todayForPicker);
     const documentDate = this.buildDocumentDate(todayForPicker.year, todayForPicker.month, todayForPicker.day);
     this.runDateSearch(documentDate);
-    this.runDateSearch(documentDate);
   }
 
   buildDocumentDate(year, month, day) {
