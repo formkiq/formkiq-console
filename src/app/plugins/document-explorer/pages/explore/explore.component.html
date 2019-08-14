@@ -1,11 +1,47 @@
 <div class="row">
-  <div class="col-12 my-1">
-    <app-searchbar></app-searchbar>
+  <div class="col-12 mb-1">
+    <app-searchbar #searchbar (documentQueryResultEmitter)="displayResults($event)"></app-searchbar>
   </div>
-</div>
-<div class="row">
-  <div class="col-12 my-1">
+  <div class="col-12 mb-1">
     <input type="button" class="btn btn-primary" value="Add Documents..." (click)="addDocuments()" />
   </div>
+  <div class="mt-2">
+    <div class="table">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Document</th>
+            <th scope="col">Path</th>
+            <th scope="col">Type</th>
+            <th scope="col">User</th>
+            <th scope="col">Date Inserted</th>
+            <th scope="col">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="results$ | async as results else divForSubmitQuerySpinner">
+          <tr *ngIf="results.documents.length == 0"><td>No Documents Found</td></tr>
+          <tr *ngFor="let result of results.documents">
+            <td>{{result.documentId}}</td>
+            <td>{{result.path}}&nbsp;</td>
+            <td>{{result.contentType}}&nbsp;</td>
+            <td>{{result.userId}}&nbsp;</td>
+            <td>{{result.inserteddate}}&nbsp;</td>
+            <td><input type="button" value="Tags..." (click)="viewDocumentTags(result.documentId)" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
+<ng-template #divForSubmitQuerySpinner>
+  <div class="wrapper divForSpinner" *ngIf="dateSearchSubmitted || tagSearchSubmitted">
+    <div class="overlay">
+      <div class="spinner-wrapper">
+        <app-spinner></app-spinner>
+      </div>
+    </div>
+
+    <ng-content></ng-content>
+  </div>
+</ng-template>
 
