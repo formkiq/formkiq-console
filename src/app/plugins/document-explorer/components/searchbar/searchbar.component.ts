@@ -1,6 +1,6 @@
-import { Component, OnInit, OnChanges, ElementRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
@@ -13,14 +13,19 @@ import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './searchbar.component.html',
   styleUrls: ['./searchbar.component.css']
 })
-export class SearchbarComponent implements OnInit, OnChanges, HttpErrorCallback {
+export class SearchbarComponent implements OnInit, HttpErrorCallback {
 
   results$: Observable<{} | Document[]>;
   dateSearchForm: FormGroup;
   tagSearchForm: FormGroup;
-  submitted = false;
+
+  public dateFormSubmittedSource = new Subject<boolean>();
+  public dateFormSubmitted$ = this.dateFormSubmittedSource.asObservable();
+  public tagFormSubmittedSource = new Subject<boolean>();
+  public tagFormSubmitted$ = this.tagFormSubmittedSource.asObservable();
 
   @ViewChild('d', {static: false}) dp: NgbInputDatepicker;
+  @Output() documentQueryResultEmitter: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,10 +44,6 @@ export class SearchbarComponent implements OnInit, OnChanges, HttpErrorCallback 
       tagValue: []
     });
     this.tagSearchForm.get('searchType').setValue('eq');
-  }
-
-  ngOnChanges(changes) {
-    console.log(changes);
   }
 
   get f() {
@@ -81,13 +82,16 @@ export class SearchbarComponent implements OnInit, OnChanges, HttpErrorCallback 
       return;
     }
     this.results$ = this.apiService.getAllDocuments('?date=' + documentDate, this);
+    this.results$.subscribe((results) => {
+      this.documentQueryResultEmitter.emit(results);
+    });
   }
 
   runTagSearch() {
-    this.submitted = true;
     if (this.tagSearchForm.invalid) {
       return;
     }
+    this.tagFormSubmittedSource.next(true);
     const key = this.tagSearchForm.controls.tagKey.value;
     const value = this.tagSearchForm.controls.tagValue.value;
     let searchTag = new SearchTag(key, null, null);
@@ -105,6 +109,9 @@ export class SearchbarComponent implements OnInit, OnChanges, HttpErrorCallback 
       }
     };
     this.results$ = this.apiService.postSearch(JSON.stringify(searchQuery), this);
+    this.results$.subscribe((results) => {
+      this.documentQueryResultEmitter.emit(results);
+    });
   }
 
   viewDocumentTags(documentId) {
