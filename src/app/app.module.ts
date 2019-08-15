@@ -23,6 +23,7 @@ import { TagsComponent as DocsTagsComponent } from './plugins/document-explorer/
 import { SearchbarComponent as DocsSearchbarComponent } from './plugins/document-explorer/components/searchbar/searchbar.component';
 import { ApiService } from './services/api.service';
 import { TokenInterceptor } from './utils/token.interceptor';
+import { PagingComponent } from './plugins/document-explorer/components/paging/paging.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { TokenInterceptor } from './utils/token.interceptor';
     DocsExploreComponent,
     DocsAddComponent,
     DocsTagsComponent,
-    DocsSearchbarComponent
+    DocsSearchbarComponent,
+    PagingComponent
   ],
   imports: [
     BrowserModule,

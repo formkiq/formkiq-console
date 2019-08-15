@@ -24,6 +24,12 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   public tagFormSubmittedSource = new Subject<boolean>();
   public tagFormSubmitted$ = this.tagFormSubmittedSource.asObservable();
 
+  public currentSearch = null;
+  public documentDate = null;
+  public tagSearchQuery = null;
+  public nextToken = null;
+  public previousToken = null;
+
   @ViewChild('d', {static: false}) dp: NgbInputDatepicker;
   @Output() documentQueryResultEmitter: EventEmitter<any> = new EventEmitter();
 
@@ -75,47 +81,88 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
     this.runTagSearch();
   }
 
-  runDateSearch(documentDate) {
+  runDateSearch(documentDate, previousToken = '', nextToken = '') {
+    this.documentDate = null;
+    this.tagSearchQuery = null;
     const dateRegExp = new RegExp('\\d{4}-\\d{2}-\\d{2}');
     if (!dateRegExp.test(documentDate)) {
       // TODO: make date field invalid
       return;
     }
-    this.results$ = this.apiService.getAllDocuments('?date=' + documentDate, this);
+    let queryString = '?date=' + documentDate;
+    if (nextToken !== '') {
+      queryString += '&next=' + nextToken;
+    }
+    if (previousToken !== '') {
+      queryString += '&previous=' + previousToken;
+    }
+    this.currentSearch = 'date';
+    this.documentDate = documentDate;
+    this.results$ = this.apiService.getAllDocuments(queryString, this);
     this.results$.subscribe((results) => {
       this.documentQueryResultEmitter.emit(results);
     });
   }
 
-  runTagSearch() {
-    if (this.tagSearchForm.invalid) {
-      return;
-    }
-    this.tagFormSubmittedSource.next(true);
-    const key = this.tagSearchForm.controls.tagKey.value;
-    const value = this.tagSearchForm.controls.tagValue.value;
-    let searchTag = new SearchTag(key, null, null);
-    if (value != null && value.trim().length > 0) {
-      const searchType = this.tagSearchForm.controls.searchType.value;
-      if (searchType === 'beginsWith') {
-        searchTag = new SearchTag(key, null, value.trim());
-      } else {
-        searchTag = new SearchTag(key, value.trim(), null);
+  public loadNextDatePage() {
+    this.runDateSearch(this.documentDate, '', this.nextToken);
+  }
+
+  public loadPreviousDatePage() {
+    this.runDateSearch(this.documentDate, this.previousToken);
+  }
+
+  runTagSearch(searchQuery = null, previousToken = '', nextToken = '') {
+    console.log(searchQuery);
+    let queryString = '';
+    if (searchQuery) {
+      // TODO: ensure search form matches search query
+      // delete searchQuery.query.previous;
+      // delete searchQuery.query.next;
+      if (previousToken) {
+        queryString = '?previous=' + previousToken;
+      } else if (nextToken) {
+        queryString = '?next=' + nextToken;
       }
-    }
-    const searchQuery = {
-      query: {
-        tag: searchTag
+      console.log(searchQuery);
+    } else {
+      if (this.tagSearchForm.invalid) {
+        return;
       }
-    };
-    this.results$ = this.apiService.postSearch(JSON.stringify(searchQuery), this);
+      this.documentDate = null;
+      this.tagSearchQuery = null;
+      this.tagFormSubmittedSource.next(true);
+      const key = this.tagSearchForm.controls.tagKey.value;
+      const value = this.tagSearchForm.controls.tagValue.value;
+      let searchTag = new SearchTag(key, null, null);
+      if (value != null && value.trim().length > 0) {
+        const searchType = this.tagSearchForm.controls.searchType.value;
+        if (searchType === 'beginsWith') {
+          searchTag = new SearchTag(key, null, value.trim());
+        } else {
+          searchTag = new SearchTag(key, value.trim(), null);
+        }
+      }
+      searchQuery = {
+        query: {
+          tag: searchTag
+        }
+      };
+    }
+    this.currentSearch = 'tag';
+    this.tagSearchQuery = searchQuery;
+    this.results$ = this.apiService.postSearch(JSON.stringify(searchQuery), queryString, this);
     this.results$.subscribe((results) => {
       this.documentQueryResultEmitter.emit(results);
     });
   }
 
-  viewDocumentTags(documentId) {
-    this.router.navigate(['/documents/' + documentId + '/tags']);
+  public loadNextTagPage() {
+    this.runTagSearch(this.tagSearchQuery, '', this.nextToken);
+  }
+
+  public loadPreviousTagPage() {
+    this.runTagSearch(this.tagSearchQuery, this.previousToken);
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {

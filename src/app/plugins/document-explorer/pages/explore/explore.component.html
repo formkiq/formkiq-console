@@ -5,9 +5,12 @@
   <div class="col-12 mb-1">
     <input type="button" class="btn btn-primary" value="Add Documents..." (click)="addDocuments()" />
   </div>
-  <div class="mt-2">
+  <div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
+    <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
+  </div>
+  <div class="col-12">
     <div class="table">
-      <table class="table table-hover">
+      <table class="table table-hover" *ngIf="results$ | async as results else divForSubmitQuerySpinner">
         <thead>
           <tr>
             <th scope="col">Document</th>
@@ -18,7 +21,7 @@
             <th scope="col">&nbsp;</th>
           </tr>
         </thead>
-        <tbody *ngIf="results$ | async as results else divForSubmitQuerySpinner">
+        <tbody>
           <tr *ngIf="results.documents.length == 0"><td>No Documents Found</td></tr>
           <tr *ngFor="let result of results.documents">
             <td>{{result.documentId}}</td>
@@ -30,6 +33,9 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div *ngIf="results$ | async as results" class="col-12 text-center">
+      <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
     </div>
   </div>
 </div>

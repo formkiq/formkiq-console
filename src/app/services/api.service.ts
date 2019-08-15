@@ -117,10 +117,10 @@ export class ApiService {
       catchError(callback.handleApiError));
   }
 
-  postSearch(json: string, callback: HttpErrorCallback): Observable<{} | Document[]> {
+  postSearch(json: string, queryString: string, callback: HttpErrorCallback): Observable<{} | Document[]> {
     const body = JSON.parse(json);
     return this.httpClient
-      .post<Array<Document>>(this.configurationService.apigateway.url + 'search', body, this.getHttpOptions())
+      .post<Array<Document>>(this.configurationService.apigateway.url + 'search' + queryString, body, this.getHttpOptions())
       .pipe(shareReplay(1),
       catchError(callback.handleApiError));
   }

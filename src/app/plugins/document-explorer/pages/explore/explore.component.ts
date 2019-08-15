@@ -42,8 +42,36 @@ export class ExploreComponent implements OnInit, AfterViewInit {
     this.dateSearchSubmitted = false;
     this.tagSearchSubmitted = false;
     this.results$ = Observable.create((observer) => {
+      this.searchbar.nextToken = null;
+      this.searchbar.previousToken = null;
+      if (results.next) {
+        this.searchbar.nextToken = results.next;
+      }
+      if (results.previous) {
+        this.searchbar.previousToken = results.previous;
+      }
       observer.next(results);
     });
+  }
+
+  loadPreviousPage() {
+    if (this.searchbar.currentSearch === 'date') {
+      this.searchbar.loadPreviousDatePage();
+    } else if (this.searchbar.currentSearch === 'tag') {
+      this.searchbar.loadPreviousTagPage();
+    }
+  }
+
+  loadNextPage() {
+    if (this.searchbar.currentSearch === 'date') {
+      this.searchbar.loadNextDatePage();
+    } else if (this.searchbar.currentSearch === 'tag') {
+      this.searchbar.loadNextTagPage();
+    }
+  }
+
+  viewDocumentTags(documentId) {
+    this.router.navigate(['/documents/' + documentId + '/tags']);
   }
 
 }
