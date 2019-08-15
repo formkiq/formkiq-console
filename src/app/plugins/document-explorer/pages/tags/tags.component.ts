@@ -22,10 +22,12 @@ export class TagsComponent implements OnInit, AfterViewInit {
     ) { }
 
   documentId = '';
-  results$: Observable<{} | Tag[]>;
+  results$: any;
   addTagForm: FormGroup;
   submitted = false;
   isTagEditMode = false;
+  nextToken = null;
+  previousToken = null;
 
   ngOnInit() {
     this.loadTags();
@@ -38,12 +40,28 @@ export class TagsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
   }
 
-  loadTags() {
+  loadTags(previousToken = '', nextToken = '') {
+    this.previousToken = null;
+    this.nextToken = null;
     this.route.params.subscribe(params => {
+      let queryString = '';
+      if (previousToken) {
+        queryString += '?previous=' + previousToken;
+      } else if (nextToken) {
+        queryString += '?next=' + nextToken;
+      }
       this.documentId = params.id;
       const container = this;
       this.isTagEditMode = false;
-      this.results$ = this.apiService.getDocumentTags(this.documentId, '', this);
+      this.results$ = this.apiService.getDocumentTags(this.documentId, queryString, this);
+      this.results$.subscribe((result) => {
+        if (result.previous) {
+          this.previousToken = result.previous;
+        }
+        if (result.next) {
+          this.nextToken = result.next;
+        }
+      });
     });
   }
 
@@ -96,6 +114,18 @@ export class TagsComponent implements OnInit, AfterViewInit {
     return Observable.create((observer) => {
       observer.next(errorResponse);
     });
+  }
+
+  loadPreviousPage() {
+    if (this.previousToken) {
+      this.loadTags(this.previousToken);
+    }
+  }
+
+  loadNextPage() {
+    if (this.nextToken) {
+      this.loadTags('', this.nextToken);
+    }
   }
 
 }
