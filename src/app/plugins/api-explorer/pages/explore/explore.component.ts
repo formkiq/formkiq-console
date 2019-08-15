@@ -42,7 +42,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: true,
     allowsLimit: true,
-    hasPagingTokens: true
+    hasPagingTokens: true,
+    allowsPath: false
   };
 
   getDocumentApiItem: ApiItem = {
@@ -60,7 +61,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: false,
-    hasPagingTokens: false
+    hasPagingTokens: false,
+    allowsPath: false
   };
 
   postDocumentApiItem: ApiItem = {
@@ -78,7 +80,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: false,
-    hasPagingTokens: false
+    hasPagingTokens: false,
+    allowsPath: false
   };
 
   patchDocumentApiItem: ApiItem = {
@@ -96,7 +99,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: false,
-    hasPagingTokens: false
+    hasPagingTokens: false,
+    allowsPath: false
   };
 
   deleteDocumentApiItem: ApiItem = {
@@ -114,7 +118,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: false,
-    hasPagingTokens: false
+    hasPagingTokens: false,
+    allowsPath: false
   };
 
   getDocumentTagsApiItem: ApiItem = {
@@ -132,7 +137,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: true,
-    hasPagingTokens: true
+    hasPagingTokens: true,
+    allowsPath: false
   };
 
   postDocumentTagApiItem: ApiItem = {
@@ -150,7 +156,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: false,
-    hasPagingTokens: false
+    hasPagingTokens: false,
+    allowsPath: false
   };
 
   getDocumentTagApiItem: ApiItem = {
@@ -168,7 +175,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: false,
-    hasPagingTokens: false
+    hasPagingTokens: false,
+    allowsPath: false
   };
 
   deleteDocumentTagApiItem: ApiItem = {
@@ -186,7 +194,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: false,
-    hasPagingTokens: false
+    hasPagingTokens: false,
+    allowsPath: false
   };
 
   getDocumentUrlApiItem: ApiItem = {
@@ -204,7 +213,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: false,
-    hasPagingTokens: false
+    hasPagingTokens: false,
+    allowsPath: false
   };
 
   getDocumentsUploadApiItem: ApiItem = {
@@ -222,7 +232,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: false,
-    hasPagingTokens: false
+    hasPagingTokens: false,
+    allowsPath: true
   };
 
   getDocumentUploadApiItem: ApiItem = {
@@ -240,7 +251,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: false,
-    hasPagingTokens: false
+    hasPagingTokens: false,
+    allowsPath: true
   };
 
   postSearchApiItem: ApiItem = {
@@ -258,7 +270,8 @@ export class ExploreComponent implements OnInit {
     requiresFileUpload: false,
     allowsDate: false,
     allowsLimit: true,
-    hasPagingTokens: true
+    hasPagingTokens: true,
+    allowsPath: false
   };
 
 
