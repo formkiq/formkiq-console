@@ -35,6 +35,9 @@
       </tbody>
     </table>
   </div>
+  <div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
+    <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
+  </div>
   <form [formGroup]="addTagForm" (ngSubmit)="saveTag()">
     <div class="row mb-2">
       <div class="col-12">
