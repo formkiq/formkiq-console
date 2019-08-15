@@ -257,7 +257,7 @@ export class ExploreComponent implements OnInit {
     requiresPostJson: true,
     requiresFileUpload: false,
     allowsDate: false,
-    allowsLimit: false,
+    allowsLimit: true,
     hasPagingTokens: true
   };
 

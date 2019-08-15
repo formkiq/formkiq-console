@@ -331,7 +331,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
         });
         break;
       case 'postSearch':
-        this.apiService.postSearch(this.f.postJson.value, this).subscribe((data: Array<object>) => {
+        this.apiService.postSearch(this.f.postJson.value, this.queryString, this).subscribe((data: Array<object>) => {
           if (data.hasOwnProperty('status')) {
             this.isErrorResponse = true;
           }
