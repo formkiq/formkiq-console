@@ -4,9 +4,12 @@
     {{ documentId }}
   </h5>
 </div>
-<div class="mt-2">
+<div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
+  <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
+</div>
+<div class="col-12">
   <div class="table">
-    <table class="table table-hover">
+    <table class="table table-hover" *ngIf="results$ | async as results else tagsLoading">
       <thead>
         <tr>
           <th scope="col">Key</th>
@@ -15,7 +18,7 @@
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
-      <tbody *ngIf="results$ | async as results else tagsLoading">
+      <tbody>
         <tr *ngIf="results.tags.length == 0"><td>No Tags Found</td></tr>
         <tr *ngFor="let result of results.tags">
           <td>{{result.key}}</td>
