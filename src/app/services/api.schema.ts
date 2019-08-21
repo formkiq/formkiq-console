@@ -25,4 +25,5 @@ export class ApiItem {
   allowsDate: boolean;
   allowsLimit: boolean;
   hasPagingTokens: boolean;
+  allowsPath: boolean;
 }

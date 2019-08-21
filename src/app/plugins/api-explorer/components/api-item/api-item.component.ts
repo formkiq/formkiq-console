@@ -30,6 +30,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
   @Input() allowsDate = false;
   @Input() allowsLimit = false;
   @Input() hasPagingTokens = false;
+  @Input() allowsPath = false;
   @ViewChild('header', {static: false}) headerElement: ElementRef;
 
   public form: FormGroup;
@@ -72,6 +73,9 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     if (this.apiItem.hasPagingTokens) {
       fieldsForFormBuilder.previous = ['', [Validators.minLength(6)]];
       fieldsForFormBuilder.next = ['', [Validators.minLength(6)]];
+    }
+    if (this.apiItem.allowsPath) {
+      fieldsForFormBuilder.path = ['', [Validators.pattern('^[A-Za-z0-9._%!~*()\'-]*$')]];
     }
     this.form = this.formBuilder.group(fieldsForFormBuilder);
     this.updateRequestsFromForm();
@@ -156,6 +160,9 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
       }
       if (this.f.next && this.f.next.status === 'VALID' && this.f.next.value.length > 0) {
         params.set('next', this.f.next.value);
+      }
+      if (this.f.path && this.f.path.status === 'VALID' && this.f.path.value.length > 0) {
+        params.set('path', this.f.path.value);
       }
       if (params.size > 0) {
         let queryString = '';
@@ -313,7 +320,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
         });
         break;
       case 'getDocumentsUpload':
-        this.apiService.getDocumentsUpload(this).subscribe((data: string) => {
+        this.apiService.getDocumentsUpload(this.queryString, this).subscribe((data: string) => {
           if (data.hasOwnProperty('status')) {
             this.isErrorResponse = true;
           }
@@ -322,7 +329,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
         });
         break;
       case 'getDocumentUpload':
-        this.apiService.getDocumentUpload(this.f.documentID.value, this).subscribe((data: string) => {
+        this.apiService.getDocumentUpload(this.f.documentID.value, this.queryString, this).subscribe((data: string) => {
           if (data.hasOwnProperty('status')) {
             this.isErrorResponse = true;
           }

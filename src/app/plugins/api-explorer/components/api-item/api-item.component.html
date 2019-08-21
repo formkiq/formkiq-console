@@ -137,6 +137,23 @@
                   </div>
                 </div>
               </div>
+              <div *ngIf="apiItem.allowsPath" class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="field-path">
+                      Path
+                      <small><br />must url encode - only following characters allowed:<br />A-Z a-z 0-9 - _ . ! ~ * ' ( )</small>
+                    </label>
+                    <input type="text"
+                      class="form-control"
+                      id="field-path"
+                      formControlName="path"
+                      [ngClass]="{ 'is-invalid': formSubmitted && f.limit.errors }"
+                      placement="left"
+                      />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </form>

@@ -103,16 +103,16 @@ export class ApiService {
       catchError(callback.handleApiError));
   }
 
-  getDocumentsUpload(callback: HttpErrorCallback): Observable<{} | string> {
+  getDocumentsUpload(queryString: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
-      .get<string>(this.configurationService.apigateway.url + 'documents/upload', this.getHttpOptions())
+      .get<string>(this.configurationService.apigateway.url + 'documents/upload' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
       catchError(callback.handleApiError));
   }
 
-  getDocumentUpload(documentID: string, callback: HttpErrorCallback): Observable<{} | string> {
+  getDocumentUpload(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
-      .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/upload', this.getHttpOptions())
+      .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/upload' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
       catchError(callback.handleApiError));
   }

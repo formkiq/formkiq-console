@@ -29,7 +29,8 @@ export class AddComponent implements OnInit, AfterViewInit {
     );
     this.dropzone.on('addedfile', (file) => {
       file.putUrl = '';
-      this.apiService.getDocumentsUpload(this).subscribe((data: any) => {
+      const queryString = '?path=' + encodeURIComponent(file.name);
+      this.apiService.getDocumentsUpload(queryString, this).subscribe((data: any) => {
         // TODO: handle error response
         file.putUrl = data.url;
         this.dropzone.enqueueFile(file);
