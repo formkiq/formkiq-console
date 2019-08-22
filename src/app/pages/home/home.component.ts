@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { ChartDataSets, ChartOptions } from 'chart.js';
+import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { AuthenticationService } from '../../plugins/authentication/services/authentication.service';
 import { ConfigurationService } from '../../services/configuration.service';
 import { ApiService } from '../../services/api.service';
@@ -21,6 +23,15 @@ export class HomeComponent implements OnInit {
     ) {}
 
   results$: Observable<any>;
+  chartData = [
+    {data: [0, 0, 0, 0, 0, 0, 0], label: ''},
+  ];
+  chartLabels: Label[] = ['', '', '', '', '', '', ''];
+  chartOptions: (ChartOptions) = {
+    responsive: true
+  };
+  chartLegend = false;
+  chartType = 'line';
 
   ngOnInit() {
     if (this.configurationService.authentication.requireAuthenticationForRead) {

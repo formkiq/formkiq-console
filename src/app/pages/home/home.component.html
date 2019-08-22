@@ -1,3 +1,12 @@
 <div class="mt-4">
-  <h4>FANCY CHART GOES HERE</h4>
+  <h4>Documents Added</h4>
+</div>
+<div class="row">
+  <canvas baseChart
+    [datasets]="chartData"
+    [labels]="chartLabels"
+    [options]="chartOptions"
+    [legend]="chartLegend"
+    [chartType]="chartType">
+  </canvas>
 </div>
