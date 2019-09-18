@@ -24,9 +24,9 @@ export class HomeComponent implements OnInit {
 
   results$: Observable<any>;
   chartData = [
-    {data: [0, 0, 0, 0, 0, 0, 0], label: ''},
+    {data: [], label: 'Count'},
   ];
-  chartLabels: Label[] = ['', '', '', '', '', '', ''];
+  chartLabels: Label[] = [];
   chartOptions: (ChartOptions) = {
     responsive: true
   };
@@ -40,6 +40,7 @@ export class HomeComponent implements OnInit {
       }
     }
     this.loadChart('documentscount', '2019-08-01T00:00:00', '2019-08-31T00:00:00');
+    // this.loadChart('documentscount');
   }
 
   buildMetricsDate(year, month, day, hours: number = 0, minutes: number = 0, seconds: number = 0) {
@@ -98,6 +99,7 @@ export class HomeComponent implements OnInit {
       timeseries = '3D';
       // TODO: more timeseries and/or better formula
     }
+    /*
     console.log(dateDiff);
     console.log(since);
     console.log(sinceDate);
@@ -105,6 +107,7 @@ export class HomeComponent implements OnInit {
     console.log(untilDate);
     console.log(tz);
     console.log(timeseries);
+    */
     const query = {
       type,
       since,
@@ -114,7 +117,16 @@ export class HomeComponent implements OnInit {
     };
     this.results$ = this.apiService.postMetrics(JSON.stringify(query), this);
     this.results$.subscribe((results) => {
-      console.log(results);
+      const counts = [];
+      const dates = [];
+      for (const metric of results.metrics) {
+        counts.push(metric.count);
+        dates.push(metric.date);
+      }
+      this.chartData = [
+        {data: counts, label: 'Count'}
+      ];
+      this.chartLabels = dates;
     });
   }
 
