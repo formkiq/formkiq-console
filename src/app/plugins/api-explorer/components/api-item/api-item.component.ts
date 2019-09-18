@@ -21,7 +21,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private authenticationService: AuthenticationService,
-    private navigationService: NavigationService,
+    public navigationService: NavigationService,
     private notificationService: NotificationService
   ) { }
 

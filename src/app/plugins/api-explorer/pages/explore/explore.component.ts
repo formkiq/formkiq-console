@@ -19,7 +19,7 @@ export class ExploreComponent implements OnInit {
     private apiService: ApiService,
     private authenticationService: AuthenticationService,
     private configurationService: ConfigurationService,
-    private navigationService: NavigationService,
+    public navigationService: NavigationService,
     private notificationService: NotificationService
     ) { }
 

@@ -9,7 +9,10 @@ export class PagingComponent {
 
   constructor() { }
 
-  @Input() results: {};
+  @Input() results: {
+    next: null,
+    previous: null
+  };
   @Output() previousEmitter: EventEmitter<any> = new EventEmitter();
   @Output() nextEmitter: EventEmitter<any> = new EventEmitter();
 

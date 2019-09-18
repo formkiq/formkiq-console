@@ -15,7 +15,7 @@ import { NotificationInfo } from '../../services/notification.schema';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
 
-  private requireAuthenticationForRead: boolean = this.configurationService.authentication.requireAuthenticationForRead;
+  public requireAuthenticationForRead: boolean = this.configurationService.authentication.requireAuthenticationForRead;
 
   @Input() isSidebarToggled: boolean;
   @Output() toggleSidebarEmitter: EventEmitter<any> = new EventEmitter();
@@ -26,13 +26,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private authenticationChangeSubscription: Subscription = null;
 
   private notificationSubscription: Subscription = null;
-  private notificationInfo: NotificationInfo = null;
+  public notificationInfo: NotificationInfo = null;
 
   private loginResponseSubscription: Subscription = null;
   private loginResponse: LoginResponse = null;
   private logoutResponseSubscription: Subscription = null;
   private forgotPasswordResponseSubscription: Subscription = null;
-  private registrationResponseSubscription: Subscription = null;
+  public registrationResponseSubscription: Subscription = null;
 
   showHamburgerButton = true;
   showDropdown = false;
@@ -41,7 +41,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   currentRouteUrl = null;
 
   constructor(
-    private authenticationService: AuthenticationService,
+    public authenticationService: AuthenticationService,
     private configurationService: ConfigurationService,
     private notificationService: NotificationService,
     private router: Router,

@@ -36,7 +36,7 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   constructor(
     private formBuilder: FormBuilder,
     private apiService: ApiService,
-    private navigationService: NavigationService,
+    public navigationService: NavigationService,
     private router: Router
     ) {}
 

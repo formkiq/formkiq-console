@@ -8,9 +8,6 @@
       {{ apiItem.path }}
     </h6>
   </div>
-  <div *ngIf="errorMessage">
-    {{ errorMessage }}
-  </div>
   <div class="col-12" [ngbCollapse]="isCollapsed">
     <div class="row mx-0 mt-3">
       <div class="col-12 col-sm-4">
@@ -169,7 +166,7 @@
             </button>
           </div>
         </div>
-        <ngb-tabset (tabChange)="onTabChange()">
+        <ngb-tabset>
           <ngb-tab title="HTTP">
             <ng-template ngbTabContent>
               <textarea id="http-textarea" class="form-control" readonly>{{ getHttpRequest() }}</textarea>
