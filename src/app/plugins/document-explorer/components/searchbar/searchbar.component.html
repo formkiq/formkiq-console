@@ -1,10 +1,8 @@
 
 <div class="row">
   <div class="col-12 my-2">
-    <h5 class="formkiq-font collapse-link"
-      (click)="navigationService.collapseSubmenuItem('documentSearchClicked', !isCollapsed);">
-      <fa *ngIf="isCollapsed" name="chevron-right"></fa>
-      <fa *ngIf="!isCollapsed" name="chevron-down"></fa>
+    <h5 class="formkiq-font collapse-link">
+      <fa name="chevron-down"></fa>
       Document Search
     </h5>
   </div>
@@ -46,7 +44,7 @@
             </label>
           </div>
           <div class="col-12 col-md-3 col-lg-2 pb-1">
-            <input type="text" class="form-control" formControlName="tagKey" placeholder="key name" [ngClass]="{ 'is-invalid': submitted && f.tagKey.errors }" />
+            <input type="text" class="form-control" formControlName="tagKey" placeholder="key name" [ngClass]="{ 'is-invalid': f.tagKey.errors }" />
           </div>
           <div class="col-12 col-md-3 col-lg-2 pb-1">
             <select class="form-control mr-sm-2" formControlName="searchType">

@@ -24,7 +24,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   get f() { return this.form.controls; }
 
   private registrationResponseSubscription: Subscription = null;
-  private registrationResponse: RegistrationResponse = null;
+  public registrationResponse: RegistrationResponse = null;
   @Output() cancelDropdownEmitter: EventEmitter<any> = new EventEmitter();
 
   ngOnInit() {
