@@ -163,6 +163,24 @@
           /documents/<span class="api-method-parameter">DOCU_ID</span>/upload
         </a>
       </li>
+      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item-header pt-1 pr-1" [ngClass]="{ 'active': currentUrl == '/api/#metrics' }">
+        <a #headerSearch class="nav-link"
+          [routerLink]="['/api']"
+          fragment="metrics"
+          (click)="emitSidebarItemClick('apiHeaderMetricsClicked')">
+          METRICS
+        </a>
+      </li>
+      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#POST-metrics' }">
+        <a class="nav-link"
+          [routerLink]="['/api']"
+          fragment="POST-metrics"
+          (click)="emitSidebarItemClick('apiPostMetricsClicked')">
+          POST
+          <br />
+          /metrics
+        </a>
+      </li>
       <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item-header pt-1 pr-1" [ngClass]="{ 'active': currentUrl == '/api/#search' }">
         <a #headerSearch class="nav-link"
           [routerLink]="['/api']"
