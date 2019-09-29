@@ -22,6 +22,7 @@ import { ExploreComponent as DocsExploreComponent } from './plugins/document-exp
 import { AddComponent as DocsAddComponent } from './plugins/document-explorer/pages/add/add.component';
 import { TagsComponent as DocsTagsComponent } from './plugins/document-explorer/pages/tags/tags.component';
 import { SearchbarComponent as DocsSearchbarComponent } from './plugins/document-explorer/components/searchbar/searchbar.component';
+import { ShareModalComponent as DocsShareModalComponent } from './plugins/document-explorer/components/share-modal/share-modal.component';
 import { ApiService } from './services/api.service';
 import { TokenInterceptor } from './utils/token.interceptor';
 import { PagingComponent } from './plugins/document-explorer/components/paging/paging.component';
@@ -44,6 +45,7 @@ import { PagingComponent } from './plugins/document-explorer/components/paging/p
     DocsAddComponent,
     DocsTagsComponent,
     DocsSearchbarComponent,
+    DocsShareModalComponent,
     PagingComponent
   ],
   imports: [

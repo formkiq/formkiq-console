@@ -29,7 +29,11 @@
             <td>{{result.contentType}}&nbsp;</td>
             <td>{{result.userId}}&nbsp;</td>
             <td>{{result.inserteddate}}&nbsp;</td>
-            <td><input type="button" value="Tags..." (click)="viewDocumentTags(result.documentId)" /></td>
+            <td>
+              <input type="button" class="mb-1" value="Share..." (click)="shareDocument(result.documentId, shareModal)" />
+              <br />
+              <input type="button" value="Tags..." (click)="viewDocumentTags(result.documentId)" />
+            </td>
           </tr>
         </tbody>
       </table>
@@ -49,5 +53,12 @@
 
     <ng-content></ng-content>
   </div>
+</ng-template>
+<ng-template #shareModal let-modal>
+  <app-share-modal
+    #shareModalComponent
+    [shareUrl]="shareUrl"
+    (closeEmitter)="closeModal($event)"
+  ></app-share-modal>
 </ng-template>
 
