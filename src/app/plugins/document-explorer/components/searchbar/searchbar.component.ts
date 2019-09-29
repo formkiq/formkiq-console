@@ -113,18 +113,13 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   }
 
   runTagSearch(searchQuery = null, previousToken = '', nextToken = '') {
-    console.log(searchQuery);
     let queryString = '';
     if (searchQuery) {
-      // TODO: ensure search form matches search query
-      // delete searchQuery.query.previous;
-      // delete searchQuery.query.next;
       if (previousToken) {
         queryString = '?previous=' + previousToken;
       } else if (nextToken) {
         queryString = '?next=' + nextToken;
       }
-      console.log(searchQuery);
     } else {
       if (this.tagSearchForm.invalid) {
         return;
