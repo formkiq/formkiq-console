@@ -12,7 +12,4 @@ export class ConfigurationService {
   apigateway = ApplicationConfigJson.apigateway;
   authentication = AuthenticationConfigJson;
   cognito = ApplicationConfigJson.cognito;
-
-  editMode = false;
-
 }
