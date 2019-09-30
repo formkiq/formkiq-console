@@ -1,9 +1,11 @@
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { of, Observable, ObservableInput } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { ChartsModule } from 'ng2-charts';
 import { AppComponent } from './app.component';
@@ -24,8 +26,32 @@ import { TagsComponent as DocsTagsComponent } from './plugins/document-explorer/
 import { SearchbarComponent as DocsSearchbarComponent } from './plugins/document-explorer/components/searchbar/searchbar.component';
 import { ShareModalComponent as DocsShareModalComponent } from './plugins/document-explorer/components/share-modal/share-modal.component';
 import { ApiService } from './services/api.service';
+import { ConfigurationService } from './services/configuration.service';
 import { TokenInterceptor } from './utils/token.interceptor';
 import { PagingComponent } from './plugins/document-explorer/components/paging/paging.component';
+
+export function load(http: HttpClient, config: ConfigurationService): (() => Promise<boolean>) {
+  return (): Promise<boolean> => {
+    return new Promise<boolean>((resolve: (a: boolean) => void): void => {
+       http.get('./config.json')
+         .pipe(
+           map((x: ConfigurationService) => {
+             config.apigateway = x.apigateway;
+             config.cognito = x.cognito;
+             resolve(true);
+           }),
+           catchError((x: { status: number }, caught: Observable<void>): ObservableInput<{}> => {
+             if (x.status !== 404) {
+               resolve(false);
+             }
+             // TODO: set manual config
+             // resolve(true);
+             return of({});
+           })
+         ).subscribe();
+    });
+  };
+}
 
 @NgModule({
   declarations: [
@@ -59,11 +85,22 @@ import { PagingComponent } from './plugins/document-explorer/components/paging/p
     ChartsModule
   ],
   providers: [
-    ApiService, {
+    {
+      provide: APP_INITIALIZER,
+      deps: [
+        HttpClient,
+        ConfigurationService
+      ],
+      useFactory: load,
+      multi: true
+    },
+    {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
-    }
+    },
+    ApiService,
+    ConfigurationService
   ],
   bootstrap: [AppComponent]
 })
