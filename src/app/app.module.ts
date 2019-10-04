@@ -84,8 +84,7 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
     AngularFontAwesomeModule,
     ChartsModule
   ],
-  providers: [
-    {
+  providers: [{
       provide: APP_INITIALIZER,
       deps: [
         HttpBackend,
@@ -93,8 +92,7 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
       ],
       useFactory: load,
       multi: true
-    },
-    {
+    }, {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
