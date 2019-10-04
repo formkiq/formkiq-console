@@ -202,18 +202,20 @@ export class HomeComponent implements OnInit {
     this.results$.subscribe((results) => {
       const counts = [];
       const dates = [];
-      for (const metric of results.metrics) {
-        counts.push(metric.count);
-        const metricDate = new Date(metric.date);
-        const options: Intl.DateTimeFormatOptions = {
-          day: 'numeric', month: 'numeric', year: 'numeric'
-        };
-        if (dateDiff <= 168) {
-          options.hour = '2-digit';
-          options.minute = '2-digit';
+      if (results.metrics) {
+        for (const metric of results.metrics) {
+          counts.push(metric.count);
+          const metricDate = new Date(metric.date);
+          const options: Intl.DateTimeFormatOptions = {
+            day: 'numeric', month: 'numeric', year: 'numeric'
+          };
+          if (dateDiff <= 168) {
+            options.hour = '2-digit';
+            options.minute = '2-digit';
+          }
+          const metricDateLabel: string = metricDate.toLocaleDateString('en-US', options);
+          dates.push(metricDateLabel);
         }
-        const metricDateLabel: string = metricDate.toLocaleDateString('en-US', options);
-        dates.push(metricDateLabel);
       }
       this.chartData = [
         {data: counts, label: 'Count'}

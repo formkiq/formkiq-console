@@ -2,7 +2,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpBackend } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { of, Observable, ObservableInput } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -30,25 +30,25 @@ import { ConfigurationService } from './services/configuration.service';
 import { TokenInterceptor } from './utils/token.interceptor';
 import { PagingComponent } from './plugins/document-explorer/components/paging/paging.component';
 
-export function load(http: HttpClient, config: ConfigurationService): (() => Promise<boolean>) {
+export function load(httpBackend: HttpBackend, config: ConfigurationService): (() => Promise<boolean>) {
   return (): Promise<boolean> => {
     return new Promise<boolean>((resolve: (a: boolean) => void): void => {
-       http.get('./config.json')
-         .pipe(
-           map((x: ConfigurationService) => {
-             config.apigateway = x.apigateway;
-             config.cognito = x.cognito;
-             resolve(true);
-           }),
-           catchError((x: { status: number }, caught: Observable<void>): ObservableInput<{}> => {
-             if (x.status !== 404) {
-               resolve(false);
-             }
-             // TODO: set manual config
-             // resolve(true);
-             return of({});
-           })
-         ).subscribe();
+      const http = new HttpClient(httpBackend);
+      http.get('./config.json')
+        .pipe(
+          map((x: ConfigurationService) => {
+            config.apigateway = x.apigateway;
+            config.cognito = x.cognito;
+            resolve(true);
+          }),
+          catchError((x: { status: number }, caught: Observable<void>): ObservableInput<{}> => {
+            if (x.status !== 404) {
+              resolve(false);
+            }
+            resolve(true);
+            return of({});
+          })
+        ).subscribe();
     });
   };
 }
@@ -88,7 +88,7 @@ export function load(http: HttpClient, config: ConfigurationService): (() => Pro
     {
       provide: APP_INITIALIZER,
       deps: [
-        HttpClient,
+        HttpBackend,
         ConfigurationService
       ],
       useFactory: load,
