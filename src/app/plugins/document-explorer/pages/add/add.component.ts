@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../../../services/api.service';
-import { HttpErrorCallback } from '../../../../services/api.service';
 import { Observable } from 'rxjs';
 import * as Dropzone from '../../../../../assets/dist/dropzone/dropzone';
 
