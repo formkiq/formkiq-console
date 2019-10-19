@@ -90,6 +90,21 @@ label {
   align-items: flex-start;
 }
 
+footer {
+  position: absolute;
+  bottom: 0;
+  min-width: 190px;
+  max-width: 190px;
+  margin-left: 1em;
+  margin-bottom: 0.5em;
+  color: $white;
+  font-size: 75%;
+}
+
+span.version {
+  color: $light-steel-blue;
+}
+
 @media screen and (max-width: 480px) {
 
   #sidebar {

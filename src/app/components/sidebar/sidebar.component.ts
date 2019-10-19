@@ -24,6 +24,8 @@ export class SidebarComponent implements OnInit {
   currentUrl = '/';
   elements: ElementRef<any>[];
 
+  version = '';
+
   constructor(
     private authenticationService: AuthenticationService,
     private configurationService: ConfigurationService,
@@ -39,6 +41,7 @@ export class SidebarComponent implements OnInit {
         this.currentUrl = value.url;
       }
     );
+    this.version = this.configurationService.version;
   }
 
   emitSidebarItemClick(source: string) {

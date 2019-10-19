@@ -1,4 +1,5 @@
 {
+  "version": "0.dev",
   "cognito": {
     "userPoolId": "us-east-1_fC9EAO1D0",
     "region": "us-east-1",
