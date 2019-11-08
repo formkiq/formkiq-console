@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { AuthenticationService } from '../../services/authentication.service';
 
@@ -11,16 +11,27 @@ import { AuthenticationService } from '../../services/authentication.service';
 export class AuthenticateComponent implements OnInit, OnDestroy {
 
   currentAuthenticationForm = 'login';
+  private email: string;
   private forgotPasswordResponseSubscription: Subscription = null;
   private registrationResponseSubscription: Subscription = null;
   // private authenticationPageLoad$ = this.authenticationService.authenticationPageLoadSource.asObservable();
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService) { }
 
 
+
   ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      if (params.action) {
+        this.currentAuthenticationForm = params.action;
+      }
+      if (params.email) {
+        this.email = params.email;
+      }
+    });
     if (this.authenticationService.loggedInUser != null) {
       this.router.navigate(['/']);
     }

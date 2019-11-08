@@ -40,14 +40,24 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
     this.loginResponseSubscription = this.authenticationService.loginResponse$.subscribe(
       (value: LoginResponse) => {
-        this.route.queryParams.subscribe(params => {
-          if (params.rurl) {
-            this.redirectPath += params.rurl;
-          }
-          this.loginResponse = value;
-          this.notificationService.createNotificationFromAuthenticationResponse(value);
-          this.router.navigate([this.redirectPath]);
-        });
+        if (value.forcePasswordChange) {
+          this.redirectPath += '/authenticate';
+          this.router.navigate([this.redirectPath], { queryParams:
+            {
+              action: 'changePassword',
+              email: value.email
+            }
+          });
+        } else {
+          this.route.queryParams.subscribe(params => {
+            if (params.rurl) {
+              this.redirectPath += params.rurl;
+            }
+            this.loginResponse = value;
+            this.notificationService.createNotificationFromAuthenticationResponse(value);
+            this.router.navigate([this.redirectPath]);
+          });
+        }
     });
   }
 

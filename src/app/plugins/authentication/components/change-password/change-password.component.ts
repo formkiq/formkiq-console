@@ -1,0 +1,101 @@
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AuthenticationService } from '../../services/authentication.service';
+import { MustMatch } from '../../helpers/must-match.validator';
+import { ChangePasswordResponse } from '../../services/authentication.schema';
+import { NotificationService } from '../../../../services/notification.service';
+
+@Component({
+  selector: 'app-change-password',
+  templateUrl: './change-password.component.html',
+  styleUrls: ['./change-password.component.scss']
+})
+export class ChangePasswordComponent implements OnInit, OnDestroy {
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private authenticationService: AuthenticationService,
+    private notificationService: NotificationService
+    ) { }
+
+  public form: FormGroup;
+  formSubmitted = false;
+  get f() { return this.form.controls; }
+
+  @Input() email: string;
+  private changePasswordResponseSubscription: Subscription = null;
+  private changePasswordResponse: ChangePasswordResponse = null;
+  @Output() cancelDropdownEmitter: EventEmitter<any> = new EventEmitter();
+
+  ngOnInit() {
+    this.form = this.formBuilder.group({
+      oldPassword: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      passwordConfirmation: ['', Validators.required]
+    }, {
+      validator: MustMatch('password', 'passwordConfirmation')
+    });
+    this.changePasswordResponseSubscription = this.authenticationService.changePasswordResponse$.subscribe(
+      (value: ChangePasswordResponse) => {
+        this.changePasswordResponse = value;
+        this.notificationService.createNotificationFromAuthenticationResponse(value);
+        this.router.navigate(['/authenticate'], { queryParams:
+          {
+            action: 'login',
+          }
+        });
+    });
+
+  }
+
+  ngOnDestroy() {
+    this.changePasswordResponseSubscription.unsubscribe();
+  }
+
+  checkIfOldPasswordStillInvalid(oldPasswordTooltip) {
+    if (!this.f.oldPassword.errors) {
+      oldPasswordTooltip.close();
+    }
+  }
+
+  checkIfPasswordStillInvalid(passwordTooltip) {
+    if (!this.f.password.errors) {
+      passwordTooltip.close();
+    }
+  }
+
+  checkIfPasswordConfirmationStillInvalid(passwordConfirmationTooltip) {
+    if (!this.f.passwordConfirmation.errors) {
+      passwordConfirmationTooltip.close();
+    }
+  }
+
+  changePassword(oldPasswordTooltip, passwordTooltip, passwordConfirmationTooltip) {
+    this.formSubmitted = true;
+    oldPasswordTooltip.close();
+    passwordTooltip.close();
+    passwordConfirmationTooltip.close();
+    if (!this.f.oldPassword.errors && !this.f.password.errors && !this.f.passwordConfirmation.errors) {
+      this.authenticationService.changePassword(this.email, this.form.get('oldPassword').value, this.form.get('password').value);
+    } else {
+      if (this.f.oldPassword.errors) {
+        oldPasswordTooltip.open();
+      }
+      if (this.f.password.errors) {
+        passwordTooltip.open();
+      }
+      if (this.f.passwordConfirmation.errors) {
+        passwordConfirmationTooltip.open();
+      }
+    }
+  }
+
+  cancel() {
+    this.cancelDropdownEmitter.emit();
+  }
+
+}
