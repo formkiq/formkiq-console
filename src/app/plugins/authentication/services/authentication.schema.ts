@@ -21,10 +21,22 @@ export class ForgotPasswordResponse implements AuthenticationResponse {
 
 }
 
-export class LoginResponse implements AuthenticationResponse {
+export class ChangePasswordResponse implements AuthenticationResponse {
   success: boolean;
   message: string;
   user: any;
+
+  constructor() {}
+
+}
+
+export class LoginResponse implements AuthenticationResponse {
+  success: boolean;
+  message: string;
+  email: string;
+  user: any;
+  forcePasswordChange: boolean;
+  requiredAttributes: any;
 
   constructor() {}
 

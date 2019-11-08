@@ -13,6 +13,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import * as ExpiredStorage from 'expired-storage';
 import { ConfigurationService } from '../../../services/configuration.service';
 import {
+  ChangePasswordResponse,
   ConfirmationResponse,
   ForgotPasswordResponse,
   LoginResponse,
@@ -42,6 +43,7 @@ export class CognitoAuthenticationService {
   private registrationResponseSource = new Subject<any>();
   private confirmationResponseSource = new Subject<any>();
   private forgotPasswordResponseSource = new Subject<any>();
+  private changePasswordResponseSource = new Subject<any>();
 
   constructor(private configurationService: ConfigurationService) {
       this.expiredStorage = new ExpiredStorage();
@@ -168,6 +170,8 @@ export class CognitoAuthenticationService {
         onSuccess: (result) => {
           response.success = true;
           response.message = 'You have signed in successfully.';
+          response.email = email;
+          response.forcePasswordChange = false;
           localStorage.setItem('currentUser', JSON.stringify(cognitoUser));
           this.currentUserSubject.next(cognitoUser);
           const idToken = result.getIdToken().getJwtToken();
@@ -186,6 +190,25 @@ export class CognitoAuthenticationService {
         onFailure: (err) => {
           response.success = false;
           response.message = err.message;
+          // response.email = email;
+          response.forcePasswordChange = false;
+          this.currentUserSubject.next(null);
+          localStorage.removeItem('currentUser');
+          this.idTokenSubject.next(null);
+          this.expiredStorage.removeItem('idToken');
+          this.accessTokenSubject.next(null);
+          this.expiredStorage.removeItem('accessToken');
+          this.refreshTokenSubject.next(null);
+          this.expiredStorage.removeItem('refreshToken');
+          this.loginResponseSource.next(response);
+          this.authenticationChangeSource.next();
+          return false;
+        },
+        newPasswordRequired: (userAttributes, requiredAttributes) => {
+          response.success = false;
+          response.message = 'You must change your password.';
+          response.email = email;
+          response.forcePasswordChange = true;
           this.currentUserSubject.next(null);
           localStorage.removeItem('currentUser');
           this.idTokenSubject.next(null);
@@ -300,6 +323,58 @@ export class CognitoAuthenticationService {
           this.forgotPasswordResponseSource.next(response);
           return false;
         },
+    });
+  }
+
+  changePassword(email: string, oldPassword: string, newPassword: string) {
+    const userPool = this.getUserPool();
+    const authenticationDetails = new AuthenticationDetails({
+      Username: email,
+      Password: oldPassword
+    });
+    const cognitoUser = new CognitoUser({
+      Username: email,
+      Pool: userPool
+    });
+    cognitoUser.authenticateUser(authenticationDetails, {
+      onSuccess: (result) => {
+        return false;
+      },
+      onFailure: (err) => {
+        const response = new LoginResponse();
+        response.success = false;
+        response.message = 'Your current password is incorrect.';
+        // response.email = email;
+        response.forcePasswordChange = false;
+        this.currentUserSubject.next(null);
+        localStorage.removeItem('currentUser');
+        this.idTokenSubject.next(null);
+        this.expiredStorage.removeItem('idToken');
+        this.accessTokenSubject.next(null);
+        this.expiredStorage.removeItem('accessToken');
+        this.refreshTokenSubject.next(null);
+        this.expiredStorage.removeItem('refreshToken');
+        this.changePasswordResponseSource.next(response);
+        this.authenticationChangeSource.next();
+        return false;
+      },
+      newPasswordRequired: (userAttributes, requiredAttributes) => {
+        const response = new ChangePasswordResponse();
+        cognitoUser.completeNewPasswordChallenge(newPassword, {}, {
+          onSuccess: (result) => {
+            response.success = true;
+            response.message = 'Your password has been changed. Please login.';
+            this.changePasswordResponseSource.next(response);
+            return true;
+          },
+          onFailure: (err) => {
+            response.success = false;
+            response.message = err.message;
+            this.changePasswordResponseSource.next(response);
+            return false;
+          },
+        });
+      },
     });
   }
 
