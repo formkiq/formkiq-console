@@ -18,7 +18,8 @@ import {
   ForgotPasswordResponse,
   LoginResponse,
   LogoutResponse,
-  RegistrationResponse
+  RegistrationResponse,
+  ResetPasswordResponse
 } from '../../authentication/services/authentication.schema';
 
 @Injectable({
@@ -44,6 +45,7 @@ export class CognitoAuthenticationService {
   private confirmationResponseSource = new Subject<any>();
   private forgotPasswordResponseSource = new Subject<any>();
   private changePasswordResponseSource = new Subject<any>();
+  private resetPasswordResponseSource = new Subject<any>();
 
   constructor(private configurationService: ConfigurationService) {
       this.expiredStorage = new ExpiredStorage();
@@ -191,18 +193,48 @@ export class CognitoAuthenticationService {
           response.success = false;
           response.message = err.message;
           // response.email = email;
-          response.forcePasswordChange = false;
-          this.currentUserSubject.next(null);
-          localStorage.removeItem('currentUser');
-          this.idTokenSubject.next(null);
-          this.expiredStorage.removeItem('idToken');
-          this.accessTokenSubject.next(null);
-          this.expiredStorage.removeItem('accessToken');
-          this.refreshTokenSubject.next(null);
-          this.expiredStorage.removeItem('refreshToken');
-          this.loginResponseSource.next(response);
-          this.authenticationChangeSource.next();
-          return false;
+          if (err.code === 'PasswordResetRequiredException') {
+            response.message += '. Instructions to reset your password will be emailed to you.';
+            response.forcePasswordChange = false;
+            this.currentUserSubject.next(null);
+            localStorage.removeItem('currentUser');
+            this.idTokenSubject.next(null);
+            this.expiredStorage.removeItem('idToken');
+            this.accessTokenSubject.next(null);
+            this.expiredStorage.removeItem('accessToken');
+            this.refreshTokenSubject.next(null);
+            this.expiredStorage.removeItem('refreshToken');
+            cognitoUser.forgotPassword({
+              onSuccess: (result) => {
+                response.success = true;
+                response.message = 'Your password needs to be reset; instructions will be emailed to you.';
+                this.loginResponseSource.next(response);
+                this.authenticationChangeSource.next();
+                return true;
+              },
+              onFailure: (forgotErr) => {
+                response.success = false;
+                response.message = forgotErr.message;
+                this.loginResponseSource.next(response);
+                this.authenticationChangeSource.next();
+                return false;
+              },
+            });
+            return false;
+          } else {
+            response.forcePasswordChange = false;
+            this.currentUserSubject.next(null);
+            localStorage.removeItem('currentUser');
+            this.idTokenSubject.next(null);
+            this.expiredStorage.removeItem('idToken');
+            this.accessTokenSubject.next(null);
+            this.expiredStorage.removeItem('accessToken');
+            this.refreshTokenSubject.next(null);
+            this.expiredStorage.removeItem('refreshToken');
+            this.loginResponseSource.next(response);
+            this.authenticationChangeSource.next();
+            return false;
+          }
         },
         newPasswordRequired: (userAttributes, requiredAttributes) => {
           response.success = false;
@@ -375,6 +407,60 @@ export class CognitoAuthenticationService {
           },
         });
       },
+    });
+  }
+
+  confirmPassword(username: string, verificationCode: string, password: string) {
+    const userPool = this.getUserPool();
+    const cognitoUser = new CognitoUser({
+      Username: username,
+      Pool: userPool
+    });
+    const response = new ChangePasswordResponse();
+    cognitoUser.confirmPassword(verificationCode, password, {
+      onSuccess: () => {
+        response.success = true;
+        response.message = 'Your password has been changed. Please login.';
+        this.changePasswordResponseSource.next(response);
+        return true;
+      },
+      onFailure: (err: any) => {
+        response.success = false;
+        if (err.code === 'ExpiredCodeException') {
+          response.message = 'Your code has expired. Please request a new code to be emailed to you.';
+          response.requestNewVerificationCode = true;
+        } else if (err.code === 'InvalidPasswordException') {
+          response.message = err.message;
+          response.retryChangeForm = true;
+        } else {
+          response.message = err.message;
+        }
+        this.changePasswordResponseSource.next(response);
+        return false;
+      }
+    });
+  }
+
+  requestPasswordResetVerificationCodeResend(username: string) {
+    const userPool = this.getUserPool();
+    const cognitoUser = new CognitoUser({
+      Username: username,
+      Pool: userPool
+    });
+    const response = new ForgotPasswordResponse();
+    cognitoUser.forgotPassword({
+      onSuccess: (data: any) => {
+        response.success = true;
+        response.message = 'A new verification code has been sent to you.';
+        this.changePasswordResponseSource.next(response);
+        return true;
+      },
+      onFailure: (err: Error) => {
+        response.success = false;
+        response.message = err.message;
+        this.changePasswordResponseSource.next(response);
+        return false;
+      }
     });
   }
 

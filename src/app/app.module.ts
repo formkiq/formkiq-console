@@ -18,6 +18,7 @@ import { RegisterComponent } from './plugins/authentication/components/register/
 import { ForgotPasswordComponent } from './plugins/authentication/components/forgot-password/forgot-password.component';
 import { ChangePasswordComponent } from './plugins/authentication/components/change-password/change-password.component';
 import { ConfirmUserComponent } from './plugins/authentication/pages/confirm-user/confirm-user.component';
+import { ResetPasswordComponent } from './plugins/authentication/pages/reset-password/reset-password.component';
 import { AuthenticateComponent } from './plugins/authentication/pages/authenticate/authenticate.component';
 import { ExploreComponent as ApiExploreComponent } from './plugins/api-explorer/pages/explore/explore.component';
 import { ApiItemComponent } from './plugins/api-explorer/components/api-item/api-item.component';
@@ -66,6 +67,7 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
     ForgotPasswordComponent,
     ChangePasswordComponent,
     ConfirmUserComponent,
+    ResetPasswordComponent,
     AuthenticateComponent,
     ApiExploreComponent,
     ApiItemComponent,

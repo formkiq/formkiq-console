@@ -6,7 +6,7 @@
           <app-login *ngIf="currentAuthenticationForm == 'login'"></app-login>
           <app-register *ngIf="currentAuthenticationForm == 'register'" (cancelDropdownEmitter)="revertToLogin()"></app-register>
           <app-forgot-password *ngIf="currentAuthenticationForm == 'forgotPassword'" (cancelDropdownEmitter)="revertToLogin()"></app-forgot-password>
-          <app-change-password [email]="email" *ngIf="currentAuthenticationForm == 'changePassword'" (cancelDropdownEmitter)="revertToLogin()"></app-change-password>
+          <app-change-password [email]="email" [verificationCode]="verificationCode" *ngIf="currentAuthenticationForm == 'changePassword'" (cancelDropdownEmitter)="revertToLogin()"></app-change-password>
         </div>
       </div>
       <div class="row formkiq-light-blue-border top-border">

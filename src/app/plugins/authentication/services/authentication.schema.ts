@@ -12,6 +12,15 @@ export class ConfirmationResponse implements AuthenticationResponse {
 
 }
 
+export class ResetPasswordResponse implements AuthenticationResponse {
+  success: boolean;
+  message: string;
+  user: any;
+
+  constructor() {}
+
+}
+
 export class ForgotPasswordResponse implements AuthenticationResponse {
   success: boolean;
   message: string;
@@ -25,6 +34,8 @@ export class ChangePasswordResponse implements AuthenticationResponse {
   success: boolean;
   message: string;
   user: any;
+  requestNewVerificationCode: boolean;
+  retryChangeForm: boolean;
 
   constructor() {}
 
