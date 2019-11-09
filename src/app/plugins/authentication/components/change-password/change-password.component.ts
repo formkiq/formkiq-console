@@ -27,6 +27,8 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
   get f() { return this.form.controls; }
 
   @Input() email: string;
+  @Input() verificationCode: string;
+  showVerificationCodeResendButton = false;
   private changePasswordResponseSubscription: Subscription = null;
   private changePasswordResponse: ChangePasswordResponse = null;
   @Output() cancelDropdownEmitter: EventEmitter<any> = new EventEmitter();
@@ -39,15 +41,26 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     }, {
       validator: MustMatch('password', 'passwordConfirmation')
     });
+    if (this.verificationCode) {
+      this.f.oldPassword.setValue('PASSWORD');
+    }
     this.changePasswordResponseSubscription = this.authenticationService.changePasswordResponse$.subscribe(
       (value: ChangePasswordResponse) => {
         this.changePasswordResponse = value;
+        if (this.changePasswordResponse.requestNewVerificationCode) {
+          this.showVerificationCodeResendButton = true;
+        }
         this.notificationService.createNotificationFromAuthenticationResponse(value);
-        this.router.navigate(['/authenticate'], { queryParams:
-          {
-            action: 'login',
-          }
-        });
+        if (this.changePasswordResponse.retryChangeForm) {
+          this.f.password.setValue('');
+          this.f.passwordConfirmation.setValue('');
+        } else if (!this.changePasswordResponse.requestNewVerificationCode) {
+          this.router.navigate(['/authenticate'], { queryParams:
+            {
+              action: 'login',
+            }
+          });
+        }
     });
 
   }
@@ -80,7 +93,11 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     passwordTooltip.close();
     passwordConfirmationTooltip.close();
     if (!this.f.oldPassword.errors && !this.f.password.errors && !this.f.passwordConfirmation.errors) {
-      this.authenticationService.changePassword(this.email, this.form.get('oldPassword').value, this.form.get('password').value);
+      if (this.verificationCode) {
+        this.authenticationService.confirmPassword(this.email, this.verificationCode, this.form.get('password').value);
+      } else {
+        this.authenticationService.changePassword(this.email, this.form.get('oldPassword').value, this.form.get('password').value);
+      }
     } else {
       if (this.f.oldPassword.errors) {
         oldPasswordTooltip.open();
@@ -96,6 +113,10 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 
   cancel() {
     this.cancelDropdownEmitter.emit();
+  }
+
+  requestPasswordResetVerificationCodeResend() {
+    this.authenticationService.requestPasswordResetVerificationCodeResend(this.email);
   }
 
 }

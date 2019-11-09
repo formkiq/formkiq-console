@@ -22,6 +22,7 @@ export class AuthenticationService {
   public confirmationResponse$ = this.authenticationProviderService.confirmationResponseSource.asObservable();
   public forgotPasswordResponse$ = this.authenticationProviderService.forgotPasswordResponseSource.asObservable();
   public changePasswordResponse$ = this.authenticationProviderService.changePasswordResponseSource.asObservable();
+  public resetPasswordResponse$ = this.authenticationProviderService.resetPasswordResponseSource.asObservable();
 
   public get loggedInUser(): any {
     return this.authenticationProviderService.currentUserValue;
@@ -75,6 +76,14 @@ export class AuthenticationService {
 
   changePassword(email: string, oldPassword: string, newPassword: string) {
     this.authenticationProviderService.changePassword(email, oldPassword, newPassword);
+  }
+
+  confirmPassword(username: string, verificationCode: string, password: string) {
+    this.authenticationProviderService.confirmPassword(username, verificationCode, password);
+  }
+
+  requestPasswordResetVerificationCodeResend(username: string) {
+    this.authenticationProviderService.requestPasswordResetVerificationCodeResend(username);
   }
 
 }

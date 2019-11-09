@@ -12,6 +12,7 @@ export class AuthenticateComponent implements OnInit, OnDestroy {
 
   currentAuthenticationForm = 'login';
   private email: string;
+  private verificationCode: string;
   private forgotPasswordResponseSubscription: Subscription = null;
   private registrationResponseSubscription: Subscription = null;
   // private authenticationPageLoad$ = this.authenticationService.authenticationPageLoadSource.asObservable();
@@ -21,8 +22,6 @@ export class AuthenticateComponent implements OnInit, OnDestroy {
     private router: Router,
     private authenticationService: AuthenticationService) { }
 
-
-
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       if (params.action) {
@@ -30,6 +29,9 @@ export class AuthenticateComponent implements OnInit, OnDestroy {
       }
       if (params.email) {
         this.email = params.email;
+      }
+      if (params.verificationCode) {
+        this.verificationCode = params.verificationCode;
       }
     });
     if (this.authenticationService.loggedInUser != null) {
