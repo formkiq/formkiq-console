@@ -9,6 +9,10 @@ import {
     CognitoAccessToken,
     CognitoRefreshToken
   } from 'amazon-cognito-identity-js';
+import * as Aws from 'aws-sdk/global';
+import * as AwsService from 'aws-sdk/lib/service';
+import * as CognitoIdentity from 'aws-sdk/clients/cognitoidentity';
+import * as CognitoIdentityServiceProvider from 'aws-sdk/clients/cognitoidentityserviceprovider';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import * as ExpiredStorage from 'expired-storage';
 import { ConfigurationService } from '../../../services/configuration.service';
@@ -37,6 +41,8 @@ export class CognitoAuthenticationService {
   public accessToken: Observable<string>;
   private refreshTokenSubject: BehaviorSubject<string>;
   public refreshToken: Observable<string>;
+  private currentUserIsAdminSubject: BehaviorSubject<boolean>;
+  public currentUserIsAdmin: Observable<boolean>;
 
   private authenticationChangeSource = new Subject<any>();
   private loginResponseSource = new Subject<any>();
@@ -57,10 +63,12 @@ export class CognitoAuthenticationService {
       this.accessToken = this.accessTokenSubject.asObservable();
       this.refreshTokenSubject = new BehaviorSubject<string>(JSON.parse(this.expiredStorage.getItem('refreshToken')));
       this.refreshToken = this.refreshTokenSubject.asObservable();
+      this.currentUserIsAdminSubject = new BehaviorSubject<boolean>(JSON.parse(localStorage.getItem('currentUserIsAdmin')));
+      this.currentUserIsAdmin = this.currentUserIsAdminSubject.asObservable();
   }
 
   public get currentUserValue(): CognitoUser {
-      return this.currentUserSubject.value;
+    return this.currentUserSubject.value;
   }
 
   public get apiAccessToken(): string {
@@ -88,6 +96,25 @@ export class CognitoAuthenticationService {
 
   public get refreshTokenValue(): string {
     return this.refreshTokenSubject.value;
+  }
+
+  public get currentUserIsAdminValue(): boolean {
+    return this.currentUserIsAdminSubject.value;
+  }
+
+  buildCognitoCreds() {
+    const url = 'cognito-idp.' +
+      this.configurationService.cognito.region.toLowerCase() +
+      '.amazonaws.com/' + this.configurationService.cognito.userPoolId;
+    const logins: CognitoIdentity.LoginsMap = {};
+    logins[url] = this.idTokenValue;
+    const params = {
+      IdentityPoolId: this.configurationService.cognito.identityPoolId,
+      Logins: logins
+    };
+    const serviceConfigs: AwsService.ServiceConfigurationOptions = {};
+    const creds = new Aws.CognitoIdentityCredentials(params, serviceConfigs);
+    return creds;
   }
 
   getUserPool() {
@@ -185,7 +212,43 @@ export class CognitoAuthenticationService {
           const refreshToken = result.getRefreshToken().getToken();
           this.expiredStorage.setItem('refreshToken', JSON.stringify(refreshToken), 2590000);
           this.refreshTokenSubject.next(refreshToken);
+          this.currentUserIsAdminSubject.next(false);
           this.loginResponseSource.next(response);
+          Aws.config.update({
+            region: this.configurationService.cognito.region,
+            credentials: this.buildCognitoCreds()
+          });
+          const cognitoClient = new CognitoIdentityServiceProvider({ apiVersion: '2016-04-19', region: 'us-east-1' });
+          const params = {
+            UserPoolId: this.configurationService.cognito.userPoolId
+          };
+          cognitoClient.listUsers(params, (err, data) => {
+            if (err) {
+              console.log(err);
+              this.currentUserIsAdminSubject.next(false);
+              this.authenticationChangeSource.next();
+              return true;
+            } else {
+              console.log(data);
+              this.currentUserIsAdminSubject.next(true);
+              this.authenticationChangeSource.next();
+              return true;
+            }
+          });
+          /*
+          cognitoUser.getUserAttributes((uaErr, uaResult) => {
+            if (uaErr) {
+              console.log(uaErr);
+              this.authenticationChangeSource.next();
+              return true;
+            }
+            for (const attribute of uaResult) {
+              console.log('attribute ' + attribute.getName() + ' has value ' + attribute.getValue());
+            }
+            this.authenticationChangeSource.next();
+            return true;
+          });]
+          */
           this.authenticationChangeSource.next();
           return true;
         },
