@@ -18,22 +18,24 @@
             <th scope="col">Type</th>
             <th scope="col">User</th>
             <th scope="col">Date Inserted</th>
-            <th scope="col">&nbsp;</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="results.documents.length == 0"><td>No Documents Found</td></tr>
           <tr *ngFor="let result of results.documents">
-            <td>{{result.documentId}}</td>
+            <td>
+              <strong>
+              {{result.documentId}}
+              </strong>
+              <p class="py-2">
+                <input type="button" class="mx-1" value="Share..." (click)="shareDocument(result.documentId, shareModal)" />
+                <input type="button" class="mx-1" value="Tags..." (click)="viewDocumentTags(result.documentId)" />
+              </p>
+            </td>
             <td>{{result.path}}&nbsp;</td>
             <td>{{result.contentType}}&nbsp;</td>
             <td>{{result.userId}}&nbsp;</td>
             <td>{{result.inserteddate}}&nbsp;</td>
-            <td>
-              <input type="button" class="mb-1" value="Share..." (click)="shareDocument(result.documentId, shareModal)" />
-              <br />
-              <input type="button" value="Tags..." (click)="viewDocumentTags(result.documentId)" />
-            </td>
           </tr>
         </tbody>
       </table>
