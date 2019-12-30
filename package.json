@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "preinstall": "npx npm-force-resolutions",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
@@ -55,5 +56,8 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.4.3"
+  },
+  "resolutions": {
+    "serialize-javascript": "^2.1.1"
   }
 }
