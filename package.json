@@ -58,6 +58,7 @@
     "typescript": "~3.4.3"
   },
   "resolutions": {
+    "handlebars": "^4.3.0",
     "serialize-javascript": "^2.1.1"
   }
 }
