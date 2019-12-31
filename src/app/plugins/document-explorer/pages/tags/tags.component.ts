@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, ParamMap } from '@angular/router';
@@ -16,6 +17,7 @@ import { Document, Tag } from '../../../../services/api.schema';
 export class TagsComponent implements OnInit, AfterViewInit {
 
   constructor(
+      private router: Router,
       private formBuilder: FormBuilder,
       private apiService: ApiService,
       private route: ActivatedRoute,
@@ -126,6 +128,10 @@ export class TagsComponent implements OnInit, AfterViewInit {
     if (this.nextToken) {
       this.loadTags('', this.nextToken);
     }
+  }
+
+  backToList() {
+    this.router.navigate(['/documents']);
   }
 
 }
