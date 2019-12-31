@@ -9,7 +9,10 @@
   <div class="row">
     <div class="col-12 px-4 mb-2">
       <form [formGroup]="dateSearchForm">
-        <div class="row mb-4">
+        <div
+          class="row pt-2 ml-1 mb-4 pr-3"
+          [ngClass]="{ 'is-active': currentSearch === 'date' }"
+          >
           <div class="col-12 col-md-2">
             <label for="dp" class="pl-2 pt-1">
               <h5>
@@ -35,7 +38,10 @@
         </div>
       </form>
       <form [formGroup]="tagSearchForm" (ngSubmit)="runTagSearch()">
-        <div class="row mb-2">
+        <div
+          class="row pt-2 ml-1 mb-2 pr-3"
+          [ngClass]="{ 'is-active': currentSearch === 'tag' }"
+          >
           <div class="col-12 col-md-2">
             <label class="pl-2 pt-1">
               <h5>
@@ -47,7 +53,7 @@
             <input type="text" class="form-control" formControlName="tagKey" placeholder="key name" [ngClass]="{ 'is-invalid': f.tagKey.errors }" />
           </div>
           <div class="col-12 col-md-3 col-lg-2 pb-1">
-            <select class="form-control mr-sm-2" formControlName="searchType">
+            <select class="form-control mr-sm-2" formControlName="operator">
               <option value="eq">Equals</option>
               <option value="beginsWith">Begins With</option>
             </select>

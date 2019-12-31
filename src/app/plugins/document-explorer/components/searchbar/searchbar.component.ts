@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -6,14 +6,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
 import { NavigationService } from '../../../../services/navigation.service';
 import { Document } from '../../../../services/api.schema';
+import { SearchService } from '../../services/search.service';
+import { TagQuery, SearchParameters, SearchType } from '../../services/search.schema';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-searchbar',
   templateUrl: './searchbar.component.html',
-  styleUrls: ['./searchbar.component.css']
+  styleUrls: ['./searchbar.component.scss']
 })
-export class SearchbarComponent implements OnInit, HttpErrorCallback {
+export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallback {
 
   results$: Observable<{} | Document[]>;
   dateSearchForm: FormGroup;
@@ -24,9 +26,12 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   public tagFormSubmittedSource = new Subject<boolean>();
   public tagFormSubmitted$ = this.tagFormSubmittedSource.asObservable();
 
-  public currentSearch = null;
-  public documentDate = null;
-  public tagSearchQuery = null;
+  public searchParameters: SearchParameters = {
+    documentDate: null,
+    tagQuery: null,
+    searchType: SearchType.Tag
+  };
+
   public nextToken = null;
   public previousToken = null;
 
@@ -37,8 +42,13 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     public navigationService: NavigationService,
+    private searchService: SearchService,
     private router: Router
     ) {}
+
+  public get currentSearch(): string {
+    return this.searchParameters.searchType;
+  }
 
   ngOnInit() {
     this.dateSearchForm = this.formBuilder.group({
@@ -46,10 +56,43 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
     });
     this.tagSearchForm = this.formBuilder.group({
       tagKey: ['', Validators.required],
-      searchType: [],
+      operator: [],
       tagValue: []
     });
-    this.tagSearchForm.get('searchType').setValue('eq');
+    let reloadLastSearch = false;
+    if (localStorage.getItem('documentSearchParameters')) {
+      this.searchParameters = JSON.parse(localStorage.getItem('documentSearchParameters'));
+      reloadLastSearch = true;
+    }
+    this.tagSearchForm.get('operator').setValue('eq');
+    if (this.searchParameters.documentDate) {
+      const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
+      this.dateSearchForm.get('dp').setValue(todayForPicker);
+    } else if (this.searchParameters.tagQuery) {
+      if (this.searchParameters.tagQuery.key) {
+        this.tagSearchForm.get('tagKey').setValue(this.searchParameters.tagQuery.key);
+        if (this.searchParameters.tagQuery.value) {
+          this.tagSearchForm.get('tagValue').setValue(this.searchParameters.tagQuery.value);
+        }
+      }
+      if (this.searchParameters.tagQuery.operator) {
+        this.tagSearchForm.get('operator').setValue(this.searchParameters.tagQuery.operator);
+      }
+    }
+    if (reloadLastSearch) {
+      if (this.currentSearch === 'date') {
+        this.runDateSearch(this.searchParameters.documentDate);
+      } else {
+        this.runTagSearch(this.searchParameters.tagQuery);
+      }
+    }
+  }
+
+  ngAfterViewInit() {
+    if (this.searchParameters.documentDate) {
+      const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
+      this.dp.writeValue(todayForPicker);
+    }
   }
 
   get f() {
@@ -57,7 +100,7 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   }
 
   onDateSelected(event) {
-    const documentDate = this.buildDocumentDate(event.year, event.month, event.day);
+    const documentDate: string = this.searchService.buildDocumentDate(event.year, event.month, event.day);
     this.runDateSearch(documentDate);
   }
 
@@ -66,24 +109,20 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
     const todayForPicker = {year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()};
     this.dp.writeValue(todayForPicker);
     this.dateSearchForm.get('dp').setValue(todayForPicker);
-    const documentDate = this.buildDocumentDate(todayForPicker.year, todayForPicker.month, todayForPicker.day);
+    const documentDate: string = this.searchService.buildDocumentDate(todayForPicker.year, todayForPicker.month, todayForPicker.day);
     this.runDateSearch(documentDate);
-  }
-
-  buildDocumentDate(year, month, day) {
-    return year + '-' + ('0' + month).slice(-2) + '-' + ('0' + day).slice(-2);
   }
 
   viewAllUntaggedDocuments() {
     this.tagSearchForm.get('tagKey').setValue('untagged');
-    this.tagSearchForm.get('searchType').setValue('eq');
+    this.tagSearchForm.get('operator').setValue('eq');
     this.tagSearchForm.get('tagValue').setValue('');
     this.runTagSearch();
   }
 
-  runDateSearch(documentDate, previousToken = '', nextToken = '') {
-    this.documentDate = null;
-    this.tagSearchQuery = null;
+  runDateSearch(documentDate: string, previousToken = '', nextToken = '') {
+    this.searchParameters.documentDate = null;
+    this.searchParameters.tagQuery = null;
     const dateRegExp = new RegExp('\\d{4}-\\d{2}-\\d{2}');
     if (!dateRegExp.test(documentDate)) {
       // TODO: make date field invalid
@@ -96,8 +135,9 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
     if (previousToken !== '') {
       queryString += '&previous=' + previousToken;
     }
-    this.currentSearch = 'date';
-    this.documentDate = documentDate;
+    this.searchParameters.searchType = SearchType.Date;
+    this.searchParameters.documentDate = documentDate;
+    localStorage.setItem('documentSearchParameters', JSON.stringify(this.searchParameters));
     this.results$ = this.apiService.getAllDocuments(queryString, this);
     this.results$.subscribe((results) => {
       this.documentQueryResultEmitter.emit(results);
@@ -105,47 +145,43 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   }
 
   public loadNextDatePage() {
-    this.runDateSearch(this.documentDate, '', this.nextToken);
+    this.runDateSearch(this.searchParameters.documentDate, '', this.nextToken);
   }
 
   public loadPreviousDatePage() {
-    this.runDateSearch(this.documentDate, this.previousToken);
+    this.runDateSearch(this.searchParameters.documentDate, this.previousToken);
   }
 
-  runTagSearch(searchQuery = null, previousToken = '', nextToken = '') {
+  runTagSearch(tagQuery: TagQuery = null, previousToken = '', nextToken = '') {
     let queryString = '';
-    if (searchQuery) {
+    if (tagQuery) {
+      this.searchParameters.tagQuery = tagQuery;
       if (previousToken) {
         queryString = '?previous=' + previousToken;
       } else if (nextToken) {
         queryString = '?next=' + nextToken;
       }
     } else {
+      this.searchParameters.tagQuery = null;
+      this.searchParameters.documentDate = null;
       if (this.tagSearchForm.invalid) {
         return;
       }
-      this.documentDate = null;
-      this.tagSearchQuery = null;
       this.tagFormSubmittedSource.next(true);
-      const key = this.tagSearchForm.controls.tagKey.value;
-      const value = this.tagSearchForm.controls.tagValue.value;
-      let searchTag = new SearchTag(key, null, null);
-      if (value != null && value.trim().length > 0) {
-        const searchType = this.tagSearchForm.controls.searchType.value;
-        if (searchType === 'beginsWith') {
-          searchTag = new SearchTag(key, null, value.trim());
-        } else {
-          searchTag = new SearchTag(key, value.trim(), null);
-        }
+      let key = this.tagSearchForm.controls.tagKey.value;
+      const operator = this.tagSearchForm.controls.operator.value;
+      let value = this.tagSearchForm.controls.tagValue.value;
+      if (key && key.length > 0) {
+        key = key.trim();
       }
-      searchQuery = {
-        query: {
-          tag: searchTag
-        }
-      };
+      if (value && value.length > 0) {
+        value = value.trim();
+      }
+      this.searchParameters.tagQuery = new TagQuery(key, operator, value);
     }
-    this.currentSearch = 'tag';
-    this.tagSearchQuery = searchQuery;
+    this.searchParameters.searchType = SearchType.Tag;
+    localStorage.setItem('documentSearchParameters', JSON.stringify(this.searchParameters));
+    const searchQuery = this.searchService.buildTagSearchQuery(this.searchParameters.tagQuery);
     this.results$ = this.apiService.postSearch(JSON.stringify(searchQuery), queryString, this);
     this.results$.subscribe((results) => {
       this.documentQueryResultEmitter.emit(results);
@@ -153,11 +189,11 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   }
 
   public loadNextTagPage() {
-    this.runTagSearch(this.tagSearchQuery, '', this.nextToken);
+    this.runTagSearch(this.searchParameters.tagQuery, '', this.nextToken);
   }
 
   public loadPreviousTagPage() {
-    this.runTagSearch(this.tagSearchQuery, this.previousToken);
+    this.runTagSearch(this.searchParameters.tagQuery, this.previousToken);
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {
@@ -166,12 +202,4 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
     });
   }
 
-}
-
-export class SearchTag {
-  constructor(
-    public key: string,
-    public eq: string,
-    public beginsWith: string
-  ) {}
 }
