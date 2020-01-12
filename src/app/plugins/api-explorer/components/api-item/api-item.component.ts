@@ -66,6 +66,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     }
     if (this.apiItem.allowsDate) {
       fieldsForFormBuilder.date = ['', [Validators.pattern('\\d{4}-\\d{2}-\\d{2}')]];
+      fieldsForFormBuilder.tz = ['', [Validators.pattern('(([+-]?)(\\d{2}):?(\\d{0,2}))')]];
     }
     if (this.apiItem.allowsLimit) {
       fieldsForFormBuilder.limit = ['', [Validators.pattern('^[1-9][0-9]*$')]];
@@ -151,6 +152,9 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
       const params: Map<string, string> = new Map<string, string>();
       if (this.f.date && this.f.date.status === 'VALID' && this.f.date.value.length > 0) {
         params.set('date', this.f.date.value);
+        if (this.f.tz && this.f.tz.status === 'VALID' && this.f.tz.value.length > 0) {
+          params.set('tz', this.f.tz.value);
+        }
       }
       if (this.f.limit && this.f.limit.status === 'VALID' && this.f.limit.value.length > 0) {
         params.set('limit', this.f.limit.value);
