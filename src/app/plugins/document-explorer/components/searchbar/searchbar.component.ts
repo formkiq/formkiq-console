@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Input, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -9,6 +9,7 @@ import { Document } from '../../../../services/api.schema';
 import { SearchService } from '../../services/search.service';
 import { TagQuery, SearchParameters, SearchType } from '../../services/search.schema';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import * as moment from 'moment-timezone';
 
 @Component({
   selector: 'app-searchbar',
@@ -35,6 +36,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
   public nextToken = null;
   public previousToken = null;
 
+  @Input() currentTimezone: string;
   @ViewChild('d', {static: false}) dp: NgbInputDatepicker;
   @Output() documentQueryResultEmitter: EventEmitter<any> = new EventEmitter();
 
@@ -128,7 +130,8 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
       // TODO: make date field invalid
       return;
     }
-    let queryString = '?date=' + documentDate;
+    const currentUtcOffset = moment(documentDate).tz(this.currentTimezone).format('Z');
+    let queryString = '?date=' + documentDate + '&tz=' + currentUtcOffset;
     if (nextToken !== '') {
       queryString += '&next=' + nextToken;
     }
