@@ -35,7 +35,7 @@
             <td>{{result.path}}&nbsp;</td>
             <td>{{result.contentType}}&nbsp;</td>
             <td>{{result.userId}}&nbsp;</td>
-            <td>{{result.inserteddate}}&nbsp;</td>
+            <td>{{ result.inserteddate | datetimeFormat: 'yyyy-MM-dd HH:mm':currentTimezone }}</td>
           </tr>
         </tbody>
       </table>
