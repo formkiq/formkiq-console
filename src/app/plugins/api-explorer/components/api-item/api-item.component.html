@@ -79,6 +79,21 @@
                       />
                   </div>
                 </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="field-tz">
+                      Timezone Offset
+                      <small>(e.g., -0500)</small>
+                    </label>
+                    <input type="text"
+                      class="form-control"
+                      id="field-tz"
+                      formControlName="tz"
+                      [ngClass]="{ 'is-invalid': formSubmitted && f.tz.errors }"
+                      placement="left"
+                      />
+                  </div>
+                </div>
               </div>
               <div *ngIf="apiItem.requiresFileUpload" class="row">
                 <div class="col-12">
