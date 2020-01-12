@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
 import { Document } from '../../../../services/api.schema';
 import { SearchbarComponent } from '../../components/searchbar/searchbar.component';
+import * as moment from 'moment-timezone';
 
 @Component({
   selector: 'app-docex-explore',
@@ -26,7 +27,13 @@ export class ExploreComponent implements OnInit, AfterViewInit,  HttpErrorCallba
     private apiService: ApiService
   ) {}
 
+  currentTimezone: string;
+
   ngOnInit() {
+    this.currentTimezone = moment.tz.guess();
+    if (!this.currentTimezone) {
+      this.currentTimezone = 'America/New York';
+    }
   }
 
   ngAfterViewInit() {
