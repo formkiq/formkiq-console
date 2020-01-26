@@ -106,23 +106,6 @@ export class CognitoAuthenticationService {
     return this.currentUserIsAdminSubject.value;
   }
 
-  buildCognitoCreds(idToken) {
-    const url = 'cognito-idp.' +
-      this.configurationService.cognito.region.toLowerCase() +
-      '.amazonaws.com/' + this.configurationService.cognito.userPoolId;
-    this.cognitoLogins[url] = idToken;
-    console.log(idToken);
-    const params = {
-      IdentityPoolId: this.configurationService.cognito.identityPoolId,
-      Logins: this.cognitoLogins
-    };
-    const serviceConfigs: AwsService.ServiceConfigurationOptions = {};
-    const creds = new Aws.CognitoIdentityCredentials(params, serviceConfigs);
-    console.log(creds);
-    // creds.clearCachedId();
-    return creds;
-  }
-
   getUserPool() {
     const poolData = {
       UserPoolId : this.configurationService.cognito.userPoolId,
@@ -190,18 +173,6 @@ export class CognitoAuthenticationService {
     }
   }
 
-  /*
-  async checkSecurityTokenService() {
-    if (Aws.config.credentials && Aws.config.credentials.sessionToken) {
-      console.log('ready');
-    } else {
-      setTimeout(() => {
-        this.checkSecurityTokenService();
-      }, 10);
-    }
-  }
-  */
-
   login(email: string, password: string) {
     if (this.cognitoCreds) {
       this.cognitoCreds.clearCachedId();
@@ -233,15 +204,6 @@ export class CognitoAuthenticationService {
           const refreshToken = result.getRefreshToken().getToken();
           this.expiredStorage.setItem('refreshToken', JSON.stringify(refreshToken), 2590000);
           this.refreshTokenSubject.next(refreshToken);
-          this.currentUserIsAdminSubject.next(false);
-          this.loginResponseSource.next(response);
-
-          /*
-          Aws.config.update({
-            region: this.configurationService.cognito.region,
-            credentials: creds
-          });
-          */
           const url = 'cognito-idp.' + this.configurationService.cognito.region.toLowerCase() + '.amazonaws.com/' +
             this.configurationService.cognito.userPoolId;
           this.cognitoLogins[url] = this.idTokenValue;
@@ -250,195 +212,25 @@ export class CognitoAuthenticationService {
             Logins: this.cognitoLogins
           });
           creds.clearCachedId();
-          // creds.params.Logins[url] = this.idTokenValue;
-          // Aws.config.credentials = creds;
-          // Aws.config.region = this.configurationService.cognito.region;
           Aws.config.update({
             region: this.configurationService.cognito.region,
             credentials: creds
           });
-          Aws.config.credentials.get((err) => {
+          const credentials: any = Aws.config.credentials;
+          credentials.get((err) => {
             if (err) {
-              console.log(err);
+              localStorage.setItem('currentUserIsAdmin', 'false');
               this.currentUserIsAdminSubject.next(false);
+              this.loginResponseSource.next(response);
               this.authenticationChangeSource.next();
               return true;
             } else {
-              const cognitoServiceProvider = new CognitoIdentityServiceProvider(
-                {
-                  apiVersion: '2016-04-18'
-                }
-              );
-              console.log(this.currentUserValue.getUsername());
-              const params = {
-                UserPoolId: this.configurationService.cognito.userPoolId,
-                Username: this.currentUserValue.getUsername()
-              };
-              cognitoServiceProvider.adminListGroupsForUser(params, (err, data) => {
-                  console.log(data);
-                }
-              );
-              const adminGroupName = 'docstack-prod-admin-group';
-              const addParams = {
-                UserPoolId: this.configurationService.cognito.userPoolId,
-                Username: 'regan.wolfrom+test5@gmail.com',
-                GroupName: adminGroupName
-              };
-              /*
-              cognitoServiceProvider.adminAddUserToGroup(addParams, (err, data) => {
-                  console.log(data);
-                }
-              );
-              */
-              this.authenticationChangeSource.next();
-              return true;
-
-              /*
-              const stsClient = new Sts(
-                {
-                  apiVersion: '2011-06-15',
-                }
-              );
-              stsClient.config.credentials = Aws.config.credentials;
-              stsClient.config.getCredentials((err) => {
-                if (err) {
-                  this.currentUserIsAdminSubject.next(false);
-                  this.authenticationChangeSource.next();
-                  return true;
-                } else {
-                  console.log(stsClient.config.credentials);
-                  stsClient.assumeRole()
-                  stsClient.getSessionToken({}, (err, data) => {
-                    console.log(data);
-                  });
-                  stsClient.getCallerIdentity({}, (err, data) => {
-                    if (err) {
-                      console.log(err);
-                      this.currentUserIsAdminSubject.next(false);
-                      this.authenticationChangeSource.next();
-                      return true;
-                    } else {
-                      console.log(data);
-                      this.currentUserIsAdminSubject.next(true);
-                      this.authenticationChangeSource.next();
-                      return true;
-                    }
-                  });
-                }
-              });
-              */
-            }
-          });
-
-          /*
-          const creds = this.buildCognitoCreds(idToken);
-          setTimeout(() => {
-            Aws.config.update({
-              region: this.configurationService.cognito.region,
-              credentials: creds
-            });
-            const stsClient = new Sts(
-              {
-                apiVersion: '2011-06-15',
-              }
-            );
-            stsClient.config.credentials = Aws.config.credentials;
-            console.log(stsClient.config.credentials);
-          }, 2000);
-          */
-
-          /*
-          Aws.config.credentials.get((err) => {
-            console.log('get');
-
-            stsClient.config.credentials = Aws.config.credentials;
-            stsClient.getCallerIdentity({}, (err, data) => {
-              if (err) {
-                console.log(err);
-                this.currentUserIsAdminSubject.next(false);
-                this.authenticationChangeSource.next();
-                return true;
-              } else {
-                console.log(data);
-                this.currentUserIsAdminSubject.next(true);
-                this.authenticationChangeSource.next();
-                return true;
-              }
-            });
-          });
-          */
-
-
-          // this.authenticationChangeSource.next();
-          // return true;
-
-          /*
-
-
-          console.log(Aws.config.credentials);
-          setTimeout(() => {
-            console.log(Aws.config.credentials);
-          }, 2000);
-          // TODO: find out why Sts is having issues
-          const stsClient = new Sts(
-            {
-              apiVersion: '2011-06-15',
-            }
-          );
-          stsClient.getCallerIdentity({}, (err, data) => {
-            if (err) {
-              console.log(err);
-              this.currentUserIsAdminSubject.next(false);
-              this.authenticationChangeSource.next();
-              return true;
-            } else {
-              console.log(data);
+              localStorage.setItem('currentUserIsAdmin', 'true');
               this.currentUserIsAdminSubject.next(true);
+              this.loginResponseSource.next(response);
               this.authenticationChangeSource.next();
-              return true;
             }
           });
-          */
-          /*
-          const cognitoClient = new CognitoIdentityServiceProvider(
-            {
-              apiVersion: '2016-04-19',
-              region: this.configurationService.cognito.region
-            }
-          );
-          const params = {
-            UserPoolId: this.configurationService.cognito.userPoolId
-          };
-          cognitoClient.listUsers(params, (err, data) => {
-            if (err) {
-              console.log(err);
-              this.currentUserIsAdminSubject.next(false);
-              this.authenticationChangeSource.next();
-              return true;
-            } else {
-              console.log(data);
-              this.currentUserIsAdminSubject.next(true);
-              this.authenticationChangeSource.next();
-              return true;
-            }
-          });
-          */
-          /*
-          cognitoUser.getUserAttributes((uaErr, uaResult) => {
-            if (uaErr) {
-              console.log(uaErr);
-              this.authenticationChangeSource.next();
-              return true;
-            }
-            for (const attribute of uaResult) {
-              console.log('attribute ' + attribute.getName() + ' has value ' + attribute.getValue());
-            }
-            this.authenticationChangeSource.next();
-            return true;
-          });]
-          */
-          // this.authenticationChangeSource.next();
-          // return true;
         },
         onFailure: (err) => {
           response.success = false;

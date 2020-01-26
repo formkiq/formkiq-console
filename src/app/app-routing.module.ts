@@ -8,6 +8,7 @@ import { ResetPasswordComponent } from './plugins/authentication/pages/reset-pas
 import { ExploreComponent as DocumentsExploreComponent } from './plugins/document-explorer/pages/explore/explore.component';
 import { AddComponent as DocumentsAddComponent } from './plugins/document-explorer/pages/add/add.component';
 import { TagsComponent as DocumentsTagsComponent } from './plugins/document-explorer/pages/tags/tags.component';
+import { ExploreComponent as UsersExploreComponent } from './plugins/user-explorer/pages/explore/explore.component';
 import { AuthenticationGuardService } from './plugins/authentication/guards/authentication-guard.service';
 
 const routerOptions: ExtraOptions = {
@@ -61,6 +62,12 @@ const routes: Routes = [
     path: 'documents/:id/tags',
     component: DocumentsTagsComponent,
     data: { title: 'Document Tags' },
+    canActivate: [AuthenticationGuardService]
+  },
+  {
+    path: 'users',
+    component: UsersExploreComponent,
+    data: { title: 'Users' },
     canActivate: [AuthenticationGuardService]
   },
   {

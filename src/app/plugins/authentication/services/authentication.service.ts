@@ -40,8 +40,8 @@ export class AuthenticationService {
     return this.authenticationProviderService.apiAccessTokenTimeLeft;
   }
 
-  public get loggedInUserIsAdmin(): boolean {
-    return this.authenticationProviderService.loggedInUserIsAdminValue;
+  public get currentUserIsAdmin(): boolean {
+    return this.authenticationProviderService.currentUserIsAdminValue;
   }
 
   public get allowUserSelfRegistration(): boolean {
