@@ -32,6 +32,7 @@ import { ApiService } from './services/api.service';
 import { ConfigurationService } from './services/configuration.service';
 import { TokenInterceptor } from './utils/token.interceptor';
 import { PagingComponent } from './plugins/document-explorer/components/paging/paging.component';
+import { ExploreComponent } from './plugins/user-explorer/pages/explore/explore.component';
 
 export function load(httpBackend: HttpBackend, config: ConfigurationService): (() => Promise<boolean>) {
   return (): Promise<boolean> => {
@@ -78,7 +79,8 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
     DocsTagsComponent,
     DocsSearchbarComponent,
     DocsShareModalComponent,
-    PagingComponent
+    PagingComponent,
+    ExploreComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { ConfigurationService } from '../../../services/configuration.service';
 import { CognitoAuthenticationService } from '../../authentication-cognito/services/cognito-authentication.service';
 
 @Injectable({
@@ -7,7 +8,10 @@ import { CognitoAuthenticationService } from '../../authentication-cognito/servi
 })
 export class AuthenticationService {
 
-  constructor(private cognitoAuthenticationService: CognitoAuthenticationService) {}
+  constructor(
+    private configurationService: ConfigurationService,
+    private cognitoAuthenticationService: CognitoAuthenticationService
+    ) {}
 
   public get authenticationProviderService(): any {
     return this.cognitoAuthenticationService;
@@ -34,6 +38,18 @@ export class AuthenticationService {
 
   public get loggedInAccessTokenTimeLeft(): any {
     return this.authenticationProviderService.apiAccessTokenTimeLeft;
+  }
+
+  public get currentUserIsAdmin(): boolean {
+    return this.authenticationProviderService.currentUserIsAdminValue;
+  }
+
+  public get allowUserSelfRegistration(): boolean {
+    let allowUserSelfRegistration = false;
+    if (this.configurationService.cognito.allowUserSelfRegistration) {
+      allowUserSelfRegistration = this.configurationService.cognito.allowUserSelfRegistration;
+    }
+    return allowUserSelfRegistration;
   }
 
   checkLoginAndToken(): void {

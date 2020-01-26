@@ -11,6 +11,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 export class AuthenticateComponent implements OnInit, OnDestroy {
 
   currentAuthenticationForm = 'login';
+  allowUserSelfRegistration = false;
   private email: string;
   private verificationCode: string;
   private forgotPasswordResponseSubscription: Subscription = null;
@@ -20,9 +21,11 @@ export class AuthenticateComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authenticationService: AuthenticationService) { }
+    private authenticationService: AuthenticationService
+    ) { }
 
   ngOnInit() {
+    this.allowUserSelfRegistration = this.authenticationService.allowUserSelfRegistration;
     this.route.queryParams.subscribe((params) => {
       if (params.action) {
         this.currentAuthenticationForm = params.action;

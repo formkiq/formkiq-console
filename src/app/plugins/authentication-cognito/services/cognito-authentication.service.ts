@@ -9,6 +9,11 @@ import {
     CognitoAccessToken,
     CognitoRefreshToken
   } from 'amazon-cognito-identity-js';
+import * as Aws from 'aws-sdk/global';
+import * as AwsService from 'aws-sdk/lib/service';
+import * as CognitoIdentity from 'aws-sdk/clients/cognitoidentity';
+import * as CognitoIdentityServiceProvider from 'aws-sdk/clients/cognitoidentityserviceprovider';
+import * as Sts from 'aws-sdk/clients/sts';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import * as ExpiredStorage from 'expired-storage';
 import { ConfigurationService } from '../../../services/configuration.service';
@@ -37,6 +42,11 @@ export class CognitoAuthenticationService {
   public accessToken: Observable<string>;
   private refreshTokenSubject: BehaviorSubject<string>;
   public refreshToken: Observable<string>;
+  private currentUserIsAdminSubject: BehaviorSubject<boolean>;
+  public currentUserIsAdmin: Observable<boolean>;
+
+  private cognitoLogins: CognitoIdentity.LoginsMap = {};
+  private cognitoCreds: Aws.CognitoIdentityCredentials;
 
   private authenticationChangeSource = new Subject<any>();
   private loginResponseSource = new Subject<any>();
@@ -57,10 +67,12 @@ export class CognitoAuthenticationService {
       this.accessToken = this.accessTokenSubject.asObservable();
       this.refreshTokenSubject = new BehaviorSubject<string>(JSON.parse(this.expiredStorage.getItem('refreshToken')));
       this.refreshToken = this.refreshTokenSubject.asObservable();
+      this.currentUserIsAdminSubject = new BehaviorSubject<boolean>(JSON.parse(localStorage.getItem('currentUserIsAdmin')));
+      this.currentUserIsAdmin = this.currentUserIsAdminSubject.asObservable();
   }
 
   public get currentUserValue(): CognitoUser {
-      return this.currentUserSubject.value;
+    return this.currentUserSubject.value;
   }
 
   public get apiAccessToken(): string {
@@ -88,6 +100,10 @@ export class CognitoAuthenticationService {
 
   public get refreshTokenValue(): string {
     return this.refreshTokenSubject.value;
+  }
+
+  public get currentUserIsAdminValue(): boolean {
+    return this.currentUserIsAdminSubject.value;
   }
 
   getUserPool() {
@@ -158,6 +174,9 @@ export class CognitoAuthenticationService {
   }
 
   login(email: string, password: string) {
+    if (this.cognitoCreds) {
+      this.cognitoCreds.clearCachedId();
+    }
     const userPool = this.getUserPool();
     const authenticationDetails = new AuthenticationDetails({
       Username: email,
@@ -185,9 +204,33 @@ export class CognitoAuthenticationService {
           const refreshToken = result.getRefreshToken().getToken();
           this.expiredStorage.setItem('refreshToken', JSON.stringify(refreshToken), 2590000);
           this.refreshTokenSubject.next(refreshToken);
-          this.loginResponseSource.next(response);
-          this.authenticationChangeSource.next();
-          return true;
+          const url = 'cognito-idp.' + this.configurationService.cognito.region.toLowerCase() + '.amazonaws.com/' +
+            this.configurationService.cognito.userPoolId;
+          this.cognitoLogins[url] = this.idTokenValue;
+          const creds = new Aws.CognitoIdentityCredentials({
+            IdentityPoolId: this.configurationService.cognito.identityPoolId,
+            Logins: this.cognitoLogins
+          });
+          creds.clearCachedId();
+          Aws.config.update({
+            region: this.configurationService.cognito.region,
+            credentials: creds
+          });
+          const credentials: any = Aws.config.credentials;
+          credentials.get((err) => {
+            if (err) {
+              localStorage.setItem('currentUserIsAdmin', 'false');
+              this.currentUserIsAdminSubject.next(false);
+              this.loginResponseSource.next(response);
+              this.authenticationChangeSource.next();
+              return true;
+            } else {
+              localStorage.setItem('currentUserIsAdmin', 'true');
+              this.currentUserIsAdminSubject.next(true);
+              this.loginResponseSource.next(response);
+              this.authenticationChangeSource.next();
+            }
+          });
         },
         onFailure: (err) => {
           response.success = false;
@@ -265,6 +308,10 @@ export class CognitoAuthenticationService {
     this.idTokenSubject.next(null);
     this.accessTokenSubject.next(null);
     this.refreshTokenSubject.next(null);
+    Aws.config.update({
+      region: this.configurationService.cognito.region,
+      credentials: null
+    });
     this.authenticationChangeSource.next();
   }
 
