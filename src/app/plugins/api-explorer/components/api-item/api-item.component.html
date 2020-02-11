@@ -2,8 +2,8 @@
   <div class="col-12 pt-2 pb-1">
     <h6 class="formkiq-font collapse-link"
       (click)="navigationService.collapseSubmenuItem(apiItem.clickedSubscriptionName, !isCollapsed);">
-      <fa *ngIf="isCollapsed" name="chevron-right"></fa>
-      <fa *ngIf="!isCollapsed" name="chevron-down"></fa>
+      <i *ngIf="isCollapsed" name="chevron-right"></i>
+      <i *ngIf="!isCollapsed" name="chevron-down"></i>
       {{ apiItem.method }}
       {{ apiItem.path }}
     </h6>
@@ -194,7 +194,7 @@
           </ngb-tab>
         </ngb-tabset>
         <div *ngIf="loading$ | async" class="my-3 text-center">
-            <fa name="cog" animation="spin"></fa>
+            <i name="cog" animation="spin"></i>
         </div>
         <div *ngIf="responseData" class="mt-2">
           <p class="strong">Response</p>

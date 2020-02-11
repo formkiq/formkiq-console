@@ -6,7 +6,6 @@ import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpBackend } from '@a
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { of, Observable, ObservableInput } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { ChartsModule } from 'ng2-charts';
 import { AppComponent } from './app.component';
 import { DatetimeFormat } from './utils/pipes/datetime-format';
@@ -89,7 +88,6 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    AngularFontAwesomeModule,
     ChartsModule
   ],
   providers: [{

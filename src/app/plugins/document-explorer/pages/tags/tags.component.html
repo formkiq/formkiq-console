@@ -3,7 +3,7 @@
     Document:
     {{ documentId }}
   </h5>
-  <button class="btn btn-primary" (click)="backToList()"><fa name="chevron-left"></fa> Back to Results</button>
+  <button class="btn btn-primary" (click)="backToList()"><i name="chevron-left"></i> Back to Results</button>
 </div>
 <div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
   <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
