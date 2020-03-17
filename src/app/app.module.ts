@@ -6,8 +6,6 @@ import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpBackend } from '@a
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { of, Observable, ObservableInput } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { AngularFontAwesomeModule } from 'angular-font-awesome';
-import { ChartsModule } from 'ng2-charts';
 import { AppComponent } from './app.component';
 import { DatetimeFormat } from './utils/pipes/datetime-format';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -88,26 +86,24 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbModule,
-    AngularFontAwesomeModule,
-    ChartsModule
+    NgbModule
   ],
   providers: [{
-      provide: APP_INITIALIZER,
-      deps: [
-        HttpBackend,
-        ConfigurationService
-      ],
-      useFactory: load,
-      multi: true
-    }, {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true
-    },
+    provide: APP_INITIALIZER,
+    deps: [
+      HttpBackend,
+      ConfigurationService
+    ],
+    useFactory: load,
+    multi: true
+  }, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: TokenInterceptor,
+    multi: true
+  },
     ApiService,
     ConfigurationService
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

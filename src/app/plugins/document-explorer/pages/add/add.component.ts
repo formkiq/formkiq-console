@@ -11,7 +11,7 @@ import * as Dropzone from '../../../../../assets/dist/dropzone/dropzone';
 })
 export class AddComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('dropzone', {static: false}) dropzoneContainer: ElementRef;
+  @ViewChild('dropzone') dropzoneContainer: ElementRef;
 
   constructor(private apiService: ApiService) { }
 

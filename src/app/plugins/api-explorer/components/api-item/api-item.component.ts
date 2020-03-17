@@ -31,7 +31,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
   @Input() allowsLimit = false;
   @Input() hasPagingTokens = false;
   @Input() allowsPath = false;
-  @ViewChild('header', {static: false}) headerElement: ElementRef;
+  @ViewChild('header') headerElement: ElementRef;
 
   public form: FormGroup;
   formSubmitted = false;

@@ -19,7 +19,7 @@ export class ExploreComponent implements OnInit, AfterViewInit,  HttpErrorCallba
   dateSearchSubmitted = false;
   tagSearchSubmitted = false;
   shareUrl = '';
-  @ViewChild('searchbar', {static: false}) searchbar: SearchbarComponent;
+  @ViewChild('searchbar') searchbar: SearchbarComponent;
 
   constructor(
     private router: Router,

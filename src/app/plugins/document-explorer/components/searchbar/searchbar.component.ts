@@ -37,7 +37,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
   public previousToken = null;
 
   @Input() currentTimezone: string;
-  @ViewChild('d', {static: false}) dp: NgbInputDatepicker;
+  @ViewChild('d') dp: NgbInputDatepicker;
   @Output() documentQueryResultEmitter: EventEmitter<any> = new EventEmitter();
 
   constructor(

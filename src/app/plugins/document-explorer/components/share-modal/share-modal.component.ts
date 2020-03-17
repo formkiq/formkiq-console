@@ -9,7 +9,7 @@ export class ShareModalComponent implements OnInit, AfterViewInit {
 
   @Input() shareUrl = '';
   @Output() closeEmitter: EventEmitter<boolean> = new EventEmitter();
-  @ViewChild('shareUrlTextarea', {static: false}) textarea: ElementRef;
+  @ViewChild('shareUrlTextarea') textarea: ElementRef;
 
   constructor() {}
 

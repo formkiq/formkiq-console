@@ -23,9 +23,9 @@ export class ExploreComponent implements OnInit {
     private notificationService: NotificationService
     ) { }
 
-  @ViewChild('header', {static: false}) headerElement: ElementRef;
-  @ViewChild('headerDocuments', {static: false}) headerDocumentsElement: ElementRef;
-  @ViewChild('headerSearch', {static: false}) headerSearchElement: ElementRef;
+  @ViewChild('header') headerElement: ElementRef;
+  @ViewChild('headerDocuments') headerDocumentsElement: ElementRef;
+  @ViewChild('headerSearch') headerSearchElement: ElementRef;
 
   getDocumentsApiItem: ApiItem = {
     apiServiceMethodName: 'getAllDocuments',
