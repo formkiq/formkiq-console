@@ -21,7 +21,7 @@ export class ExploreComponent implements OnInit {
     private configurationService: ConfigurationService,
     public navigationService: NavigationService,
     private notificationService: NotificationService
-    ) { }
+  ) { }
 
   @ViewChild('header') headerElement: ElementRef;
   @ViewChild('headerDocuments') headerDocumentsElement: ElementRef;
@@ -255,25 +255,6 @@ export class ExploreComponent implements OnInit {
     allowsPath: true
   };
 
-  postMetricsApiItem: ApiItem = {
-    apiServiceMethodName: 'postMetrics',
-    clickedSubscriptionName: 'apiPostMetricsClicked',
-    method: 'POST',
-    path: '/metrics',
-    username: 'Cognito User',
-    token: this.authenticationService.loggedInAccessToken,
-    host: this.configurationService.apigateway.url,
-    requiresAuthentication: true,
-    requiresDocumentID: false,
-    requiresTagKey: false,
-    requiresPostJson: true,
-    requiresFileUpload: false,
-    allowsDate: false,
-    allowsLimit: false,
-    hasPagingTokens: false,
-    allowsPath: false
-  };
-
   postSearchApiItem: ApiItem = {
     apiServiceMethodName: 'postSearch',
     clickedSubscriptionName: 'apiPostSearchClicked',
@@ -312,7 +293,7 @@ export class ExploreComponent implements OnInit {
             }, 10);
           }
         }
-    });
+      });
   }
 
 }

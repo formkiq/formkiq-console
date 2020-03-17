@@ -12,13 +12,13 @@ import { Document, Tag } from '../services/api.schema';
 export class ApiService {
 
   constructor(
-      private httpClient: HttpClient,
-      private authenticationService: AuthenticationService,
-      private configurationService: ConfigurationService,
-      private httpBackend: HttpBackend
-    ) {
-      this.noAuthHttpClient = new HttpClient(httpBackend);
-    }
+    private httpClient: HttpClient,
+    private authenticationService: AuthenticationService,
+    private configurationService: ConfigurationService,
+    private httpBackend: HttpBackend
+  ) {
+    this.noAuthHttpClient = new HttpClient(httpBackend);
+  }
 
   // NOTE: not currently in use as the signed S3 URL PUT is not included as a method
   private noAuthHttpClient: HttpClient;
@@ -35,14 +35,14 @@ export class ApiService {
     return this.httpClient
       .get<Document[]>(this.configurationService.apigateway.url + 'documents' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   getDocument(documentID: string, callback: HttpErrorCallback): Observable<{} | Document> {
     return this.httpClient
       .get<Document>(this.configurationService.apigateway.url + 'documents/' + documentID, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   postDocument(json: string, callback: HttpErrorCallback): any {
@@ -50,7 +50,7 @@ export class ApiService {
     return this.httpClient
       .post<Document>(this.configurationService.apigateway.url + 'documents', body, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   patchDocument(documentID: string, json: string, callback: HttpErrorCallback): any {
@@ -58,20 +58,20 @@ export class ApiService {
     return this.httpClient
       .patch<Document>(this.configurationService.apigateway.url + 'documents/' + documentID, body, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   deleteDocument(documentID: string, callback: HttpErrorCallback): Observable<{} | Document> {
     return this.httpClient
       .delete<Document>(this.configurationService.apigateway.url + 'documents/' + documentID, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
   getDocumentTags(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | Array<Tag>> {
     return this.httpClient
       .get<Array<Tag>>(this.configurationService.apigateway.url + 'documents/' + documentID + '/tags' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   postDocumentTag(documentID: string, json: string, callback: HttpErrorCallback): Observable<any> {
@@ -79,50 +79,42 @@ export class ApiService {
     return this.httpClient
       .post<Tag>(this.configurationService.apigateway.url + 'documents/' + documentID + '/tags', body, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   getDocumentTag(documentID: string, key: string, callback: HttpErrorCallback): Observable<any> {
     return this.httpClient
       .get<Tag>(this.configurationService.apigateway.url + 'documents/' + documentID + '/tags/' + key, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   deleteDocumentTag(documentID: string, key: string, callback: HttpErrorCallback): Observable<any> {
     return this.httpClient
       .delete<Tag>(this.configurationService.apigateway.url + 'documents/' + documentID + '/tags/' + key, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   getDocumentUrl(documentID: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
       .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/url', this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   getDocumentsUpload(queryString: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
       .get<string>(this.configurationService.apigateway.url + 'documents/upload' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   getDocumentUpload(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
       .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/upload' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
-  }
-
-  postMetrics(json: string, callback: HttpErrorCallback): Observable<any> {
-    const body = JSON.parse(json);
-    return this.httpClient
-      .post<Array<Document>>(this.configurationService.apigateway.url + 'metrics', body, this.getHttpOptions())
-      .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
   postSearch(json: string, queryString: string, callback: HttpErrorCallback): Observable<{} | Document[]> {
@@ -130,7 +122,7 @@ export class ApiService {
     return this.httpClient
       .post<Array<Document>>(this.configurationService.apigateway.url + 'search' + queryString, body, this.getHttpOptions())
       .pipe(shareReplay(1),
-      catchError(callback.handleApiError));
+        catchError(callback.handleApiError));
   }
 
 }

@@ -27,8 +27,12 @@ const routes: Routes = [
   },
   {
     path: 'api',
-    component: ApiExploreComponent,
-    data: { title: 'API' },
+    loadChildren: () =>
+      import('./plugins/api-explorer/api-explorer.module')
+        .then(m => m.ApiExplorerModule),
+    data: {
+      title: 'API'
+    },
     canActivate: [AuthenticationGuardService]
   },
   {
@@ -48,26 +52,12 @@ const routes: Routes = [
   },
   {
     path: 'documents',
-    component: DocumentsExploreComponent,
-    data: { title: 'Documents' },
-    canActivate: [AuthenticationGuardService]
-  },
-  {
-    path: 'documents/add',
-    component: DocumentsAddComponent,
-    data: { title: 'Add Documents' },
-    canActivate: [AuthenticationGuardService]
-  },
-  {
-    path: 'documents/:id/tags',
-    component: DocumentsTagsComponent,
-    data: { title: 'Document Tags' },
-    canActivate: [AuthenticationGuardService]
-  },
-  {
-    path: 'users',
-    component: UsersExploreComponent,
-    data: { title: 'Users' },
+    loadChildren: () =>
+      import('./plugins/document-explorer/document-explorer.module')
+        .then(m => m.DocumentExplorerModule),
+    data: {
+      title: 'Documents'
+    },
     canActivate: [AuthenticationGuardService]
   },
   {
