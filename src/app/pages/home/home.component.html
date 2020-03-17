@@ -1,34 +1,14 @@
 <div class="mt-4">
-  <h4>Documents Added</h4>
-  <h5 *ngIf="chartHasDate() && !rangePickerVisible">
-    <a [routerLink]="" (click)="showRangePicker()">
-    {{ getFormattedDate(since) }}
-    -
-    {{ getFormattedDate(until) }}
-    ({{ getDateTimezone(since) }})
-    </a>
-  </h5>
-  <div *ngIf="rangePickerVisible">
-    <form [formGroup]="rangeForm" (ngSubmit)="runRange()">
-      <div class="row mb-2">
-        <div class="col-12 col-md-10">
-          <input type="text" class="form-control" formControlName="range" value="{{ getRangeFormattedDate(since) }} - {{ getRangeFormattedDate(until) }}" [ngClass]="{ 'is-invalid': !f.range.pristine && f.range.errors }" />
-        </div>
-        <div class="col-12 col-md-2 text-center">
-          <input type="button" class="btn btn-primary stretch-width" value="Go" (click)="runRange()" />
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-<div class="row stretch-width">
-  <div class="col-12 chart-container">
-    <canvas baseChart
-      [datasets]="chartData"
-      [labels]="chartLabels"
-      [options]="chartOptions"
-      [legend]="chartLegend"
-      [chartType]="chartType">
-    </canvas>
-  </div>
+  <h2 class="formkiq-font">FormKiQ Console</h2>
+  <h3>
+    You can
+    <a [routerLink]="['/documents']">
+    search documents</a>
+    or
+    <a [routerLink]="['/documents/add']">
+    add new documents</a>
+    to the Document Stack, as well as
+    <a [routerLink]="['/api']">
+    explore the FormKiQ Document Stack API</a>.
+    </h3>
 </div>
