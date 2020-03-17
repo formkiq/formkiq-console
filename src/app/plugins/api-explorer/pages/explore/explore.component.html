@@ -6,10 +6,6 @@
         Documents
       </a>
       |
-      <a [routerLink]="['/api']" fragment="metrics" (click)="navigationService.emitInlineNavItemClick('apiHeaderMetricsClicked')">
-        Metrics
-      </a>
-      |
       <a [routerLink]="['/api']" fragment="search" (click)="navigationService.emitInlineNavItemClick('apiHeaderSearchClicked')">
         Search
       </a>
@@ -35,16 +31,6 @@
       <app-api-item id="GET-document-url" [apiItem]="getDocumentUrlApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
       <app-api-item id="GET-documents-upload" [apiItem]="getDocumentsUploadApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
       <app-api-item id="GET-document-upload" [apiItem]="getDocumentUploadApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-    </div>
-  </div>
-  <div #headerMetrics class="col-12 mt-2">
-    <h5 class="formkiq-font">
-      Metrics
-    </h5>
-  </div>
-  <div class="col-12 mt-1 mx-0">
-    <div class="row mx-0">
-      <app-api-item id="POST-metrics" [apiItem]="postMetricsApiItem" class="col-12"></app-api-item>
     </div>
   </div>
   <div #headerSearch class="col-12 mt-2">

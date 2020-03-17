@@ -7,7 +7,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { of, Observable, ObservableInput } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { AppComponent } from './app.component';
-import { DatetimeFormat } from './utils/pipes/datetime-format';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
@@ -19,18 +18,9 @@ import { ChangePasswordComponent } from './plugins/authentication/components/cha
 import { ConfirmUserComponent } from './plugins/authentication/pages/confirm-user/confirm-user.component';
 import { ResetPasswordComponent } from './plugins/authentication/pages/reset-password/reset-password.component';
 import { AuthenticateComponent } from './plugins/authentication/pages/authenticate/authenticate.component';
-import { ExploreComponent as ApiExploreComponent } from './plugins/api-explorer/pages/explore/explore.component';
-import { ApiItemComponent } from './plugins/api-explorer/components/api-item/api-item.component';
-import { ExploreComponent as DocsExploreComponent } from './plugins/document-explorer/pages/explore/explore.component';
-import { AddComponent as DocsAddComponent } from './plugins/document-explorer/pages/add/add.component';
-import { TagsComponent as DocsTagsComponent } from './plugins/document-explorer/pages/tags/tags.component';
-import { SearchbarComponent as DocsSearchbarComponent } from './plugins/document-explorer/components/searchbar/searchbar.component';
-import { ShareModalComponent as DocsShareModalComponent } from './plugins/document-explorer/components/share-modal/share-modal.component';
 import { ApiService } from './services/api.service';
 import { ConfigurationService } from './services/configuration.service';
 import { TokenInterceptor } from './utils/token.interceptor';
-import { PagingComponent } from './plugins/document-explorer/components/paging/paging.component';
-import { ExploreComponent } from './plugins/user-explorer/pages/explore/explore.component';
 
 export function load(httpBackend: HttpBackend, config: ConfigurationService): (() => Promise<boolean>) {
   return (): Promise<boolean> => {
@@ -58,7 +48,6 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
 @NgModule({
   declarations: [
     AppComponent,
-    DatetimeFormat,
     NavbarComponent,
     SidebarComponent,
     SpinnerComponent,
@@ -69,16 +58,7 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
     ChangePasswordComponent,
     ConfirmUserComponent,
     ResetPasswordComponent,
-    AuthenticateComponent,
-    ApiExploreComponent,
-    ApiItemComponent,
-    DocsExploreComponent,
-    DocsAddComponent,
-    DocsTagsComponent,
-    DocsSearchbarComponent,
-    DocsShareModalComponent,
-    PagingComponent,
-    ExploreComponent
+    AuthenticateComponent
   ],
   imports: [
     BrowserModule,
