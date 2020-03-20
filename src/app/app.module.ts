@@ -31,6 +31,7 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
           map((x: ConfigurationService) => {
             config.apigateway = x.apigateway;
             config.cognito = x.cognito;
+            config.version = x.version;
             resolve(true);
           }),
           catchError((x: { status: number }, caught: Observable<void>): ObservableInput<{}> => {

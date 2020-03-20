@@ -6,6 +6,13 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
+## Test Http server for builds
+
+From base app folder, run `npx angular-http-server -p4288 --path './dist/formkiq-console'`
+Then, navigate to `http://localhost:4288/`
+
+Note: if you are testing a config.json, you must copy that JSON file into the `./dist/formkiq-console` folder after starting the server.
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
