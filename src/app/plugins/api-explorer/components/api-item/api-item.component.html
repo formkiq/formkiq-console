@@ -193,12 +193,16 @@
             </ng-template>
           </ngb-tab>
         </ngb-tabset>
-        <div *ngIf="loading$ | async" class="my-3 text-center">
-            <i name="cog" animation="spin"></i>
-        </div>
-        <div *ngIf="responseData" class="mt-2">
-          <p class="strong">Response</p>
-          <textarea id="response-textarea" class="form-control" [ngClass]="{ 'is-invalid http-error-response': isErrorResponse }" readonly>{{ responseData | json }}</textarea>
+        <div class="result-container">
+          <div *ngIf="loading$ | async" class="inflight">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+          <div *ngIf="responseData" class="mt-2">
+            <p class="strong">Response</p>
+            <textarea id="response-textarea" class="form-control" [ngClass]="{ 'is-invalid http-error-response': isErrorResponse }" readonly>{{ responseData | json }}</textarea>
+          </div>
         </div>
       </div>
     </div>
