@@ -9,7 +9,6 @@ import { map, catchError } from 'rxjs/operators';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { SpinnerComponent } from './components/spinner/spinner.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './plugins/authentication/components/login/login.component';
 import { RegisterComponent } from './plugins/authentication/components/register/register.component';
@@ -51,7 +50,6 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
     AppComponent,
     NavbarComponent,
     SidebarComponent,
-    SpinnerComponent,
     HomeComponent,
     LoginComponent,
     RegisterComponent,

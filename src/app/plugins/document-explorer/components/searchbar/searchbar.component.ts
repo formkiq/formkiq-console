@@ -140,6 +140,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
     if (previousToken !== '') {
       queryString += '&previous=' + previousToken;
     }
+    this.dateFormSubmittedSource.next(true);
     this.searchParameters.searchType = SearchType.Date;
     this.searchParameters.documentDate = documentDate;
     localStorage.setItem('documentSearchParameters', JSON.stringify(this.searchParameters));

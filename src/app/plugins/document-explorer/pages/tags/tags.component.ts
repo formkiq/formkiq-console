@@ -17,15 +17,16 @@ import { Document, Tag } from '../../../../services/api.schema';
 export class TagsComponent implements OnInit, AfterViewInit {
 
   constructor(
-      private router: Router,
-      private formBuilder: FormBuilder,
-      private apiService: ApiService,
-      private route: ActivatedRoute,
-    ) { }
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private apiService: ApiService,
+    private route: ActivatedRoute,
+  ) { }
 
   documentId = '';
   results$: any;
   addTagForm: FormGroup;
+  loading = false;
   submitted = false;
   isTagEditMode = false;
   nextToken = null;
@@ -55,8 +56,10 @@ export class TagsComponent implements OnInit, AfterViewInit {
       this.documentId = params.id;
       const container = this;
       this.isTagEditMode = false;
+      this.loading = true;
       this.results$ = this.apiService.getDocumentTags(this.documentId, queryString, this);
       this.results$.subscribe((result) => {
+        this.loading = false;
         if (result.previous) {
           this.previousToken = result.previous;
         }

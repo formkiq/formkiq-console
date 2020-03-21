@@ -13,7 +13,7 @@ import * as moment from 'moment-timezone';
   templateUrl: './explore.component.html',
   styleUrls: ['./explore.component.scss']
 })
-export class ExploreComponent implements OnInit, AfterViewInit,  HttpErrorCallback {
+export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallback {
 
   results$: Observable<{} | Document[]>;
   dateSearchSubmitted = false;
@@ -25,7 +25,7 @@ export class ExploreComponent implements OnInit, AfterViewInit,  HttpErrorCallba
     private router: Router,
     private modalService: NgbModal,
     private apiService: ApiService
-  ) {}
+  ) { }
 
   currentTimezone: string;
 
@@ -40,11 +40,13 @@ export class ExploreComponent implements OnInit, AfterViewInit,  HttpErrorCallba
     this.searchbar.dateFormSubmitted$.subscribe(
       (submitted) => {
         this.dateSearchSubmitted = submitted;
+        console.log('bison');
         this.results$ = null;
       });
     this.searchbar.tagFormSubmitted$.subscribe(
       (submitted) => {
         this.tagSearchSubmitted = submitted;
+        console.log('goat');
         this.results$ = null;
       });
   }
@@ -72,16 +74,20 @@ export class ExploreComponent implements OnInit, AfterViewInit,  HttpErrorCallba
   loadPreviousPage() {
     if (this.searchbar.currentSearch === 'date') {
       this.searchbar.loadPreviousDatePage();
+      this.dateSearchSubmitted = true;
     } else if (this.searchbar.currentSearch === 'tag') {
       this.searchbar.loadPreviousTagPage();
+      this.tagSearchSubmitted = true;
     }
   }
 
   loadNextPage() {
     if (this.searchbar.currentSearch === 'date') {
       this.searchbar.loadNextDatePage();
+      this.dateSearchSubmitted = true;
     } else if (this.searchbar.currentSearch === 'tag') {
       this.searchbar.loadNextTagPage();
+      this.tagSearchSubmitted = true;
     }
   }
 
