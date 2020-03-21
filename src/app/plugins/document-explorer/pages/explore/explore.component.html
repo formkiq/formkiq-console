@@ -21,7 +21,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="results.documents.length == 0"><td>No Documents Found</td></tr>
+          <tr *ngIf="results.documents.length == 0">
+            <td>
+              No documents found
+              <span *ngIf="!tagSearchSubmitted">for this date</span>
+              <span *ngIf="tagSearchSubmitted">for this tag search</span>
+            </td>
+          </tr>
           <tr *ngFor="let result of results.documents">
             <td>
               <strong>
@@ -35,7 +41,7 @@
             <td>{{result.path}}&nbsp;</td>
             <td>{{result.contentType}}&nbsp;</td>
             <td>{{result.userId}}&nbsp;</td>
-            <td>{{ result.inserteddate | datetimeFormat: 'yyyy-MM-dd HH:mm':currentTimezone }}</td>
+            <td>{{ result.inserteddate | datetimeFormat: 'yyyy-MM-dd HH:mm Z':currentTimezone }}</td>
           </tr>
         </tbody>
       </table>
