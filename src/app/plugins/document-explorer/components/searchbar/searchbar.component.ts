@@ -84,10 +84,6 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
   }
 
   ngAfterViewInit() {
-    if (this.searchParameters.documentDate) {
-      const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
-      this.dp.writeValue(todayForPicker);
-    }
     if (this.reloadLastSearch) {
       if (this.currentSearch === 'date') {
         this.runDateSearch(this.searchParameters.documentDate);
@@ -96,6 +92,10 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
       }
     } else {
       this.viewTodaysDocuments();
+    }
+    if (this.searchParameters.documentDate) {
+      const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
+      this.dp.writeValue(todayForPicker);
     }
   }
 
