@@ -35,6 +35,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
 
   public nextToken = null;
   public previousToken = null;
+  private reloadLastSearch = false;
 
   @Input() currentTimezone: string;
   @ViewChild('d') dp: NgbInputDatepicker;
@@ -46,7 +47,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
     public navigationService: NavigationService,
     private searchService: SearchService,
     private router: Router
-    ) {}
+  ) { }
 
   public get currentSearch(): string {
     return this.searchParameters.searchType;
@@ -61,10 +62,9 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
       operator: [],
       tagValue: []
     });
-    let reloadLastSearch = false;
     if (localStorage.getItem('documentSearchParameters')) {
       this.searchParameters = JSON.parse(localStorage.getItem('documentSearchParameters'));
-      reloadLastSearch = true;
+      this.reloadLastSearch = true;
     }
     this.tagSearchForm.get('operator').setValue('eq');
     if (this.searchParameters.documentDate) {
@@ -81,19 +81,21 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
         this.tagSearchForm.get('operator').setValue(this.searchParameters.tagQuery.operator);
       }
     }
-    if (reloadLastSearch) {
-      if (this.currentSearch === 'date') {
-        this.runDateSearch(this.searchParameters.documentDate);
-      } else {
-        this.runTagSearch(this.searchParameters.tagQuery);
-      }
-    }
   }
 
   ngAfterViewInit() {
     if (this.searchParameters.documentDate) {
       const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
       this.dp.writeValue(todayForPicker);
+    }
+    if (this.reloadLastSearch) {
+      if (this.currentSearch === 'date') {
+        this.runDateSearch(this.searchParameters.documentDate);
+      } else {
+        this.runTagSearch(this.searchParameters.tagQuery);
+      }
+    } else {
+      this.viewTodaysDocuments();
     }
   }
 
@@ -108,7 +110,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
 
   viewTodaysDocuments() {
     const now = new Date();
-    const todayForPicker = {year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()};
+    const todayForPicker = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
     this.dp.writeValue(todayForPicker);
     this.dateSearchForm.get('dp').setValue(todayForPicker);
     const documentDate: string = this.searchService.buildDocumentDate(todayForPicker.year, todayForPicker.month, todayForPicker.day);
