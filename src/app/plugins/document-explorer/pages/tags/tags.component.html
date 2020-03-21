@@ -5,40 +5,47 @@
   </h5>
   <button class="btn btn-primary" (click)="backToList()"><i name="chevron-left"></i> Back to Results</button>
 </div>
-<div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
-  <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
-</div>
-<div class="col-12">
-  <div class="table">
-    <table class="table table-hover" *ngIf="results$ | async as results">
-      <thead>
-        <tr>
-          <th scope="col">Key</th>
-          <th scope="col">Value</th>
-          <th scope="col">Date Inserted</th>
-          <th scope="col">&nbsp;</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="results.tags.length == 0"><td>No Tags Found</td></tr>
-        <tr *ngFor="let result of results.tags">
-          <td>{{result.key}}</td>
-          <td>{{result.value}}&nbsp;</td>
-          <td>{{result.inserteddate}}&nbsp;</td>
-          <td *ngIf="f.tagKey.value != result.key">
-            <input type="button" value="Edit" (click)="editTag(result.key, result.value)" />
-            <input type="button" value="Delete" (click)="deleteTag(result.key)" />
-          </td>
-          <td *ngIf="f.tagKey.value == result.key">
-            <input type="button" value="Cancel Edit" (click)="cancelEdit()" />
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<div class="result-container">
+  <div *ngIf="this.loading" class="inflight">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
   </div>
   <div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
     <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
   </div>
+  <div class="col-12">
+    <div class="table">
+      <table class="table table-hover" *ngIf="results$ | async as results">
+        <thead>
+          <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Value</th>
+            <th scope="col">Date Inserted</th>
+            <th scope="col">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="results.tags.length == 0"><td>No Tags Found</td></tr>
+          <tr *ngFor="let result of results.tags">
+            <td>{{result.key}}</td>
+            <td>{{result.value}}&nbsp;</td>
+            <td>{{result.inserteddate}}&nbsp;</td>
+            <td *ngIf="f.tagKey.value != result.key">
+              <input type="button" value="Edit" (click)="editTag(result.key, result.value)" />
+              <input type="button" value="Delete" (click)="deleteTag(result.key)" />
+            </td>
+            <td *ngIf="f.tagKey.value == result.key">
+              <input type="button" value="Cancel Edit" (click)="cancelEdit()" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
+      <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
+    </div>
+</div>
   <form [formGroup]="addTagForm" (ngSubmit)="saveTag()">
     <div class="row mb-2">
       <div class="col-12">

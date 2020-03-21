@@ -5,63 +5,59 @@
   <div class="col-12 mb-1">
     <input type="button" class="btn btn-primary" value="Add Documents..." (click)="addDocuments()" />
   </div>
-  <div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
-    <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
-  </div>
-  <div class="col-12">
-    <div class="table">
-      <table class="table table-hover" *ngIf="results$ | async as results else divForSubmitQuerySpinner">
-        <thead>
-          <tr>
-            <th scope="col">Document</th>
-            <th scope="col">Path</th>
-            <th scope="col">Type</th>
-            <th scope="col">User</th>
-            <th scope="col">Date Inserted</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngIf="results.documents.length == 0">
-            <td>
-              No documents found
-              <span *ngIf="!tagSearchSubmitted">for this date</span>
-              <span *ngIf="tagSearchSubmitted">for this tag search</span>
-            </td>
-          </tr>
-          <tr *ngFor="let result of results.documents">
-            <td>
-              <strong>
-              {{result.documentId}}
-              </strong>
-              <p class="py-2">
-                <input type="button" class="mx-1" value="Share..." (click)="shareDocument(result.documentId, shareModal)" />
-                <input type="button" class="mx-1" value="Tags..." (click)="viewDocumentTags(result.documentId)" />
-              </p>
-            </td>
-            <td>{{result.path}}&nbsp;</td>
-            <td>{{result.contentType}}&nbsp;</td>
-            <td>{{result.userId}}&nbsp;</td>
-            <td>{{ result.inserteddate | datetimeFormat: 'yyyy-MM-dd HH:mm Z':currentTimezone }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="result-container">
+    <div *ngIf="this.dateSearchSubmitted || this.tagSearchSubmitted" class="inflight">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
     </div>
-    <div *ngIf="results$ | async as results" class="col-12 text-center">
+    <div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
       <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
+    </div>
+    <div class="col-12">
+      <div class="table">
+        <table class="table table-hover" *ngIf="results$ | async as results">
+          <thead>
+            <tr>
+              <th scope="col">Document</th>
+              <th scope="col">Path</th>
+              <th scope="col">Type</th>
+              <th scope="col">User</th>
+              <th scope="col">Date Inserted</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="results.documents.length == 0">
+              <td>
+                No documents found
+                <span *ngIf="!tagSearchSubmitted">for this date</span>
+                <span *ngIf="tagSearchSubmitted">for this tag search</span>
+              </td>
+            </tr>
+            <tr *ngFor="let result of results.documents">
+              <td>
+                <strong>
+                {{result.documentId}}
+                </strong>
+                <p class="py-2">
+                  <input type="button" class="mx-1" value="Share..." (click)="shareDocument(result.documentId, shareModal)" />
+                  <input type="button" class="mx-1" value="Tags..." (click)="viewDocumentTags(result.documentId)" />
+                </p>
+              </td>
+              <td>{{result.path}}&nbsp;</td>
+              <td>{{result.contentType}}&nbsp;</td>
+              <td>{{result.userId}}&nbsp;</td>
+              <td>{{ result.inserteddate | datetimeFormat: 'yyyy-MM-dd HH:mm Z':currentTimezone }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="results$ | async as results" class="col-12 text-center">
+        <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
+      </div>
     </div>
   </div>
 </div>
-<ng-template #divForSubmitQuerySpinner>
-  <div class="wrapper divForSpinner" *ngIf="dateSearchSubmitted || tagSearchSubmitted">
-    <div class="overlay">
-      <div class="spinner-wrapper">
-        <app-spinner></app-spinner>
-      </div>
-    </div>
-
-    <ng-content></ng-content>
-  </div>
-</ng-template>
 <ng-template #shareModal let-modal>
   <app-share-modal
     #shareModalComponent
