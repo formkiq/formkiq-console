@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import {
-    CognitoUserPool,
-    CognitoUserAttribute,
-    CognitoUserSession,
-    AuthenticationDetails,
-    CognitoUser,
-    CognitoIdToken,
-    CognitoAccessToken,
-    CognitoRefreshToken
-  } from 'amazon-cognito-identity-js';
+  CognitoUserPool,
+  CognitoUserAttribute,
+  CognitoUserSession,
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoIdToken,
+  CognitoAccessToken,
+  CognitoRefreshToken
+} from 'amazon-cognito-identity-js';
 import * as Aws from 'aws-sdk/global';
 import * as AwsService from 'aws-sdk/lib/service';
 import * as CognitoIdentity from 'aws-sdk/clients/cognitoidentity';
@@ -58,17 +58,17 @@ export class CognitoAuthenticationService {
   private resetPasswordResponseSource = new Subject<any>();
 
   constructor(private configurationService: ConfigurationService) {
-      this.expiredStorage = new ExpiredStorage();
-      this.currentUserSubject = new BehaviorSubject<CognitoUser>(JSON.parse(localStorage.getItem('currentUser')));
-      this.currentUser = this.currentUserSubject.asObservable();
-      this.idTokenSubject = new BehaviorSubject<string>(JSON.parse(this.expiredStorage.getItem('idToken')));
-      this.idToken = this.idTokenSubject.asObservable();
-      this.accessTokenSubject = new BehaviorSubject<string>(JSON.parse(this.expiredStorage.getItem('accessToken')));
-      this.accessToken = this.accessTokenSubject.asObservable();
-      this.refreshTokenSubject = new BehaviorSubject<string>(JSON.parse(this.expiredStorage.getItem('refreshToken')));
-      this.refreshToken = this.refreshTokenSubject.asObservable();
-      this.currentUserIsAdminSubject = new BehaviorSubject<boolean>(JSON.parse(localStorage.getItem('currentUserIsAdmin')));
-      this.currentUserIsAdmin = this.currentUserIsAdminSubject.asObservable();
+    this.expiredStorage = new ExpiredStorage();
+    this.currentUserSubject = new BehaviorSubject<CognitoUser>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUser = this.currentUserSubject.asObservable();
+    this.idTokenSubject = new BehaviorSubject<string>(JSON.parse(this.expiredStorage.getItem('idToken')));
+    this.idToken = this.idTokenSubject.asObservable();
+    this.accessTokenSubject = new BehaviorSubject<string>(JSON.parse(this.expiredStorage.getItem('accessToken')));
+    this.accessToken = this.accessTokenSubject.asObservable();
+    this.refreshTokenSubject = new BehaviorSubject<string>(JSON.parse(this.expiredStorage.getItem('refreshToken')));
+    this.refreshToken = this.refreshTokenSubject.asObservable();
+    this.currentUserIsAdminSubject = new BehaviorSubject<boolean>(JSON.parse(localStorage.getItem('currentUserIsAdmin')));
+    this.currentUserIsAdmin = this.currentUserIsAdminSubject.asObservable();
   }
 
   public get currentUserValue(): CognitoUser {
@@ -108,8 +108,8 @@ export class CognitoAuthenticationService {
 
   getUserPool() {
     const poolData = {
-      UserPoolId : this.configurationService.cognito.userPoolId,
-      ClientId : this.configurationService.cognito.clientId
+      UserPoolId: this.configurationService.cognito.userPoolId,
+      ClientId: this.configurationService.cognito.clientId
     };
     return new CognitoUserPool(poolData);
   }
@@ -188,102 +188,84 @@ export class CognitoAuthenticationService {
     });
     const response = new LoginResponse();
     cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: (result) => {
-          response.success = true;
-          response.message = 'You have signed in successfully.';
-          response.email = email;
+      onSuccess: (result) => {
+        response.success = true;
+        response.message = 'You have signed in successfully.';
+        response.email = email;
+        response.forcePasswordChange = false;
+        localStorage.setItem('currentUser', JSON.stringify(cognitoUser));
+        this.currentUserSubject.next(cognitoUser);
+        const idToken = result.getIdToken().getJwtToken();
+        this.expiredStorage.setItem('idToken', JSON.stringify(idToken), 3500);
+        this.idTokenSubject.next(idToken);
+        const accessToken = result.getAccessToken().getJwtToken();
+        this.expiredStorage.setItem('accessToken', JSON.stringify(accessToken), 3500);
+        this.accessTokenSubject.next(accessToken);
+        const refreshToken = result.getRefreshToken().getToken();
+        this.expiredStorage.setItem('refreshToken', JSON.stringify(refreshToken), 2590000);
+        this.refreshTokenSubject.next(refreshToken);
+        const url = 'cognito-idp.' + this.configurationService.cognito.region.toLowerCase() + '.amazonaws.com/' +
+          this.configurationService.cognito.userPoolId;
+        this.cognitoLogins[url] = this.idTokenValue;
+        const creds = new Aws.CognitoIdentityCredentials({
+          IdentityPoolId: this.configurationService.cognito.identityPoolId,
+          Logins: this.cognitoLogins
+        });
+        creds.clearCachedId();
+        Aws.config.update({
+          region: this.configurationService.cognito.region,
+          credentials: creds
+        });
+        const credentials: any = Aws.config.credentials;
+        credentials.get((err) => {
+          if (err) {
+            localStorage.setItem('currentUserIsAdmin', 'false');
+            this.currentUserIsAdminSubject.next(false);
+            this.loginResponseSource.next(response);
+            this.authenticationChangeSource.next();
+            return true;
+          } else {
+            localStorage.setItem('currentUserIsAdmin', 'true');
+            this.currentUserIsAdminSubject.next(true);
+            this.loginResponseSource.next(response);
+            this.authenticationChangeSource.next();
+          }
+        });
+      },
+      onFailure: (err) => {
+        response.success = false;
+        response.message = err.message;
+        // response.email = email;
+        if (err.code === 'PasswordResetRequiredException') {
+          response.message += '. Instructions to reset your password will be emailed to you.';
           response.forcePasswordChange = false;
-          localStorage.setItem('currentUser', JSON.stringify(cognitoUser));
-          this.currentUserSubject.next(cognitoUser);
-          const idToken = result.getIdToken().getJwtToken();
-          this.expiredStorage.setItem('idToken', JSON.stringify(idToken), 3500);
-          this.idTokenSubject.next(idToken);
-          const accessToken = result.getAccessToken().getJwtToken();
-          this.expiredStorage.setItem('accessToken', JSON.stringify(accessToken), 3500);
-          this.accessTokenSubject.next(accessToken);
-          const refreshToken = result.getRefreshToken().getToken();
-          this.expiredStorage.setItem('refreshToken', JSON.stringify(refreshToken), 2590000);
-          this.refreshTokenSubject.next(refreshToken);
-          const url = 'cognito-idp.' + this.configurationService.cognito.region.toLowerCase() + '.amazonaws.com/' +
-            this.configurationService.cognito.userPoolId;
-          this.cognitoLogins[url] = this.idTokenValue;
-          const creds = new Aws.CognitoIdentityCredentials({
-            IdentityPoolId: this.configurationService.cognito.identityPoolId,
-            Logins: this.cognitoLogins
-          });
-          creds.clearCachedId();
-          Aws.config.update({
-            region: this.configurationService.cognito.region,
-            credentials: creds
-          });
-          const credentials: any = Aws.config.credentials;
-          credentials.get((err) => {
-            if (err) {
-              localStorage.setItem('currentUserIsAdmin', 'false');
-              this.currentUserIsAdminSubject.next(false);
+          this.currentUserSubject.next(null);
+          localStorage.removeItem('currentUser');
+          this.idTokenSubject.next(null);
+          this.expiredStorage.removeItem('idToken');
+          this.accessTokenSubject.next(null);
+          this.expiredStorage.removeItem('accessToken');
+          this.refreshTokenSubject.next(null);
+          this.expiredStorage.removeItem('refreshToken');
+          cognitoUser.forgotPassword({
+            onSuccess: (result) => {
+              response.success = true;
+              response.message = 'Your password needs to be reset; instructions will be emailed to you.';
               this.loginResponseSource.next(response);
               this.authenticationChangeSource.next();
               return true;
-            } else {
-              localStorage.setItem('currentUserIsAdmin', 'true');
-              this.currentUserIsAdminSubject.next(true);
+            },
+            onFailure: (forgotErr) => {
+              response.success = false;
+              response.message = forgotErr.message;
               this.loginResponseSource.next(response);
               this.authenticationChangeSource.next();
-            }
+              return false;
+            },
           });
-        },
-        onFailure: (err) => {
-          response.success = false;
-          response.message = err.message;
-          // response.email = email;
-          if (err.code === 'PasswordResetRequiredException') {
-            response.message += '. Instructions to reset your password will be emailed to you.';
-            response.forcePasswordChange = false;
-            this.currentUserSubject.next(null);
-            localStorage.removeItem('currentUser');
-            this.idTokenSubject.next(null);
-            this.expiredStorage.removeItem('idToken');
-            this.accessTokenSubject.next(null);
-            this.expiredStorage.removeItem('accessToken');
-            this.refreshTokenSubject.next(null);
-            this.expiredStorage.removeItem('refreshToken');
-            cognitoUser.forgotPassword({
-              onSuccess: (result) => {
-                response.success = true;
-                response.message = 'Your password needs to be reset; instructions will be emailed to you.';
-                this.loginResponseSource.next(response);
-                this.authenticationChangeSource.next();
-                return true;
-              },
-              onFailure: (forgotErr) => {
-                response.success = false;
-                response.message = forgotErr.message;
-                this.loginResponseSource.next(response);
-                this.authenticationChangeSource.next();
-                return false;
-              },
-            });
-            return false;
-          } else {
-            response.forcePasswordChange = false;
-            this.currentUserSubject.next(null);
-            localStorage.removeItem('currentUser');
-            this.idTokenSubject.next(null);
-            this.expiredStorage.removeItem('idToken');
-            this.accessTokenSubject.next(null);
-            this.expiredStorage.removeItem('accessToken');
-            this.refreshTokenSubject.next(null);
-            this.expiredStorage.removeItem('refreshToken');
-            this.loginResponseSource.next(response);
-            this.authenticationChangeSource.next();
-            return false;
-          }
-        },
-        newPasswordRequired: (userAttributes, requiredAttributes) => {
-          response.success = false;
-          response.message = 'You must change your password.';
-          response.email = email;
-          response.forcePasswordChange = true;
+          return false;
+        } else {
+          response.forcePasswordChange = false;
           this.currentUserSubject.next(null);
           localStorage.removeItem('currentUser');
           this.idTokenSubject.next(null);
@@ -295,7 +277,25 @@ export class CognitoAuthenticationService {
           this.loginResponseSource.next(response);
           this.authenticationChangeSource.next();
           return false;
-        },
+        }
+      },
+      newPasswordRequired: (userAttributes, requiredAttributes) => {
+        response.success = false;
+        response.message = 'You must change your password.';
+        response.email = email;
+        response.forcePasswordChange = true;
+        this.currentUserSubject.next(null);
+        localStorage.removeItem('currentUser');
+        this.idTokenSubject.next(null);
+        this.expiredStorage.removeItem('idToken');
+        this.accessTokenSubject.next(null);
+        this.expiredStorage.removeItem('accessToken');
+        this.refreshTokenSubject.next(null);
+        this.expiredStorage.removeItem('refreshToken');
+        this.loginResponseSource.next(response);
+        this.authenticationChangeSource.next();
+        return false;
+      },
     });
   }
 
@@ -333,8 +333,8 @@ export class CognitoAuthenticationService {
   register(email, password) {
     const userPool = this.getUserPool();
     const emailParam = {
-      Name : 'email',
-      Value : email
+      Name: 'email',
+      Value: email
     };
     const attributes = [];
     const emailAttribute = new CognitoUserAttribute(emailParam);
@@ -390,18 +390,18 @@ export class CognitoAuthenticationService {
     });
     const response = new ForgotPasswordResponse();
     cognitoUser.forgotPassword({
-        onSuccess: (result) => {
-          response.success = true;
-          response.message = 'A Password Reset link has been emailed to you.';
-          this.forgotPasswordResponseSource.next(response);
-          return true;
-        },
-        onFailure: (err) => {
-          response.success = false;
-          response.message = err.message;
-          this.forgotPasswordResponseSource.next(response);
-          return false;
-        },
+      onSuccess: (result) => {
+        response.success = true;
+        response.message = 'A Password Reset link has been emailed to you.';
+        this.forgotPasswordResponseSource.next(response);
+        return true;
+      },
+      onFailure: (err) => {
+        response.success = false;
+        response.message = err.message;
+        this.forgotPasswordResponseSource.next(response);
+        return false;
+      },
     });
   }
 
