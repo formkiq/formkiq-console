@@ -20,7 +20,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private notificationService: NotificationService
-    ) { }
+  ) { }
 
   public form: FormGroup;
   formSubmitted = false;
@@ -55,13 +55,14 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
           this.f.password.setValue('');
           this.f.passwordConfirmation.setValue('');
         } else if (!this.changePasswordResponse.requestNewVerificationCode) {
-          this.router.navigate(['/authenticate'], { queryParams:
+          this.router.navigate(['/authenticate'], {
+            queryParams:
             {
               action: 'login',
             }
           });
         }
-    });
+      });
 
   }
 
