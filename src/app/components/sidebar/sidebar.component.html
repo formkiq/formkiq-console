@@ -189,13 +189,6 @@
         Sign Out <span *ngIf="currentUrl == '/signOut'" class="sr-only">(current)</span>
       </a>
     </li>
-    <li *ngIf="authenticationService.currentUserIsAdmin" class="nav-item"  [ngClass]="{ 'active': currentUrl == '/users' }">
-      <a class="nav-link"
-        [routerLink]="['/users']"
-        (click)="emitSidebarItemClick('apiTopClicked')">
-        Users <span *ngIf="currentUrl == '/users'" class="sr-only">(current)</span>
-      </a>
-    </li>
   </ul>
 </nav>
 <footer>
