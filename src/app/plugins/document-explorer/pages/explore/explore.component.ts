@@ -40,13 +40,11 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
     this.searchbar.dateFormSubmitted$.subscribe(
       (submitted) => {
         this.dateSearchSubmitted = submitted;
-        console.log('bison');
         this.results$ = null;
       });
     this.searchbar.tagFormSubmitted$.subscribe(
       (submitted) => {
         this.tagSearchSubmitted = submitted;
-        console.log('goat');
         this.results$ = null;
       });
   }
