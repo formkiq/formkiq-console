@@ -34,7 +34,6 @@ export class TokenInterceptor implements HttpInterceptor {
       }
     });
     return next.handle(request).pipe(catchError(err => {
-      console.log(err);
       if (err.status === 401 || err.status === 0) {
         this.router.navigate(['/login']);
       }
