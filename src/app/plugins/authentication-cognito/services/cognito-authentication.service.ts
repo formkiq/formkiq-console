@@ -448,6 +448,9 @@ export class CognitoAuthenticationService {
           },
           onFailure: (err) => {
             response.success = false;
+            if (err.code === 'InvalidPasswordException') {
+              response.retryChangeForm = true;
+            }
             response.message = err.message;
             this.changePasswordResponseSource.next(response);
             return false;
