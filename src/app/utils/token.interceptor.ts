@@ -21,15 +21,20 @@ import { AuthenticationService } from '../plugins/authentication/services/authen
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router, private authenticationService: AuthenticationService) {}
+  constructor(private router: Router, private authenticationService: AuthenticationService) { }
 
-  intercept(request: HttpRequest<any> , next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (!this.authenticationService.loggedInAccessToken) {
+      this.authenticationService.checkLoginAndToken();
+      return;
+    }
     request = request.clone({
       setHeaders: {
         Authorization: this.authenticationService.loggedInAccessToken
       }
     });
     return next.handle(request).pipe(catchError(err => {
+      console.log(err);
       if (err.status === 401 || err.status === 0) {
         this.router.navigate(['/login']);
       }
