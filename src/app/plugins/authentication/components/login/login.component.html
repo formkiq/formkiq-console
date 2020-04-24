@@ -13,13 +13,6 @@
       formControlName="email"
       [ngClass]="{ 'is-invalid': formSubmitted && f.email.errors }"
       placeholder="email@example.com"
-      placement="left"
-      ngbTooltip="Email is invalid"
-      [autoClose]="false"
-      triggers="manual"
-      #emailTooltip="ngbTooltip"
-      tooltipClass="warning-tooltip"
-      (keyup)="checkIfEmailStillInvalid(emailTooltip)"
       >
   </div>
   <div class="form-group">
@@ -31,16 +24,9 @@
       formControlName="password"
       [ngClass]="{ 'is-invalid': formSubmitted && f.password.errors }"
       placeholder="password"
-      placement="left"
-      ngbTooltip="Password is too short"
-      [autoClose]="false"
-      triggers="manual"
-      #passwordTooltip="ngbTooltip"
-      tooltipClass="warning-tooltip"
-      (keyup)="checkIfPasswordStillInvalid(passwordTooltip)"
       >
   </div>
-  <button type="submit" class="btn btn-primary" (click)="signIn(emailTooltip, passwordTooltip)">Sign in</button>
+  <button type="submit" class="btn btn-primary" (click)="signIn()">Sign in</button>
   <span class="px-1"></span>
   <button *ngIf="isDropdown" type="submit" class="btn btn-primary" (click)="cancel()">Cancel</button>
 </form>

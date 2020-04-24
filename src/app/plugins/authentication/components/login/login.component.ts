@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private route: ActivatedRoute,
     private router: Router
-    ) { }
+  ) { }
 
   @Input() isDropdown = false;
 
@@ -42,7 +42,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       (value: LoginResponse) => {
         if (value.forcePasswordChange) {
           this.redirectPath += '/authenticate';
-          this.router.navigate([this.redirectPath], { queryParams:
+          this.router.navigate([this.redirectPath], {
+            queryParams:
             {
               action: 'changePassword',
               email: value.email
@@ -58,38 +59,17 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.router.navigate([this.redirectPath]);
           });
         }
-    });
+      });
   }
 
   ngOnDestroy() {
     this.loginResponseSubscription.unsubscribe();
   }
 
-  checkIfEmailStillInvalid(emailTooltip) {
-    if (!this.f.email.errors) {
-      emailTooltip.close();
-    }
-  }
-
-  checkIfPasswordStillInvalid(passwordTooltip) {
-    if (!this.f.password.errors) {
-      passwordTooltip.close();
-    }
-  }
-
-  signIn(emailTooltip, passwordTooltip) {
+  signIn() {
     this.formSubmitted = true;
-    emailTooltip.close();
-    passwordTooltip.close();
     if (!this.f.email.errors && !this.f.password.errors) {
       this.authenticationService.login(this.form.get('email').value, this.form.get('password').value);
-    } else {
-      if (this.f.email.errors) {
-        emailTooltip.open();
-      }
-      if (this.f.password.errors) {
-        passwordTooltip.open();
-      }
     }
   }
 

@@ -14,13 +14,6 @@
       formControlName="email"
       [ngClass]="{ 'is-invalid': formSubmitted && f.email.errors }"
       placeholder="email@example.com"
-      placement="left"
-      ngbTooltip="Email is invalid"
-      [autoClose]="false"
-      triggers="manual"
-      #emailTooltip="ngbTooltip"
-      tooltipClass="warning-tooltip"
-      (keyup)="checkIfEmailStillInvalid(emailTooltip)"
       >
   </div>
   <div class="form-group">
@@ -32,13 +25,6 @@
       formControlName="password"
       [ngClass]="{ 'is-invalid': formSubmitted && f.password.errors }"
       placeholder="password"
-      placement="left"
-      ngbTooltip="Password is too short"
-      [autoClose]="false"
-      triggers="manual"
-      #passwordTooltip="ngbTooltip"
-      tooltipClass="warning-tooltip"
-      (keyup)="checkIfPasswordStillInvalid(passwordTooltip)"
       >
   </div>
   <div class="form-group">
@@ -50,16 +36,9 @@
       formControlName="passwordConfirmation"
       [ngClass]="{ 'is-invalid': formSubmitted && f.passwordConfirmation.errors }"
       placeholder="repeat password"
-      placement="left"
-      ngbTooltip="Passwords do not match"
-      [autoClose]="false"
-      triggers="manual"
-      #passwordConfirmationTooltip="ngbTooltip"
-      tooltipClass="warning-tooltip"
-      (keyup)="checkIfPasswordConfirmationStillInvalid(passwordConfirmationTooltip)"
       >
   </div>
-  <button type="submit" class="btn btn-primary" (click)="createAccount(emailTooltip, passwordTooltip, passwordConfirmationTooltip)">Create Account</button>
+  <button type="submit" class="btn btn-primary" (click)="createAccount()">Create Account</button>
   <span class="px-1"></span>
   <button type="submit" class="btn btn-primary" (click)="cancel()">Cancel</button>
 </form>

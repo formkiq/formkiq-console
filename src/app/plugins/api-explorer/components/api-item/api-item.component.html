@@ -8,7 +8,7 @@
       {{ apiItem.path }}
     </h6>
   </div>
-  <div class="col-12" [ngbCollapse]="isCollapsed">
+  <div class="col-12">
     <div class="row mx-0 mt-3">
       <div class="col-12 col-sm-4">
         <form [formGroup]="form">
@@ -31,7 +31,6 @@
                       id="field-documentID"
                       formControlName="documentID"
                       [ngClass]="{ 'is-invalid': formSubmitted && f.documentID.errors }"
-                      placement="left"
                       />
                   </div>
                 </div>
@@ -46,7 +45,6 @@
                       id="field-tagKey"
                       formControlName="tagKey"
                       [ngClass]="{ 'is-invalid': formSubmitted && f.tagKey.errors }"
-                      placement="left"
                       />
                   </div>
                 </div>
@@ -61,7 +59,6 @@
                       id="field-postJson"
                       formControlName="postJson"
                       [ngClass]="{ 'is-invalid': formSubmitted && f.postJson.errors }"
-                      placement="left"
                       ></textarea>
                   </div>
                 </div>
@@ -75,7 +72,6 @@
                       id="field-date"
                       formControlName="date"
                       [ngClass]="{ 'is-invalid': formSubmitted && f.date.errors }"
-                      placement="left"
                       />
                   </div>
                 </div>
@@ -90,7 +86,6 @@
                       id="field-tz"
                       formControlName="tz"
                       [ngClass]="{ 'is-invalid': formSubmitted && f.tz.errors }"
-                      placement="left"
                       />
                   </div>
                 </div>
@@ -104,7 +99,6 @@
                       id="field-fileUpload"
                       formControlName="fileUpload"
                       [ngClass]="{ 'is-invalid': formSubmitted && f.fileUpload.errors }"
-                      placement="left"
                       />
                   </div>
                 </div>
@@ -118,7 +112,6 @@
                       id="field-limit"
                       formControlName="limit"
                       [ngClass]="{ 'is-invalid': formSubmitted && f.limit.errors }"
-                      placement="left"
                       />
                   </div>
                 </div>
@@ -133,7 +126,6 @@
                       id="field-previous"
                       formControlName="previous"
                       [ngClass]="{ 'is-invalid': formSubmitted && f.previous.errors }"
-                      placement="left"
                       />
                   </div>
                   <div class="form-group">
@@ -144,7 +136,6 @@
                       id="field-next"
                       formControlName="next"
                       [ngClass]="{ 'is-invalid': formSubmitted && f.next.errors }"
-                      placement="left"
                       />
                   </div>
                 </div>
@@ -161,7 +152,6 @@
                       id="field-path"
                       formControlName="path"
                       [ngClass]="{ 'is-invalid': formSubmitted && f.limit.errors }"
-                      placement="left"
                       />
                   </div>
                 </div>
@@ -181,18 +171,8 @@
             </button>
           </div>
         </div>
-        <ngb-tabset>
-          <ngb-tab title="HTTP">
-            <ng-template ngbTabContent>
-              <textarea id="http-textarea" class="form-control" readonly>{{ getHttpRequest() }}</textarea>
-            </ng-template>
-          </ngb-tab>
-          <ngb-tab title="cURL">
-            <ng-template ngbTabContent>
-              <textarea id="curl-textarea" class="form-control" readonly>{{ getCurlRequest() }}</textarea>
-            </ng-template>
-          </ngb-tab>
-        </ngb-tabset>
+        <textarea id="http-textarea" class="form-control" readonly>{{ getHttpRequest() }}</textarea>
+        <textarea id="curl-textarea" class="form-control" readonly>{{ getCurlRequest() }}</textarea>
         <div class="result-container">
           <div *ngIf="loading$ | async" class="inflight">
             <div class="spinner-border" role="status">

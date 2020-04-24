@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpBackend } from '@angular/common/http';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { of, Observable, ObservableInput } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { AppComponent } from './app.component';
@@ -64,8 +63,7 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule,
-    NgbModule
+    ReactiveFormsModule
   ],
   providers: [{
     provide: APP_INITIALIZER,

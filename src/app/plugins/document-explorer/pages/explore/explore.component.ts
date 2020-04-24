@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
 import { Document } from '../../../../services/api.schema';
 import { SearchbarComponent } from '../../components/searchbar/searchbar.component';
@@ -23,7 +22,6 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
 
   constructor(
     private router: Router,
-    private modalService: NgbModal,
     private apiService: ApiService
   ) { }
 
@@ -94,7 +92,7 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
       const shareInfo = JSON.parse(JSON.stringify(data));
       if (shareInfo.hasOwnProperty('url')) {
         this.shareUrl = shareInfo.url;
-        this.modalService.open(content, { centered: true, size: 'lg' });
+        // this.modalService.open(content, { centered: true, size: 'lg' });
       } else {
         this.shareUrl = '';
       }
@@ -106,7 +104,7 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
   }
 
   closeModal(event) {
-    this.modalService.dismissAll();
+    // this.modalService.dismissAll();
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {

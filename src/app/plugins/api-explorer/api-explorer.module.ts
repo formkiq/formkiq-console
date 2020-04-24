@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ApiExplorerRoutingModule } from './api-explorer-routing.module';
 import { ApiItemComponent } from './components/api-item/api-item.component';
@@ -14,8 +13,7 @@ import { ExploreComponent } from './pages/explore/explore.component';
     CommonModule,
     ApiExplorerRoutingModule,
     FormsModule,
-    ReactiveFormsModule,
-    NgbModule
+    ReactiveFormsModule
   ]
 })
 export class ApiExplorerModule { }

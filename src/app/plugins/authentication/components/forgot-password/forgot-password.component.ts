@@ -16,7 +16,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private notificationService: NotificationService
-    ) { }
+  ) { }
 
   public form: FormGroup;
   formSubmitted = false;
@@ -34,28 +34,17 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
       (value: ForgotPasswordResponse) => {
         this.forgotPasswordResponse = value;
         this.notificationService.createNotificationFromAuthenticationResponse(value);
-    });
+      });
   }
 
   ngOnDestroy() {
     this.forgotPasswordResponseSubscription.unsubscribe();
   }
 
-  checkIfEmailStillInvalid(emailTooltip) {
-    if (!this.f.email.errors) {
-      emailTooltip.close();
-    }
-  }
-
-  resetPassword(emailTooltip) {
+  resetPassword() {
     this.formSubmitted = true;
-    emailTooltip.close();
     if (!this.f.email.errors) {
       this.authenticationService.forgotPassword(this.form.get('email').value);
-    } else {
-      if (this.f.email.errors) {
-        emailTooltip.open();
-      }
     }
   }
 

@@ -8,7 +8,6 @@ import { NavigationService } from '../../../../services/navigation.service';
 import { Document } from '../../../../services/api.schema';
 import { SearchService } from '../../services/search.service';
 import { TagQuery, SearchParameters, SearchType } from '../../services/search.schema';
-import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment-timezone';
 
 @Component({
@@ -38,7 +37,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
   private reloadLastSearch = false;
 
   @Input() currentTimezone: string;
-  @ViewChild('d') dp: NgbInputDatepicker;
+  // @ViewChild('d') dp: NgbInputDatepicker;
   @Output() documentQueryResultEmitter: EventEmitter<any> = new EventEmitter();
 
   constructor(
@@ -69,7 +68,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
     this.tagSearchForm.get('operator').setValue('eq');
     if (this.searchParameters.documentDate) {
       const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
-      this.dateSearchForm.get('dp').setValue(todayForPicker);
+      // this.dateSearchForm.get('dp').setValue(todayForPicker);
     } else if (this.searchParameters.tagQuery) {
       if (this.searchParameters.tagQuery.key) {
         this.tagSearchForm.get('tagKey').setValue(this.searchParameters.tagQuery.key);
@@ -95,7 +94,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
     }
     if (this.searchParameters.documentDate) {
       const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
-      this.dp.writeValue(todayForPicker);
+      // this.dp.writeValue(todayForPicker);
     }
   }
 
@@ -111,8 +110,8 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
   viewTodaysDocuments() {
     const now = new Date();
     const todayForPicker = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
-    this.dp.writeValue(todayForPicker);
-    this.dateSearchForm.get('dp').setValue(todayForPicker);
+    // this.dp.writeValue(todayForPicker);
+    // this.dateSearchForm.get('dp').setValue(todayForPicker);
     const documentDate: string = this.searchService.buildDocumentDate(todayForPicker.year, todayForPicker.month, todayForPicker.day);
     this.runDateSearch(documentDate);
   }
