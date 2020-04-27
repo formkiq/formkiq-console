@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, Injectable, ElementRef, Renderer2} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Injectable, ElementRef, Renderer2 } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -32,14 +32,14 @@ export class SidebarComponent implements OnInit {
     private navigationService: NavigationService,
     private router: Router,
     private renderer: Renderer2
-    ) { }
+  ) { }
 
   ngOnInit() {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-      ).subscribe((value: NavigationEnd) => {
-        this.currentUrl = value.url;
-      }
+    ).subscribe((value: NavigationEnd) => {
+      this.currentUrl = value.url;
+    }
     );
     this.version = this.configurationService.version;
   }

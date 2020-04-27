@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'kiqconsole';
+  title = 'FormKiQ Stacks Console';
 
   public isSidebarToggled = true;
 
