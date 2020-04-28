@@ -1,21 +1,37 @@
-<div class="row mt-4">
-  <div class="col-12">
-    <div class="authentication-form-container mx-auto formkiq-light-blue-border px-3 pt-3">
-      <div class="row">
-        <div class="col-12">
-          <app-login *ngIf="currentAuthenticationForm == 'login'"></app-login>
-          <app-register *ngIf="allowUserSelfRegistration && currentAuthenticationForm == 'register'" (cancelDropdownEmitter)="revertToLogin()"></app-register>
-          <app-forgot-password *ngIf="currentAuthenticationForm == 'forgotPassword'" (cancelDropdownEmitter)="revertToLogin()"></app-forgot-password>
-          <app-change-password [email]="email" [verificationCode]="verificationCode" *ngIf="currentAuthenticationForm == 'changePassword'" (cancelDropdownEmitter)="revertToLogin()"></app-change-password>
-        </div>
-      </div>
-      <div class="row formkiq-light-blue-border top-border">
-        <div class="col-12 px-2 py-2">
-          <button class="btn btn-sm btn-secondary mr-1" *ngIf="currentAuthenticationForm != 'login'" (click)="toggleAuthenticationForm('login')">&larr; Sign In</button>
-          <button class="btn btn-sm btn-secondary mr-1" *ngIf="allowUserSelfRegistration && currentAuthenticationForm != 'register'" (click)="toggleAuthenticationForm('register')">Create Account</button>
-          <button class="btn btn-sm btn-secondary mr-1" *ngIf="currentAuthenticationForm != 'forgotPassword'" (click)="toggleAuthenticationForm('forgotPassword')">Forgot Password?</button>
-        </div>
-      </div>
-    </div>
+<div class="relative bg-white overflow-hidden mx-4 mx-4">
+  <div class="mt-8">
+    <app-login *ngIf="currentAuthenticationForm == 'login'"></app-login>
+    <app-register *ngIf="allowUserSelfRegistration && currentAuthenticationForm == 'register'" (cancelDropdownEmitter)="revertToLogin()"></app-register>
+    <app-forgot-password *ngIf="currentAuthenticationForm == 'forgotPassword'" (cancelDropdownEmitter)="revertToLogin()"></app-forgot-password>
+    <app-change-password [email]="email" [verificationCode]="verificationCode" *ngIf="currentAuthenticationForm == 'changePassword'" (cancelDropdownEmitter)="revertToLogin()"></app-change-password>
+  </div>
+  <div class="flex flex-row justify-center">
+    <button
+      class="w-3/4 md:w-1/4 px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md text-white
+        bg-orange-600 hover:bg-orange-500 focus:outline-none focus:shadow-outline
+        transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+      *ngIf="currentAuthenticationForm != 'login'"
+      (click)="toggleAuthenticationForm('login')"
+      >
+      &larr; Sign In
+    </button>
+    <button
+      class="w-3/4 md:w-1/4 px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md text-white
+        bg-orange-600 hover:bg-orange-500 focus:outline-none focus:shadow-outline
+        transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+      *ngIf="allowUserSelfRegistration && currentAuthenticationForm != 'register'"
+      (click)="toggleAuthenticationForm('register')"
+      >
+        Create Account
+    </button>
+    <button
+      class="w-3/4 md:w-1/4 px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md text-white
+        bg-orange-600 hover:bg-orange-500 focus:outline-none focus:shadow-outline
+        transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+      *ngIf="currentAuthenticationForm != 'forgotPassword'"
+      (click)="toggleAuthenticationForm('forgotPassword')"
+      >
+        Forgot Password?
+    </button>
   </div>
 </div>

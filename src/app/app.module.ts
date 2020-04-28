@@ -3,8 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpBackend } from '@angular/common/http';
-import { of, Observable, ObservableInput } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -18,30 +16,11 @@ import { ResetPasswordComponent } from './plugins/authentication/pages/reset-pas
 import { AuthenticateComponent } from './plugins/authentication/pages/authenticate/authenticate.component';
 import { ApiService } from './services/api.service';
 import { ConfigurationService } from './services/configuration.service';
+import { LibraryService } from './services/library.service';
 import { TokenInterceptor } from './utils/token.interceptor';
 
-export function load(httpBackend: HttpBackend, config: ConfigurationService): (() => Promise<boolean>) {
-  return (): Promise<boolean> => {
-    return new Promise<boolean>((resolve: (a: boolean) => void): void => {
-      const http = new HttpClient(httpBackend);
-      http.get('./config.json')
-        .pipe(
-          map((x: ConfigurationService) => {
-            config.apigateway = x.apigateway;
-            config.cognito = x.cognito;
-            config.version = x.version;
-            resolve(true);
-          }),
-          catchError((x: { status: number }, caught: Observable<void>): ObservableInput<{}> => {
-            if (x.status !== 404) {
-              resolve(false);
-            }
-            resolve(true);
-            return of({});
-          })
-        ).subscribe();
-    });
-  };
+export function load(libraryService: LibraryService): (() => Promise<boolean>) {
+  return (): Promise<boolean> => libraryService.loadConfig(true);
 }
 
 @NgModule({
@@ -68,8 +47,7 @@ export function load(httpBackend: HttpBackend, config: ConfigurationService): ((
   providers: [{
     provide: APP_INITIALIZER,
     deps: [
-      HttpBackend,
-      ConfigurationService
+      LibraryService
     ],
     useFactory: load,
     multi: true

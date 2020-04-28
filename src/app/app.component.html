@@ -3,10 +3,13 @@
 </div>
 <div>
   <div class="flex flex-row h-screen">
-    <div class="mt-16 w-64 bg-orange-600">
+    <div
+      [ngClass]="{'hidden': !isSidebarToggled}"
+      class="mt-16 w-64 flex-grow-0 bg-orange-600"
+      >
       <app-sidebar (sidebarItemClickEmitter)="onSidebarItemClick()" [isSidebarToggled]="isSidebarToggled"></app-sidebar>
     </div>
-    <div class="mt-16 w-auto">
+    <div class="mt-16 flex-grow">
       <router-outlet></router-outlet>
     </div>
   </div>

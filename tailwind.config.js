@@ -2,11 +2,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        green: {
-          50: '#f4eec7',
-          100: '#f0fff4',
-          600: '#38a169',
-          700: '#2f855a',
+        yellowGray: {
+          400: '#f8f4dc',
+          500: '#f4eec7',
         },
         orangeGray: {
           300: '#db9e7c',
