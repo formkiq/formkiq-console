@@ -16,7 +16,7 @@
           </div>
           <div class="flex-grow text-center">
             <h1
-              class="text-lg font-bold leading-tight text-green-100 text-shadow md:text-base lg:text-lg"
+              class="text-lg font-bold leading-tight text-green-100 text-shadow"
               >
               <span class="text-yellowGray-500 tracking-tight">
                 FormKiQ Stacks
@@ -58,11 +58,11 @@
   </div>
 </div>
 <div
-  class="w-full fixed top-0 z-50 mt-16 border border-yellowGray-500"
+  class="w-full fixed top-0 z-50 mt-16"
   *ngIf="notificationInfo != null"
   >
   <label
-    class="close cursor-pointer flex items-center justify-between mx-4 p-2 shadow text-white"
+    class="close cursor-pointer flex items-center justify-between mx-4 p-6 shadow text-lg text-white border border-yellowGray-500"
     [ngClass]="{
       'bg-red-600': notificationInfo.type === 'danger',
       'bg-green-600': notificationInfo.type === 'success',

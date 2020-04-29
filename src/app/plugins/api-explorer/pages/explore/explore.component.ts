@@ -23,6 +23,9 @@ export class ExploreComponent implements OnInit {
     private notificationService: NotificationService
   ) { }
 
+  documentsFragment = 'documents';
+  searchFragment = 'search';
+
   @ViewChild('header') headerElement: ElementRef;
   @ViewChild('headerDocuments') headerDocumentsElement: ElementRef;
   @ViewChild('headerSearch') headerSearchElement: ElementRef;
@@ -65,9 +68,9 @@ export class ExploreComponent implements OnInit {
     allowsPath: false
   };
 
-  postDocumentApiItem: ApiItem = {
-    apiServiceMethodName: 'postDocument',
-    clickedSubscriptionName: 'apiPostDocumentClicked',
+  postDocumentsApiItem: ApiItem = {
+    apiServiceMethodName: 'postDocuments',
+    clickedSubscriptionName: 'apiPostDocumentsClicked',
     method: 'POST',
     path: '/documents',
     username: 'Cognito User',
@@ -141,9 +144,9 @@ export class ExploreComponent implements OnInit {
     allowsPath: false
   };
 
-  postDocumentTagApiItem: ApiItem = {
-    apiServiceMethodName: 'postDocumentTag',
-    clickedSubscriptionName: 'apiPostDocumentTagClicked',
+  postDocumentTagsApiItem: ApiItem = {
+    apiServiceMethodName: 'postDocumentTags',
+    clickedSubscriptionName: 'apiPostDocumentTagsClicked',
     method: 'POST',
     path: '/documents/ DOCUMENT_ID /tags',
     username: 'Cognito User',

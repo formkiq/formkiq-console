@@ -1,12 +1,273 @@
-<nav *ngIf="isSidebarToggled">
+<nav *ngIf="isSidebarToggled" class="pb-8 bg-orange-600">
   <ul *ngIf="authenticationService.loggedInUser != null">
-    <li>
-      GOAT
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/' }"
+      class="block px-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/']"
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        Dashboard
+      </a>
+    </li>
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/documents' }"
+      class="block px-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/documents']"
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        Document Explorer
+      </a>
+    </li>
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/documents/add' }"
+      class="block pl-4 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/documents/add']"
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        Add Documents
+      </a>
+    </li>
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api' }"
+      class="block px-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/api']"
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        API Explorer
+      </a>
+    </li>
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api/#documents' }"
+      class="block pl-4 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/api']"
+        fragment="documents"
+        (click)="emitSidebarItemClick('apiHeaderDocumentsClicked')"
+        class="cursor-pointer"
+        >
+        Documents
+      </a>
+    </li>
+    <div *ngIf="currentUrl && currentUrl.indexOf('/api') > -1 && currentUrl.indexOf('document') > 4">
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-documents' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="GET-documents"
+          (click)="emitSidebarItemClick('apiGetDocumentsClicked')"
+          class="cursor-pointer"
+          >
+          GET /documents
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-documents' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="POST-documents"
+          (click)="emitSidebarItemClick('apiPostDocumentsClicked')"
+          class="cursor-pointer"
+          >
+          POST /documents
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="GET-document"
+          (click)="emitSidebarItemClick('apiGetDocumentClicked')"
+          class="cursor-pointer"
+          >
+          GET /document/<strong>&#123;id&#125;</strong>
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#PATCH-document' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="PATCH-document"
+          (click)="emitSidebarItemClick('apiPatchDocumentClicked')"
+          class="cursor-pointer"
+          >
+          PATCH /document/<strong>&#123;id&#125;</strong>
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#DELETE-document' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="DELETE-document"
+          (click)="emitSidebarItemClick('apiDeleteDocumentClicked')"
+          class="cursor-pointer"
+          >
+          DELETE /document/<strong>&#123;id&#125;</strong>
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-url' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="GET-document-url"
+          (click)="emitSidebarItemClick('apiGetDocumentUrlClicked')"
+          class="cursor-pointer"
+          >
+          GET /document/<strong>&#123;id&#125;</strong>/url
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-document-tags' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="POST-document-tags"
+          (click)="emitSidebarItemClick('apiPostDocumentTagsClicked')"
+          class="cursor-pointer"
+          >
+          POST /document/<strong>&#123;id&#125;</strong>/tags
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-tag' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="GET-document-tag"
+          (click)="emitSidebarItemClick('apiGetDocumentTagClicked')"
+          class="cursor-pointer"
+          >
+          GET /document/<strong>&#123;id&#125;</strong>/tag/<strong>&#123;tag&#125;</strong>
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#DELETE-document-tag' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="DELETE-document-tag"
+          (click)="emitSidebarItemClick('apiDeleteDocumentTagClicked')"
+          class="cursor-pointer"
+          >
+          DELETE
+          /document/<strong class="tracking-tighter">&#123;id&#125;</strong>/tag/<strong class="tracking-tighter">&#123;tag&#125;</strong>
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-documents-upload' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="GET-documents-upload"
+          (click)="emitSidebarItemClick('apiGetDocumentsUploadClicked')"
+          class="cursor-pointer"
+          >
+          GET /documents/upload/
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-upload' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="GET-document-upload"
+          (click)="emitSidebarItemClick('apiGetDocumentUploadClicked')"
+          class="cursor-pointer"
+          >
+          GET /document/<strong>&#123;id&#125;</strong>/upload/
+        </a>
+      </li>
+    </div>
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api/#search' }"
+      class="block pl-4 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/api']"
+        fragment="search"
+        (click)="emitSidebarItemClick('apiHeaderSearchClicked')"
+        class="cursor-pointer"
+        >
+        Search
+      </a>
+    </li>
+    <div *ngIf="currentUrl && currentUrl.indexOf('/api') > -1 && currentUrl.indexOf('search') > 4">
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-search' }"
+        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="POST-search"
+          (click)="emitSidebarItemClick('apiPostSearchClicked')"
+          class="cursor-pointer"
+          >
+          POST /search
+        </a>
+      </li>
+    </div>
+    <li
+      class="block px-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        (click)="signOut()"
+        class="cursor-pointer"
+        >
+        Sign Out
+      </a>
     </li>
   </ul>
 </nav>
-<footer class="absolute bottom-0">
-  <p class="text-base text-gray-900 mx-2 mb-2">
+<footer class="bg-orange-600 md:pt-8">
+  <p class="text-sm text-center text-orange-900 pl-2 pr-3 pt-4 pb-4 md:bg-orange-700">
     Console version:
     <span class="font-bold">{{ version }}</span>
   </p>

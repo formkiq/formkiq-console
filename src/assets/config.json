@@ -2,9 +2,9 @@
   "version": "0.dev",
   "cognito": {
     "identityPoolId": "us-east-1:a34857bd-3537-42f6-be01-feb52f7f75c5",
-    "userPoolId": "us-east-1_bJJ74DXWf",
+    "userPoolId": "us-east-1_1nXLy3soH",
     "region": "us-east-1",
-    "clientId": "592ne2u18sf1balgtlju4qoru0",
+    "clientId": "4b9bl9mkvbhpn0g0mjpj0hnhb7",
     "allowUserSelfRegistration": false
   },
   "apigateway": {

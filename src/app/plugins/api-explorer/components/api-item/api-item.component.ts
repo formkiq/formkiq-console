@@ -39,6 +39,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
 
   private httpRequest: string;
   private curlRequest: string;
+  currentRequestTab = 'http';
   private queryString = '';
   responseData: any;
   loading$ = new Subject<boolean>();
@@ -201,6 +202,10 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     }
   }
 
+  setCurrentRequestTab(tab: string) {
+    this.currentRequestTab = tab;
+  }
+
   getHttpRequest(): string {
     return this.httpRequest;
   }
@@ -251,7 +256,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
           this.loading$.next(false);
         });
         break;
-      case 'postDocument':
+      case 'postDocuments':
         this.apiService.postDocument(this.f.postJson.value, this).subscribe((data: object) => {
           if (data.hasOwnProperty('status')) {
             this.isErrorResponse = true;
@@ -287,7 +292,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
           this.loading$.next(false);
         });
         break;
-      case 'postDocumentTag':
+      case 'postDocumentTags':
         this.apiService.postDocumentTag(this.f.documentID.value, this.f.postJson.value, this).subscribe((data: object) => {
           if (data.hasOwnProperty('status')) {
             this.isErrorResponse = true;
