@@ -1,21 +1,37 @@
 
-<div class="mb-12">
+<div class="mb-8 md:mb-12">
   <h4
     #header
     (click)="navigationService.collapseSubmenuItem(apiItem.clickedSubscriptionName, !isCollapsed);"
-    class="mx-4 mb-8 text-2xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-3xl"
+    class="mx-4 mb-4 md:mb-8 text-2xl tracking-tight leading-10 font-extrabold text-gray-900
+      hover:text-gray-700 sm:leading-none md:text-3xl cursor-pointer"
     >
-    <i *ngIf="isCollapsed" name="chevron-right">&gt;</i>
-    <i *ngIf="!isCollapsed" name="chevron-down">&lt;</i>
     {{ apiItem.method }}
     {{ apiItem.path }}
+    <svg
+      *ngIf="isCollapsed"
+      width="0.6em"
+      height="0.6em"
+      viewBox="0 0 256 256"
+      class="inline ml-1 -mt-1 fill-current"
+        ><g><g><polygon points="79.093,0 48.907,30.187 146.72,128 48.907,225.813 79.093,256 207.093,128"/></g></g></svg>
+    <svg
+      *ngIf="!isCollapsed"
+      width="0.6em"
+      height="0.6em"
+      viewBox="0 0 256 256"
+      class="inline ml-1 -mt-1 fill-current"
+      ><g><g><polygon points="225.813,48.907 128,146.72 30.187,48.907 0,79.093 128,207.093 256,79.093"/></g></g></svg>
   </h4>
-  <ul class="md:grid md:grid-cols-2 md:col-gap-8 md:row-gap-10">
+  <ul
+    class="md:grid md:grid-cols-2 md:col-gap-8 md:row-gap-10"
+    *ngIf="!isCollapsed"
+    >
     <li class="relative">
       <form [formGroup]="form">
         <div>
           <h6
-            class="mx-6 mr-4 mt-4 mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-2xl"
+            class="mb-2 mx-4 md:mx-6 mr-4 mt-4 md:mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-2xl"
             >
             Authentication
           </h6>
@@ -38,7 +54,7 @@
         </div>
         <div>
           <h6
-            class="mx-6 mr-4 mt-4 mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-2xl"
+            class="mx-4 md:mx-6 mr-4 mt-6 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-2xl"
             >
             Parameters
           </h6>
@@ -277,7 +293,7 @@
       <div class="flex flex-rows w-full">
         <div class="flex-grow-0">
           <h6
-            class="mx-6 mr-4 mt-4 mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-2xl"
+            class="mx-4 md:mx-6 mr-4 mt-4 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-2xl"
             >
             Request
           </h6>
@@ -286,7 +302,7 @@
           <button
             (click)="fetch()"
             [disabled]="this.form.invalid"
-            class="px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+            class="px-2 md:px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
               text-white focus:outline-none focus:shadow-outline
               transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
             [ngClass]="{
@@ -356,9 +372,9 @@
                 <div class="bg-orange-600"></div>
               </div>
             </div>
-            <div *ngIf="responseData">
+            <div *ngIf="responseData" [attr.id]="apiItem.apiServiceMethodName ? apiItem.apiServiceMethodName + 'Response' : ''">
               <h6
-                class="mx-6 mr-4 mt-4 mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-2xl"
+                class="md:mx-2 mr-4 mt-4 md-2 md:mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-2xl"
                 >
                 Response
               </h6>

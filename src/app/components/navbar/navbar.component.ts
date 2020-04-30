@@ -154,7 +154,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   hasSmallViewport() {
-    return (window.innerWidth <= 480);
+    return (window.innerWidth < 768);
   }
 
   signOut() {

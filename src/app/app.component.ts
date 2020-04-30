@@ -19,7 +19,7 @@ export class AppComponent {
   }
 
   onSidebarItemClick() {
-    if (window.innerWidth <= 480) {
+    if (window.innerWidth < 768) {
       if (this.isSidebarToggled) {
         this.toggleSidebar();
       }

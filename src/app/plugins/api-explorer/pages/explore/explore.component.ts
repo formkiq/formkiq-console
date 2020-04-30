@@ -284,15 +284,15 @@ export class ExploreComponent implements OnInit {
         if (navData.source) {
           if (navData.source === 'apiTopClicked') {
             setTimeout(() => {
-              this.headerElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+              this.headerElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 10);
           } else if (navData.source === 'apiHeaderDocumentsClicked') {
             setTimeout(() => {
-              this.headerDocumentsElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+              this.headerDocumentsElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 10);
           } else if (navData.source === 'apiHeaderSearchClicked') {
             setTimeout(() => {
-              this.headerSearchElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+              this.headerSearchElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 10);
           }
         }

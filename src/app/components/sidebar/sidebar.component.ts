@@ -48,10 +48,13 @@ export class SidebarComponent implements OnInit {
     if (this.requireAuthenticationForRead) {
       this.authenticationService.checkLoginAndToken();
     }
-    if (source && window.innerWidth > 480) {
+    if (source) {
       const clickData = new NavItemClickData();
       clickData.source = source;
       clickData.collapseItem = false;
+      if (window.innerWidth < 768) {
+        this.sidebarItemClickEmitter.emit();
+      }
       this.navigationService.navItemClickedSource.next(clickData);
     } else {
       this.sidebarItemClickEmitter.emit();
