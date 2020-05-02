@@ -68,20 +68,20 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
   }
 
   loadPreviousPage() {
-    if (this.searchbar.currentTab === 'date') {
+    if (this.searchbar.currentSearch === 'date') {
       this.searchbar.loadPreviousDatePage();
       this.dateSearchSubmitted = true;
-    } else if (this.searchbar.currentTab === 'tag') {
+    } else if (this.searchbar.currentSearch === 'tag') {
       this.searchbar.loadPreviousTagPage();
       this.tagSearchSubmitted = true;
     }
   }
 
   loadNextPage() {
-    if (this.searchbar.currentTab === 'date') {
+    if (this.searchbar.currentSearch === 'date') {
       this.searchbar.loadNextDatePage();
       this.dateSearchSubmitted = true;
-    } else if (this.searchbar.currentTab === 'tag') {
+    } else if (this.searchbar.currentSearch === 'tag') {
       this.searchbar.loadNextTagPage();
       this.tagSearchSubmitted = true;
     }

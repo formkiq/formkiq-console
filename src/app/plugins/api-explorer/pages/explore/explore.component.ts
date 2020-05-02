@@ -1,11 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ApiService } from '../../../../services/api.service';
 import { ApiItem } from '../../../../services/api.schema';
 import { AuthenticationService } from '../../../authentication/services/authentication.service';
 import { ConfigurationService } from '../../../../services/configuration.service';
 import { NavigationService } from '../../../../services/navigation.service';
-import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-api-explore',
@@ -15,12 +12,9 @@ import { NotificationService } from '../../../../services/notification.service';
 export class ExploreComponent implements OnInit {
 
   constructor(
-    private route: ActivatedRoute,
-    private apiService: ApiService,
     private authenticationService: AuthenticationService,
     private configurationService: ConfigurationService,
-    public navigationService: NavigationService,
-    private notificationService: NotificationService
+    public navigationService: NavigationService
   ) { }
 
   documentsFragment = 'documents';

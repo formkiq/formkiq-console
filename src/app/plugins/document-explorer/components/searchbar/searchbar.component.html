@@ -24,10 +24,10 @@
       </a>
     </li>
   </ul>
-  <!--     [formGroup]="dateSearchForm" -->
   <form
+    [formGroup]="dateSearchForm"
     (ngSubmit)="runDateSearch()"
-    [ngClass]="{'hidden': currentTab != 'date'}"
+    [ngClass]="{'hidden': currentTab !== 'date'}"
     >
     <div class="md:flex md:items-center mx-4 mb-4 md:mb-8 relative">
       <div class="md:w-1/4">
@@ -38,15 +38,20 @@
           </small>
         </label>
       </div>
-      <!-- formControlName="date" -->
-      <div class="md:w-1/2 lg:w-1/3 relative">
+      <div
+        class="md:w-1/2 lg:w-1/3 relative"
+        >
         <input
           aria-label="Date"
           name="date"
+          formControlName="date"
           type="text"
           class="appearance-none rounded-md relative block w-full px-3 pr-12 py-3 border border-gray-600
             placeholder-gray-500 text-gray-900 rounded-t-md
-            focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+            focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-xl sm:leading-5"
+          (change)="setDateForPickerFromDateInput()"
+          (focus)="showPicker = true"
+          [ngClass]="{ 'bg-red-200': this.dateSearchForm.controls.date.errors }"
           />
         <div class="absolute top-0 right-0 px-3 py-2">
           <svg class="h-6 w-6 text-gray-500"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -55,11 +60,11 @@
         </div>
         <div
           *ngIf="showPicker"
-          class="bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0">
+          class="bg-white mt-12 rounded-lg shadow p-4 absolute top-0 z-40 left-0">
           <div class="flex justify-between items-center mb-2">
             <div>
                 <span class="text-lg font-bold text-gray-800">
-                  {{ months[dateForPicker.month] }}
+                  {{ months[dateForPicker.month - 1] }}
                 </span>
                 <span class="ml-1 text-lg text-gray-600 font-normal">
                   {{ dateForPicker.year }}
@@ -110,10 +115,23 @@
               >
                 <div
                   class="cursor-pointer text-center text-sm leading-none rounded-full leading-loose transition ease-in-out duration-100"
+                  (click)="setDateForPickerFromPicker(dayOfMonth)"
+                  (dblclick)="setDateForPickerFromPicker(dayOfMonth);showPicker=false"
                   >
                   {{ dayOfMonth }}
                 </div>
             </div>
+          </div>
+          <div class="flex flex-wrap -mx-1 mt-2">
+            <button
+              class="px-8 py-2 w-full mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+              text-white focus:outline-none focus:shadow-outline
+              bg-green-600 hover:bg-green-500
+              transition duration-150 ease-in-out md:text-lg"
+              (click)="showPicker = false"
+              >
+              Done
+            </button>
           </div>
         </div>
       </div>
@@ -136,9 +154,13 @@
         <button
           class="px-8 py-2 w-full md:w-auto mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
             text-white focus:outline-none focus:shadow-outline
-            bg-green-600 hover:bg-green-500
             transition duration-150 ease-in-out md:text-lg"
           (click)="runDateSearch()"
+          [disabled]="this.dateSearchForm.invalid"
+          [ngClass]="{
+                'bg-green-600 hover:bg-green-500': !this.dateSearchForm.invalid,
+                'bg-gray-500 hover:bg-gray-500': this.dateSearchForm.invalid
+              }"
           >
           Run Date Search
         </button>
@@ -148,7 +170,7 @@
   <form
     [formGroup]="tagSearchForm"
     (ngSubmit)="runTagSearch()"
-    [ngClass]="{'hidden': currentTab != 'tag'}"
+    [ngClass]="{'hidden': currentTab !== 'tag'}"
     >
     <div class="md:flex md:items-center mx-4 mb-4 md:mb-8 relative">
       <div class="md:w-1/4">
@@ -165,6 +187,7 @@
           class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
             placeholder-gray-500 text-gray-900 rounded-t-md
             focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+          [ngClass]="{ 'bg-red-200': this.tagSearchForm.controls.tagKey.errors }"
         />
       </div>
     </div>
@@ -205,9 +228,13 @@
         <button
           class="px-8 py-2 w-full md:w-auto mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
             text-white focus:outline-none focus:shadow-outline
-            bg-green-600 hover:bg-green-500
             transition duration-150 ease-in-out md:text-lg"
           (click)="runTagSearch()"
+          [disabled]="this.tagSearchForm.invalid"
+          [ngClass]="{
+                'bg-green-600 hover:bg-green-500': !this.tagSearchForm.invalid,
+                'bg-gray-500 hover:bg-gray-500': this.tagSearchForm.invalid
+              }"
           >
           Run Tag Search
         </button>
