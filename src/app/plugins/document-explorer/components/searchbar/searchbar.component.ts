@@ -32,12 +32,23 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
     searchType: SearchType.Tag
   };
 
+  currentTab = 'date';
+
   public nextToken = null;
   public previousToken = null;
   private reloadLastSearch = false;
 
+  showPicker = false;
+  dateForPicker: any = null;
+  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  blankDaysBeforeMonth = [];
+  daysInMonth = Array.from(
+    { length: 30 },
+    (v, k) => k + 1
+  );
+
   @Input() currentTimezone: string;
-  // @ViewChild('d') dp: NgbInputDatepicker;
   @Output() documentQueryResultEmitter: EventEmitter<any> = new EventEmitter();
 
   constructor(
@@ -53,9 +64,11 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
   }
 
   ngOnInit() {
+    /*
     this.dateSearchForm = this.formBuilder.group({
-      dp: []
+      date: ['', [Validators.required, Validators.pattern('\\d{4}-\\d{2}-\\d{2}')]]
     });
+    */
     this.tagSearchForm = this.formBuilder.group({
       tagKey: ['', Validators.required],
       operator: [],
@@ -66,10 +79,15 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
       this.reloadLastSearch = true;
     }
     this.tagSearchForm.get('operator').setValue('eq');
+  }
+
+  ngAfterViewInit() {
     if (this.searchParameters.documentDate) {
-      const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
-      // this.dateSearchForm.get('dp').setValue(todayForPicker);
+      this.setCurrentTab('date');
+      this.dateForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
+      this.calculatePickerDays();
     } else if (this.searchParameters.tagQuery) {
+      this.setCurrentTab('tab');
       if (this.searchParameters.tagQuery.key) {
         this.tagSearchForm.get('tagKey').setValue(this.searchParameters.tagQuery.key);
         if (this.searchParameters.tagQuery.value) {
@@ -80,9 +98,6 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
         this.tagSearchForm.get('operator').setValue(this.searchParameters.tagQuery.operator);
       }
     }
-  }
-
-  ngAfterViewInit() {
     if (this.reloadLastSearch) {
       if (this.currentSearch === 'date') {
         this.runDateSearch(this.searchParameters.documentDate);
@@ -92,14 +107,51 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
     } else {
       this.viewTodaysDocuments();
     }
-    if (this.searchParameters.documentDate) {
-      const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
-      // this.dp.writeValue(todayForPicker);
+  }
+
+  setCurrentTab(tab: string) {
+    this.currentTab = tab;
+  }
+
+  setDateForPickerFromDateInput() {
+    if (this.dateSearchForm.controls.date.valid) {
+      this.dateForPicker = this.searchService.splitDocumentDate(this.dateSearchForm.controls.date.value);
+      this.calculatePickerDays();
     }
   }
 
-  get f() {
-    return this.tagSearchForm.controls;
+  calculatePickerDays() {
+    const daysInMonth = new Date(this.dateForPicker.year, this.dateForPicker.month + 1, 0).getDate();
+    const dayOfWeek = new Date(this.dateForPicker.year, this.dateForPicker.month).getDay();
+    this.blankDaysBeforeMonth = [];
+    for (let i = 1; i <= dayOfWeek; i++) {
+      this.blankDaysBeforeMonth.push(i);
+    }
+    this.daysInMonth = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+      this.daysInMonth.push(i);
+    }
+    this.dateSearchForm.controls.date.setValue(
+      this.dateForPicker.year + '-' + ('0' + this.dateForPicker.month).slice(-2) + '-' + ('0' + this.dateForPicker.day).slice(-2)
+    );
+  }
+
+  previousMonth() {
+    this.dateForPicker.month--;
+    if (this.dateForPicker.month < 0) {
+      this.dateForPicker.month = 11;
+      this.dateForPicker.year--;
+    }
+    this.calculatePickerDays();
+  }
+
+  nextMonth() {
+    this.dateForPicker.month++;
+    if (this.dateForPicker.month > 11) {
+      this.dateForPicker.month = 0;
+      this.dateForPicker.year++;
+    }
+    this.calculatePickerDays();
   }
 
   onDateSelected(event) {
@@ -109,10 +161,11 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
 
   viewTodaysDocuments() {
     const now = new Date();
-    const todayForPicker = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
-    // this.dp.writeValue(todayForPicker);
-    // this.dateSearchForm.get('dp').setValue(todayForPicker);
-    const documentDate: string = this.searchService.buildDocumentDate(todayForPicker.year, todayForPicker.month, todayForPicker.day);
+    this.dateForPicker = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+    this.calculatePickerDays();
+    const documentDate: string = this.searchService.buildDocumentDate(
+      this.dateForPicker.year, this.dateForPicker.month, this.dateForPicker.day
+    );
     this.runDateSearch(documentDate);
   }
 
@@ -123,7 +176,12 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
     this.runTagSearch();
   }
 
-  runDateSearch(documentDate: string, previousToken = '', nextToken = '') {
+  runDateSearch(documentDate: string = '', previousToken = '', nextToken = '') {
+    if (documentDate === '') {
+      this.searchService.buildDocumentDate(
+        this.dateForPicker.year, this.dateForPicker.month, this.dateForPicker.day
+      );
+    }
     this.searchParameters.documentDate = null;
     this.searchParameters.tagQuery = null;
     const dateRegExp = new RegExp('\\d{4}-\\d{2}-\\d{2}');

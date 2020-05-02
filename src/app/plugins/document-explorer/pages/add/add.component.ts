@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../../../services/api.service';
+import { LibraryService } from '../../../../services/library.service';
 import { Observable } from 'rxjs';
 import * as Dropzone from '../../../../../assets/dist/dropzone/dropzone';
 
@@ -13,18 +14,23 @@ export class AddComponent implements OnInit, AfterViewInit {
 
   @ViewChild('dropzone') dropzoneContainer: ElementRef;
 
-  constructor(private apiService: ApiService) { }
+  constructor(
+    private apiService: ApiService,
+    private libraryService: LibraryService
+  ) { }
 
   dropzone: Dropzone;
+  documentsAdded = [];
 
   ngOnInit() {
+    this.libraryService.loadDropzoneStyle();
     this.dropzone = new Dropzone('div#dropzone', {
-        url: '#',
-        autoQueue: false,
-        method: 'PUT',
-        dictDefaultMessage: 'Drop files here or click to upload (up to 100 files at a time)',
-        maxFiles: 100
-      }
+      url: '#',
+      autoQueue: false,
+      method: 'PUT',
+      dictDefaultMessage: 'Drop files here or click to upload (up to 100 files at a time)',
+      maxFiles: 100
+    }
     );
     this.dropzone.on('addedfile', (file) => {
       file.putUrl = '';
@@ -44,16 +50,31 @@ export class AddComponent implements OnInit, AfterViewInit {
       };
     });
     this.dropzone.on('sending', (file, xhr, formData) => {
-      console.log(xhr);
       const xhrSend = xhr.send;
       xhr.send = () => {
         xhrSend.call(xhr, file);
       };
     });
+    this.dropzone.on('complete', (file) => {
+      this.dropzone.removeFile(file);
+      this.addFileToAddedList(file);
+    });
   }
 
   ngAfterViewInit() {
 
+  }
+
+  addFileToAddedList(file) {
+    const responseUrl = file.xhr.responseURL;
+    const documentID = responseUrl.substr(
+      responseUrl.lastIndexOf('/') + 1, responseUrl.indexOf('?X-Amz-Security-Token=') - (responseUrl.lastIndexOf('/') + 1)
+    );
+    this.apiService.getDocument(documentID, this).subscribe((data: any) => {
+      if (data.documentId) {
+        this.documentsAdded.push(data);
+      }
+    });
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {

@@ -1,8 +1,8 @@
-<nav *ngIf="isSidebarToggled" class="pb-8 bg-orange-600">
+<nav *ngIf="isSidebarToggled" class="pb-8 bg-orange-600" style="min-height: 75vh">
   <ul *ngIf="authenticationService.loggedInUser != null">
     <li
       [ngClass]="{'font-bold bg-orange-900': currentUrl == '/' }"
-      class="block px-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+      class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
       >
       <a
@@ -15,7 +15,7 @@
     </li>
     <li
       [ngClass]="{'font-bold bg-orange-900': currentUrl == '/documents' }"
-      class="block px-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+      class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
       >
       <a
@@ -28,7 +28,7 @@
     </li>
     <li
       [ngClass]="{'font-bold bg-orange-900': currentUrl == '/documents/add' }"
-      class="block pl-4 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+      class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
       >
       <a
@@ -41,7 +41,7 @@
     </li>
     <li
       [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api' }"
-      class="block px-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+      class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
       >
       <a
@@ -54,7 +54,7 @@
     </li>
     <li
       [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api/#documents' }"
-      class="block pl-4 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+      class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
       >
       <a
@@ -69,7 +69,7 @@
     <div *ngIf="currentUrl && currentUrl.indexOf('/api') > -1 && currentUrl.indexOf('document') > 4">
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-documents' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -83,7 +83,7 @@
       </li>
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-documents' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -97,7 +97,7 @@
       </li>
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -111,7 +111,7 @@
       </li>
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#PATCH-document' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -125,7 +125,7 @@
       </li>
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#DELETE-document' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -139,7 +139,7 @@
       </li>
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-url' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -153,7 +153,7 @@
       </li>
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-document-tags' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -167,7 +167,7 @@
       </li>
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-tag' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -181,7 +181,7 @@
       </li>
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#DELETE-document-tag' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -196,7 +196,7 @@
       </li>
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-documents-upload' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -210,7 +210,7 @@
       </li>
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-upload' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -225,7 +225,7 @@
     </div>
     <li
       [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api/#search' }"
-      class="block pl-4 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+      class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
       >
       <a
@@ -240,7 +240,7 @@
     <div *ngIf="currentUrl && currentUrl.indexOf('/api') > -1 && currentUrl.indexOf('search') > 4">
       <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-search' }"
-        class="block pl-6 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
         >
         <a
@@ -254,7 +254,7 @@
       </li>
     </div>
     <li
-      class="block px-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+      class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
       >
       <a
@@ -272,4 +272,3 @@
     <span class="font-bold">{{ version }}</span>
   </p>
 </footer>
-

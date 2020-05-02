@@ -52,9 +52,8 @@ export class LibraryService {
     ]);
   }
 
-  loadDropzone(): Observable<any> {
+  loadDropzoneStyle(): Observable<any> {
     return forkJoin([
-      this.loadScript('assets/dist/dropzone/dropzone.js'),
       this.loadStyle('assets/dist/dropzone/dropzone.css'),
     ]);
   }

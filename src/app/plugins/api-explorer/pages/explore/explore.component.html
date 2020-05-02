@@ -1,11 +1,11 @@
-<div class="relative bg-white max-h-full overflow-scroll-y mx-4">
+<div class="relative bg-white overflow-scroll-y mx-4">
   <div class="mt-8">
     <div class="max-w-screen-xl mx-auto relative">
-      <h2 class="text-3xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
-        Document Explorer
+      <h2 class="text-2xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
+        API Explorer
       </h2>
-      <nav class="ml-8 lg:w-full mb-16">
-        <ul class="list-disc list-inside text-2xl">
+      <nav class="ml-8 lg:w-full mb-8 md:mb-16">
+        <ul class="list-disc list-inside text-lg md:text-2xl">
           <li>
             <a
               [routerLink]="['/api']"
@@ -29,7 +29,7 @@
         </ul>
       </nav>
       <section class="lg:w-full mb-12">
-        <h3 #headerDocuments class="md:mx-4 mb-8 text-3xl tracking-tight leading-10 font-extrabold text-orange-600 sm:leading-none md:text-4xl">
+        <h3 #headerDocuments class="md:mx-4 mb-8 text-2xl tracking-tight leading-10 font-extrabold text-orange-600 sm:leading-none md:text-4xl">
           Documents
         </h3>
         <app-api-item id="GET-documents" [apiItem]="getDocumentsApiItem"></app-api-item>

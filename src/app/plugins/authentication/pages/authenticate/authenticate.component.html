@@ -1,4 +1,4 @@
-<div class="relative bg-white overflow-hidden mx-4 mx-4">
+<div class="relative bg-white overflow-hidden mx-4">
   <div class="mt-8">
     <app-login *ngIf="currentAuthenticationForm == 'login'"></app-login>
     <app-register *ngIf="allowUserSelfRegistration && currentAuthenticationForm == 'register'" (cancelDropdownEmitter)="revertToLogin()"></app-register>

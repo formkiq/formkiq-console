@@ -30,7 +30,7 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
   ngOnInit() {
     this.currentTimezone = moment.tz.guess();
     if (!this.currentTimezone) {
-      this.currentTimezone = 'America/New York';
+      this.currentTimezone = 'America/New_York';
     }
   }
 
@@ -68,20 +68,20 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
   }
 
   loadPreviousPage() {
-    if (this.searchbar.currentSearch === 'date') {
+    if (this.searchbar.currentTab === 'date') {
       this.searchbar.loadPreviousDatePage();
       this.dateSearchSubmitted = true;
-    } else if (this.searchbar.currentSearch === 'tag') {
+    } else if (this.searchbar.currentTab === 'tag') {
       this.searchbar.loadPreviousTagPage();
       this.tagSearchSubmitted = true;
     }
   }
 
   loadNextPage() {
-    if (this.searchbar.currentSearch === 'date') {
+    if (this.searchbar.currentTab === 'date') {
       this.searchbar.loadNextDatePage();
       this.dateSearchSubmitted = true;
-    } else if (this.searchbar.currentSearch === 'tag') {
+    } else if (this.searchbar.currentTab === 'tag') {
       this.searchbar.loadNextTagPage();
       this.tagSearchSubmitted = true;
     }

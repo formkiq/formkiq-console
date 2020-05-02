@@ -1,76 +1,228 @@
 
-<div class="row">
-  <div class="col-12 my-2">
-    <h5 class="formkiq-font collapse-link">
-      <i name="chevron-down"></i>
-      Document Search
-    </h5>
-  </div>
-  <div class="row">
-    <div class="col-12 px-4 mb-2">
-      <form [formGroup]="dateSearchForm">
+
+<section class="lg:w-full mb-12">
+  <h3 class="mb-2 md:mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-3xl">
+    Document Search
+  </h3>
+  <ul class="list-reset flex border-b text-xl mb-2 md:mb-4">
+    <li class="-mb-px mr-1">
+      <a
+        class="inline-block cursor-pointer border-l border-t border-r rounded-t py-2 px-4 font-semibold"
+        [ngClass]="{'font-bold text-orange-600 cursor-text': currentTab == 'date'}"
+        (click)="setCurrentTab('date')"
+        >
+        By Date
+      </a>
+    </li>
+    <li class="-mb-px mr-1">
+      <a
+        class="inline-block cursor-pointer border-l border-t border-r rounded-t py-2 px-4 font-semibold"
+        [ngClass]="{'font-bold text-orange-600 cursor-text': currentTab == 'tag'}"
+        (click)="setCurrentTab('tag')"
+        >
+        By Tag
+      </a>
+    </li>
+  </ul>
+  <!--     [formGroup]="dateSearchForm" -->
+  <form
+    (ngSubmit)="runDateSearch()"
+    [ngClass]="{'hidden': currentTab != 'date'}"
+    >
+    <div class="md:flex md:items-center mx-4 mb-4 md:mb-8 relative">
+      <div class="md:w-1/4">
+        <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="date">
+          Date
+          <small class="block">
+            yyyy-mm-dd
+          </small>
+        </label>
+      </div>
+      <!-- formControlName="date" -->
+      <div class="md:w-1/2 lg:w-1/3 relative">
+        <input
+          aria-label="Date"
+          name="date"
+          type="text"
+          class="appearance-none rounded-md relative block w-full px-3 pr-12 py-3 border border-gray-600
+            placeholder-gray-500 text-gray-900 rounded-t-md
+            focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+          />
+        <div class="absolute top-0 right-0 px-3 py-2">
+          <svg class="h-6 w-6 text-gray-500"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
         <div
-          class="row pt-2 ml-1 mb-4 pr-3"
-          [ngClass]="{ 'is-active': currentSearch === 'date' }"
-          >
-          <div class="col-12 col-md-2">
-            <label for="dp" class="pl-2 pt-1">
-              <h5>
-                By Date
-              </h5>
-            </label>
-          </div>
-          <div class="col-6 col-md-6">
-            <div class="input-group">
-              <input
-                class="form-control"
-                placeholder="yyyy-mm-dd"
-                name="dp"
-                [readonly]="true" (dateSelect)="onDateSelected($event)">
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-calendar"></i></button>
-              </div>
+          *ngIf="showPicker"
+          class="bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0">
+          <div class="flex justify-between items-center mb-2">
+            <div>
+                <span class="text-lg font-bold text-gray-800">
+                  {{ months[dateForPicker.month] }}
+                </span>
+                <span class="ml-1 text-lg text-gray-600 font-normal">
+                  {{ dateForPicker.year }}
+                </span>
+            </div>
+            <div>
+                <button
+                    type="button"
+                    class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full"
+                    (click)="previousMonth()"
+                    >
+                    <svg class="h-6 w-6 text-gray-500 inline-flex"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <button
+                    type="button"
+                    class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full"
+                    (click)="nextMonth()"
+                    >
+                    <svg class="h-6 w-6 text-gray-500 inline-flex"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
             </div>
           </div>
-          <div class="col-6 col-md-3">
-            <input type="button" class="btn btn-primary" value="Today" (click)="viewTodaysDocuments()" />
+          <div class="flex flex-wrap mb-3 -mx-1">
+            <div
+              *ngFor="let weekday of weekdays"
+              style="width: 14.26%"
+              class="px-1"
+              >
+                <div class="text-gray-800 font-medium text-center text-xs">
+                  {{ weekday }}
+                </div>
+            </div>
+          </div>
+          <div class="flex flex-wrap -mx-1">
+            <div
+              *ngFor="let blankDay of blankDaysBeforeMonth"
+              style="width: 14.28%"
+              class="text-center border p-1 border-transparent text-sm"
+              ></div>
+            <div
+              *ngFor="let dayOfMonth of daysInMonth"
+              style="width: 14.28%"
+              class="px-1 mb-1"
+              >
+                <div
+                  class="cursor-pointer text-center text-sm leading-none rounded-full leading-loose transition ease-in-out duration-100"
+                  >
+                  {{ dayOfMonth }}
+                </div>
+            </div>
           </div>
         </div>
-      </form>
-      <form [formGroup]="tagSearchForm" (ngSubmit)="runTagSearch()">
-        <div
-          class="row pt-2 ml-1 mb-2 pr-3"
-          [ngClass]="{ 'is-active': currentSearch === 'tag' }"
+      </div>
+      <div class="md:w-1/4 pt-2 md:pt-0 text-center">
+        <button
+          class="px-8 py-2 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+            text-white focus:outline-none focus:shadow-outline
+            bg-green-600 hover:bg-green-500
+            transition duration-150 ease-in-out md:text-lg"
+          (click)="viewTodaysDocuments()"
           >
-          <div class="col-12 col-md-2">
-            <label class="pl-2 pt-1">
-              <h5>
-                By Tag
-              </h5>
-            </label>
-          </div>
-          <div class="col-12 col-md-3 col-lg-2 pb-1">
-            <input type="text" class="form-control" formControlName="tagKey" placeholder="key name" [ngClass]="{ 'is-invalid': f.tagKey.errors }" />
-          </div>
-          <div class="col-12 col-md-3 col-lg-2 pb-1">
-            <select class="form-control mr-sm-2" formControlName="operator">
-              <option value="eq">Equals</option>
-              <option value="beginsWith">Begins With</option>
-            </select>
-          </div>
-          <div class="col-12 col-md-3 col-xl-4 pb-1">
-            <input type="text" class="form-control" formControlName="tagValue" placeholder="tag value">
-          </div>
-          <div class="offset-0 offset-md-2 offset-lg-0 col-6 col-md-12 col-lg-2">
-            <input type="button" class="btn btn-primary mr-2" value="Run Tag Search" [disabled]="tagSearchForm.status !== 'VALID'" (click)="runTagSearch()" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12 text-center pt-2">
-            <input type="button" class="btn btn-primary" value="View All Untagged Documents" (click)="viewAllUntaggedDocuments()" />
-          </div>
-        </div>
-      </form>
+          Today
+        </button>
+      </div>
     </div>
-  </div>
-</div>
+    <div class="md:flex md:items-center mx-4 mb-4 md:mb-8 relative">
+      <div class="md:w-1/4">
+      </div>
+      <div class="md:w-1/2 lg:w-1/3">
+        <button
+          class="px-8 py-2 w-full md:w-auto mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+            text-white focus:outline-none focus:shadow-outline
+            bg-green-600 hover:bg-green-500
+            transition duration-150 ease-in-out md:text-lg"
+          (click)="runDateSearch()"
+          >
+          Run Date Search
+        </button>
+      </div>
+    </div>
+  </form>
+  <form
+    [formGroup]="tagSearchForm"
+    (ngSubmit)="runTagSearch()"
+    [ngClass]="{'hidden': currentTab != 'tag'}"
+    >
+    <div class="md:flex md:items-center mx-4 mb-4 md:mb-8 relative">
+      <div class="md:w-1/4">
+        <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="tagKey">
+          Tag Key
+        </label>
+      </div>
+      <div class="md:w-1/2 lg:w-1/3">
+        <input
+          aria-label="Tag Key"
+          name="tagKey"
+          formControlName="tagKey"
+          type="text"
+          class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
+            placeholder-gray-500 text-gray-900 rounded-t-md
+            focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+        />
+      </div>
+    </div>
+    <div class="md:flex md:items-center mx-4 mb-4 md:mb-8 relative">
+      <div class="md:w-1/4">
+        <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="tagValue">
+          Tag Value
+        </label>
+      </div>
+      <div class="md:w-1/4">
+        <select
+          name="operator"
+          formControlName="operator"
+          class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
+            placeholder-gray-500 text-gray-900 rounded-t-md
+            focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+          >
+            <option value="eq">Equals</option>
+            <option value="beginsWith">Begins With</option>
+        </select>
+      </div>
+      <div class="md:w-1/2 lg:w-1/3 pt-1 md:pt-0 pl-0 md:pl-2">
+        <input
+          aria-label="Tag Value"
+          name="tagValue"
+          formControlName="tagValue"
+          type="text"
+          class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
+            placeholder-gray-500 text-gray-900 rounded-t-md
+            focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+        />
+      </div>
+    </div>
+    <div class="md:flex md:items-center mx-4 mb-4 md:mb-8 relative">
+      <div class="md:w-1/4">
+      </div>
+      <div class="md:w-1/4">
+        <button
+          class="px-8 py-2 w-full md:w-auto mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+            text-white focus:outline-none focus:shadow-outline
+            bg-green-600 hover:bg-green-500
+            transition duration-150 ease-in-out md:text-lg"
+          (click)="runTagSearch()"
+          >
+          Run Tag Search
+        </button>
+      </div>
+      <div class="md:w-1/2">
+        <button
+          class="px-8 py-2 w-full md:w-auto mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+            text-white focus:outline-none focus:shadow-outline
+            bg-green-600 hover:bg-green-500
+            transition duration-150 ease-in-out md:text-lg"
+          (click)="viewAllUntaggedDocuments()"
+          >
+          View All Untagged Documents
+        </button>
+      </div>
+    </div>
+  </form>
+</section>
