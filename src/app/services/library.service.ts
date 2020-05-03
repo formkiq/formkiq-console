@@ -19,7 +19,7 @@ export class LibraryService {
   ) { }
 
   loadConfig(useMockJson = false): Promise<boolean> {
-    if (useMockJson) {
+    if (useMockJson && isDevMode()) {
       return new Promise<boolean>((resolve: (a: boolean) => void): void => {
         resolve(true);
       });

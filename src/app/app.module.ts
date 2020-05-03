@@ -20,7 +20,7 @@ import { LibraryService } from './services/library.service';
 import { TokenInterceptor } from './utils/token.interceptor';
 
 export function load(libraryService: LibraryService): (() => Promise<boolean>) {
-  return (): Promise<boolean> => libraryService.loadConfig(true);
+  return (): Promise<boolean> => libraryService.loadConfig();
 }
 
 @NgModule({
