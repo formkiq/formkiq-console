@@ -92,6 +92,7 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
       if (this.searchParameters.tagQuery.operator) {
         this.tagSearchForm.get('operator').setValue(this.searchParameters.tagQuery.operator);
       }
+      this.runTagSearch();
     }
   }
 

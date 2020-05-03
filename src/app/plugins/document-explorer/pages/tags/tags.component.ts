@@ -25,16 +25,15 @@ export class TagsComponent implements OnInit, AfterViewInit {
 
   documentId = '';
   results$: any;
-  addTagForm: FormGroup;
-  loading = false;
-  submitted = false;
+  form: FormGroup;
+  formSubmitted = false;
   isTagEditMode = false;
   nextToken = null;
   previousToken = null;
 
   ngOnInit() {
     this.loadTags();
-    this.addTagForm = this.formBuilder.group({
+    this.form = this.formBuilder.group({
       tagKey: ['', Validators.required],
       tagValue: []
     });
@@ -56,10 +55,8 @@ export class TagsComponent implements OnInit, AfterViewInit {
       this.documentId = params.id;
       const container = this;
       this.isTagEditMode = false;
-      this.loading = true;
       this.results$ = this.apiService.getDocumentTags(this.documentId, queryString, this);
       this.results$.subscribe((result) => {
-        this.loading = false;
         if (result.previous) {
           this.previousToken = result.previous;
         }
@@ -71,14 +68,18 @@ export class TagsComponent implements OnInit, AfterViewInit {
   }
 
   get f() {
-    return this.addTagForm.controls;
+    return this.form.controls;
   }
 
   editTag(key, value) {
     this.isTagEditMode = true;
-    this.addTagForm.reset();
-    this.addTagForm.controls.tagKey.setValue(key);
-    this.addTagForm.controls.tagValue.setValue(value);
+    this.form.reset();
+    this.form.controls.tagKey.setValue(key);
+    this.form.controls.tagValue.setValue(value);
+    const formHeader = document.getElementById('formHeader');
+    if (formHeader) {
+      formHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   deleteTag(key) {
@@ -91,27 +92,27 @@ export class TagsComponent implements OnInit, AfterViewInit {
   }
 
   saveTag() {
-    this.submitted = true;
-    if (this.addTagForm.invalid) {
+    this.formSubmitted = true;
+    if (this.form.invalid) {
       return;
     }
-    const key = this.addTagForm.controls.tagKey.value;
-    const value = this.addTagForm.controls.tagValue.value;
+    const key = this.form.controls.tagKey.value;
+    const value = this.form.controls.tagValue.value;
     const json = {
       key,
       value
     };
     this.apiService.postDocumentTag(this.documentId, JSON.stringify(json), this).subscribe((result) => {
       console.log(result);
-      this.addTagForm.reset();
-      this.submitted = false;
+      this.form.reset();
+      this.formSubmitted = false;
       this.loadTags();
     });
   }
 
   cancelEdit() {
     this.isTagEditMode = false;
-    this.addTagForm.reset();
+    this.form.reset();
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {
