@@ -4,7 +4,7 @@
     Sign In to FormKiQ Stacks Console
   </h2>
   <section class="mb-16">
-    <form [formGroup]="form">
+    <form [formGroup]="form" onSubmit="signIn()">
       <div class="md:flex md:items-center mx-4 mb-4 relative">
         <div class="md:w-1/3">
           <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="email">
@@ -47,16 +47,16 @@
             />
         </div>
       </div>
+      <div class="mt-5 sm:mt-8 flex justify-center">
+        <button
+          (click)="signIn()"
+          class="px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+            text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline
+            transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+          >
+          Sign In
+        </button>
+      </div>
     </form>
-    <div class="mt-5 sm:mt-8 flex justify-center">
-      <button
-        (click)="signIn()"
-        class="px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
-          text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline
-          transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
-        >
-        Sign In
-      </button>
-    </div>
   </section>
 </div>

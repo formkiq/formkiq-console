@@ -4,7 +4,7 @@
   </div>
 </div>
 <ngb-alert *ngIf="registrationResponse && !registrationResponse.success">{{ registrationResponse.message }}</ngb-alert>
-<form [formGroup]="form" class="px-2 py-2">
+<form [formGroup]="form" class="px-2 py-2"  onSubmit="createAccount()">
   <div class="form-group">
     <label for="field-email">Email Address</label>
     <input
