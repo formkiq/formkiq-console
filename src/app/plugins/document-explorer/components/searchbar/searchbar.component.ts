@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Input, Output, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -8,7 +8,6 @@ import { NavigationService } from '../../../../services/navigation.service';
 import { Document } from '../../../../services/api.schema';
 import { SearchService } from '../../services/search.service';
 import { TagQuery, SearchParameters, SearchType } from '../../services/search.schema';
-import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment-timezone';
 
 @Component({
@@ -16,30 +15,42 @@ import * as moment from 'moment-timezone';
   templateUrl: './searchbar.component.html',
   styleUrls: ['./searchbar.component.scss']
 })
-export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallback {
+export class SearchbarComponent implements OnInit, HttpErrorCallback {
 
-  results$: Observable<{} | Document[]>;
-  dateSearchForm: FormGroup;
-  tagSearchForm: FormGroup;
+  @Input() currentTimezone: string;
+  @Output() documentQueryResultEmitter: EventEmitter<any> = new EventEmitter();
 
-  public dateFormSubmittedSource = new Subject<boolean>();
-  public dateFormSubmitted$ = this.dateFormSubmittedSource.asObservable();
-  public tagFormSubmittedSource = new Subject<boolean>();
-  public tagFormSubmitted$ = this.tagFormSubmittedSource.asObservable();
-
+  currentTab = 'date';
   public searchParameters: SearchParameters = {
     documentDate: null,
     tagQuery: null,
     searchType: SearchType.Tag
   };
 
+  public dateSearchForm: FormGroup;
+  public dateFormSubmittedSource = new Subject<boolean>();
+  public dateFormSubmitted$ = this.dateFormSubmittedSource.asObservable();
+  showPicker = false;
+  dateForPicker: any = null;
+  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  blankDaysBeforeMonth = [];
+  daysInMonth = Array.from(
+    { length: 30 },
+    (v, k) => k + 1
+  );
+
+  public tagSearchForm: FormGroup;
+  public tagFormSubmittedSource = new Subject<boolean>();
+  public tagFormSubmitted$ = this.tagFormSubmittedSource.asObservable();
+
+  results$: Observable<{} | Document[]>;
   public nextToken = null;
   public previousToken = null;
-  private reloadLastSearch = false;
 
-  @Input() currentTimezone: string;
-  @ViewChild('d') dp: NgbInputDatepicker;
-  @Output() documentQueryResultEmitter: EventEmitter<any> = new EventEmitter();
+  public get currentSearch(): string {
+    return this.searchParameters.searchType;
+  }
 
   constructor(
     private formBuilder: FormBuilder,
@@ -49,28 +60,29 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
     private router: Router
   ) { }
 
-  public get currentSearch(): string {
-    return this.searchParameters.searchType;
-  }
-
   ngOnInit() {
     this.dateSearchForm = this.formBuilder.group({
-      dp: []
+      date: ['', [Validators.required, Validators.pattern('\\d{4}-\\d{2}-\\d{2}')]]
     });
     this.tagSearchForm = this.formBuilder.group({
       tagKey: ['', Validators.required],
       operator: [],
       tagValue: []
     });
+    const now = new Date();
+    this.dateForPicker = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+    this.calculatePickerDays();
+    this.tagSearchForm.get('operator').setValue('eq');
     if (localStorage.getItem('documentSearchParameters')) {
       this.searchParameters = JSON.parse(localStorage.getItem('documentSearchParameters'));
-      this.reloadLastSearch = true;
     }
-    this.tagSearchForm.get('operator').setValue('eq');
     if (this.searchParameters.documentDate) {
-      const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
-      this.dateSearchForm.get('dp').setValue(todayForPicker);
+      this.setCurrentTab('date');
+      this.dateForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
+      this.calculatePickerDays();
+      this.runDateSearch();
     } else if (this.searchParameters.tagQuery) {
+      this.setCurrentTab('tag');
       if (this.searchParameters.tagQuery.key) {
         this.tagSearchForm.get('tagKey').setValue(this.searchParameters.tagQuery.key);
         if (this.searchParameters.tagQuery.value) {
@@ -80,58 +92,68 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
       if (this.searchParameters.tagQuery.operator) {
         this.tagSearchForm.get('operator').setValue(this.searchParameters.tagQuery.operator);
       }
+      this.runTagSearch();
     }
   }
 
-  ngAfterViewInit() {
-    if (this.reloadLastSearch) {
-      if (this.currentSearch === 'date') {
-        this.runDateSearch(this.searchParameters.documentDate);
-      } else {
-        this.runTagSearch(this.searchParameters.tagQuery);
-      }
-    } else {
-      this.viewTodaysDocuments();
-    }
-    if (this.searchParameters.documentDate) {
-      const todayForPicker = this.searchService.splitDocumentDate(this.searchParameters.documentDate);
-      this.dp.writeValue(todayForPicker);
+  setCurrentTab(tab: string) {
+    this.currentTab = tab;
+  }
+
+  setDateForPickerFromDateInput() {
+    if (this.dateSearchForm.controls.date.valid) {
+      this.dateForPicker = this.searchService.splitDocumentDate(this.dateSearchForm.controls.date.value);
+      this.calculatePickerDays();
     }
   }
 
-  get f() {
-    return this.tagSearchForm.controls;
+  setDateForPickerFromPicker(dayOfMonth) {
+    this.dateForPicker.day = dayOfMonth;
+    this.calculatePickerDays();
   }
 
-  onDateSelected(event) {
-    const documentDate: string = this.searchService.buildDocumentDate(event.year, event.month, event.day);
-    this.runDateSearch(documentDate);
+  calculatePickerDays() {
+    const daysInMonth = new Date(this.dateForPicker.year, this.dateForPicker.month + 1, 0).getDate();
+    const dayOfWeek = new Date(this.dateForPicker.year, this.dateForPicker.month).getDay();
+    this.blankDaysBeforeMonth = [];
+    for (let i = 1; i <= dayOfWeek; i++) {
+      this.blankDaysBeforeMonth.push(i);
+    }
+    this.daysInMonth = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+      this.daysInMonth.push(i);
+    }
+    this.dateSearchForm.controls.date.setValue(
+      this.dateForPicker.year + '-' + ('0' + this.dateForPicker.month).slice(-2) + '-' + ('0' + this.dateForPicker.day).slice(-2)
+    );
   }
 
-  viewTodaysDocuments() {
-    const now = new Date();
-    const todayForPicker = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
-    this.dp.writeValue(todayForPicker);
-    this.dateSearchForm.get('dp').setValue(todayForPicker);
-    const documentDate: string = this.searchService.buildDocumentDate(todayForPicker.year, todayForPicker.month, todayForPicker.day);
-    this.runDateSearch(documentDate);
+  previousMonth() {
+    this.dateForPicker.month--;
+    if (this.dateForPicker.month < 1) {
+      this.dateForPicker.month = 12;
+      this.dateForPicker.year--;
+    }
+    this.calculatePickerDays();
   }
 
-  viewAllUntaggedDocuments() {
-    this.tagSearchForm.get('tagKey').setValue('untagged');
-    this.tagSearchForm.get('operator').setValue('eq');
-    this.tagSearchForm.get('tagValue').setValue('');
-    this.runTagSearch();
+  nextMonth() {
+    this.dateForPicker.month++;
+    if (this.dateForPicker.month > 12) {
+      this.dateForPicker.month = 1;
+      this.dateForPicker.year++;
+    }
+    this.calculatePickerDays();
   }
 
-  runDateSearch(documentDate: string, previousToken = '', nextToken = '') {
+  runDateSearch(documentDate: string = '', previousToken = '', nextToken = '') {
+    if (documentDate === '') {
+      documentDate = this.searchService.buildDocumentDate(
+        this.dateForPicker.year, this.dateForPicker.month, this.dateForPicker.day
+      );
+    }
     this.searchParameters.documentDate = null;
     this.searchParameters.tagQuery = null;
-    const dateRegExp = new RegExp('\\d{4}-\\d{2}-\\d{2}');
-    if (!dateRegExp.test(documentDate)) {
-      // TODO: make date field invalid
-      return;
-    }
     const currentUtcOffset = moment(documentDate).tz(this.currentTimezone).format('Z');
     let queryString = '?date=' + documentDate + '&tz=' + currentUtcOffset;
     if (nextToken !== '') {
@@ -148,6 +170,13 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
     this.results$.subscribe((results) => {
       this.documentQueryResultEmitter.emit(results);
     });
+  }
+
+  viewTodaysDocuments() {
+    const now = new Date();
+    this.dateForPicker = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+    this.calculatePickerDays();
+    this.runDateSearch();
   }
 
   public loadNextDatePage() {
@@ -192,6 +221,13 @@ export class SearchbarComponent implements OnInit, AfterViewInit, HttpErrorCallb
     this.results$.subscribe((results) => {
       this.documentQueryResultEmitter.emit(results);
     });
+  }
+
+  viewAllUntaggedDocuments() {
+    this.tagSearchForm.get('tagKey').setValue('untagged');
+    this.tagSearchForm.get('operator').setValue('eq');
+    this.tagSearchForm.get('tagValue').setValue('');
+    this.runTagSearch();
   }
 
   public loadNextTagPage() {

@@ -1,11 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ApiService } from '../../../../services/api.service';
 import { ApiItem } from '../../../../services/api.schema';
 import { AuthenticationService } from '../../../authentication/services/authentication.service';
 import { ConfigurationService } from '../../../../services/configuration.service';
 import { NavigationService } from '../../../../services/navigation.service';
-import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-api-explore',
@@ -15,13 +12,13 @@ import { NotificationService } from '../../../../services/notification.service';
 export class ExploreComponent implements OnInit {
 
   constructor(
-    private route: ActivatedRoute,
-    private apiService: ApiService,
     private authenticationService: AuthenticationService,
     private configurationService: ConfigurationService,
-    public navigationService: NavigationService,
-    private notificationService: NotificationService
+    public navigationService: NavigationService
   ) { }
+
+  documentsFragment = 'documents';
+  searchFragment = 'search';
 
   @ViewChild('header') headerElement: ElementRef;
   @ViewChild('headerDocuments') headerDocumentsElement: ElementRef;
@@ -65,9 +62,9 @@ export class ExploreComponent implements OnInit {
     allowsPath: false
   };
 
-  postDocumentApiItem: ApiItem = {
-    apiServiceMethodName: 'postDocument',
-    clickedSubscriptionName: 'apiPostDocumentClicked',
+  postDocumentsApiItem: ApiItem = {
+    apiServiceMethodName: 'postDocuments',
+    clickedSubscriptionName: 'apiPostDocumentsClicked',
     method: 'POST',
     path: '/documents',
     username: 'Cognito User',
@@ -141,9 +138,9 @@ export class ExploreComponent implements OnInit {
     allowsPath: false
   };
 
-  postDocumentTagApiItem: ApiItem = {
-    apiServiceMethodName: 'postDocumentTag',
-    clickedSubscriptionName: 'apiPostDocumentTagClicked',
+  postDocumentTagsApiItem: ApiItem = {
+    apiServiceMethodName: 'postDocumentTags',
+    clickedSubscriptionName: 'apiPostDocumentTagsClicked',
     method: 'POST',
     path: '/documents/ DOCUMENT_ID /tags',
     username: 'Cognito User',
@@ -281,15 +278,15 @@ export class ExploreComponent implements OnInit {
         if (navData.source) {
           if (navData.source === 'apiTopClicked') {
             setTimeout(() => {
-              this.headerElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+              this.headerElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 10);
           } else if (navData.source === 'apiHeaderDocumentsClicked') {
             setTimeout(() => {
-              this.headerDocumentsElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+              this.headerDocumentsElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 10);
           } else if (navData.source === 'apiHeaderSearchClicked') {
             setTimeout(() => {
-              this.headerSearchElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+              this.headerSearchElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 10);
           }
         }

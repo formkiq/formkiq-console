@@ -1,46 +1,56 @@
-<div class="row mt-2">
-  <div #header class="col-12">
-    <h6>
-      [
-      <a [routerLink]="['/api']" fragment="documents" (click)="navigationService.emitInlineNavItemClick('apiHeaderDocumentsClicked');">
-        Documents
-      </a>
-      |
-      <a [routerLink]="['/api']" fragment="search" (click)="navigationService.emitInlineNavItemClick('apiHeaderSearchClicked')">
-        Search
-      </a>
-      ]
-    </h6>
-  </div>
-  <div #headerDocuments class="col-12 mt-2">
-    <h5 class="formkiq-font">
-      Documents
-    </h5>
-  </div>
-  <div class="col-12 mt-1 mx-0">
-    <div class="row mx-0">
-      <app-api-item id="GET-documents" [apiItem]="getDocumentsApiItem" class="col-12"></app-api-item>
-      <app-api-item id="POST-document" [apiItem]="postDocumentApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-      <app-api-item id="GET-document" [apiItem]="getDocumentApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-      <app-api-item id="PATCH-document" [apiItem]="patchDocumentApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-      <app-api-item id="DELETE-document" [apiItem]="deleteDocumentApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-      <app-api-item id="GET-document-tags" [apiItem]="getDocumentTagsApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-      <app-api-item id="POST-document-tag" [apiItem]="postDocumentTagApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-      <app-api-item id="GET-document-tag" [apiItem]="getDocumentTagApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-      <app-api-item id="DELETE-document-tag" [apiItem]="deleteDocumentTagApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-      <app-api-item id="GET-document-url" [apiItem]="getDocumentUrlApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-      <app-api-item id="GET-documents-upload" [apiItem]="getDocumentsUploadApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-      <app-api-item id="GET-document-upload" [apiItem]="getDocumentUploadApiItem" [isCollapsed]="true" class="col-12"></app-api-item>
-    </div>
-  </div>
-  <div #headerSearch class="col-12 mt-2">
-    <h5 class="formkiq-font">
-      Search
-    </h5>
-  </div>
-  <div class="col-12 mt-1 mx-0">
-    <div class="row mx-0">
-      <app-api-item id="POST-search" [apiItem]="postSearchApiItem" class="col-12"></app-api-item>
+<div class="relative bg-white overflow-scroll-y mx-4">
+  <div class="mt-8">
+    <div class="max-w-screen-xl mx-auto relative">
+      <h2 class="text-2xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
+        API Explorer
+      </h2>
+      <nav class="ml-8 lg:w-full mb-8 md:mb-16">
+        <ul class="list-disc list-inside text-lg md:text-2xl">
+          <li>
+            <a
+              [routerLink]="['/api']"
+              [fragment]="documentsFragment"
+              (click)="navigationService.emitInlineNavItemClick('apiHeaderDocumentsClicked')"
+              class="font-bold text-orange-900 hover:text-orange-600"
+              >
+              Documents
+            </a>
+          </li>
+          <li>
+            <a
+              [routerLink]="['/api']"
+              [fragment]="searchFragment"
+              (click)="navigationService.emitInlineNavItemClick('apiHeaderSearchClicked')"
+              class="font-bold text-orange-900 hover:text-orange-600"
+              >
+              Search
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <section class="lg:w-full mb-12">
+        <h3 #headerDocuments class="md:mx-4 mb-8 text-2xl tracking-tight leading-10 font-extrabold text-orange-600 sm:leading-none md:text-4xl">
+          Documents
+        </h3>
+        <app-api-item id="GET-documents" [apiItem]="getDocumentsApiItem"></app-api-item>
+        <app-api-item id="POST-documents" [apiItem]="postDocumentsApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="GET-document" [apiItem]="getDocumentApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="PATCH-document" [apiItem]="patchDocumentApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="DELETE-document" [apiItem]="deleteDocumentApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="GET-document-tags" [apiItem]="getDocumentTagsApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="POST-document-tags" [apiItem]="postDocumentTagsApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="GET-document-tag" [apiItem]="getDocumentTagApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="DELETE-document-tag" [apiItem]="deleteDocumentTagApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="GET-document-url" [apiItem]="getDocumentUrlApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="GET-documents-upload" [apiItem]="getDocumentsUploadApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="GET-document-upload" [apiItem]="getDocumentUploadApiItem" [isCollapsed]="true"></app-api-item>
+      </section>
+      <section class="lg:w-full mb-12">
+        <h3 #headerSearch class="mx-4 mb-8 text-3xl tracking-tight leading-10 font-extrabold text-orange-600 sm:leading-none md:text-4xl">
+          Search
+        </h3>
+        <app-api-item id="POST-search" [apiItem]="postSearchApiItem"></app-api-item>
+      </section>
     </div>
   </div>
 </div>

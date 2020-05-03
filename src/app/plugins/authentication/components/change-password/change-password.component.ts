@@ -70,44 +70,13 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     this.changePasswordResponseSubscription.unsubscribe();
   }
 
-  checkIfOldPasswordStillInvalid(oldPasswordTooltip) {
-    if (!this.f.oldPassword.errors) {
-      oldPasswordTooltip.close();
-    }
-  }
-
-  checkIfPasswordStillInvalid(passwordTooltip) {
-    if (!this.f.password.errors) {
-      passwordTooltip.close();
-    }
-  }
-
-  checkIfPasswordConfirmationStillInvalid(passwordConfirmationTooltip) {
-    if (!this.f.passwordConfirmation.errors) {
-      passwordConfirmationTooltip.close();
-    }
-  }
-
-  changePassword(oldPasswordTooltip, passwordTooltip, passwordConfirmationTooltip) {
+  changePassword() {
     this.formSubmitted = true;
-    oldPasswordTooltip.close();
-    passwordTooltip.close();
-    passwordConfirmationTooltip.close();
     if (!this.f.oldPassword.errors && !this.f.password.errors && !this.f.passwordConfirmation.errors) {
       if (this.verificationCode) {
         this.authenticationService.confirmPassword(this.email, this.verificationCode, this.form.get('password').value);
       } else {
         this.authenticationService.changePassword(this.email, this.form.get('oldPassword').value, this.form.get('password').value);
-      }
-    } else {
-      if (this.f.oldPassword.errors) {
-        oldPasswordTooltip.open();
-      }
-      if (this.f.password.errors) {
-        passwordTooltip.open();
-      }
-      if (this.f.passwordConfirmation.errors) {
-        passwordConfirmationTooltip.open();
       }
     }
   }

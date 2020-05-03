@@ -4,6 +4,7 @@ import { timer, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AuthenticationService } from '../../plugins/authentication/services/authentication.service';
 import { ConfigurationService } from '../../services/configuration.service';
+import { LibraryService } from '../../services/library.service';
 import { LoginResponse, LogoutResponse } from '../../plugins/authentication/services/authentication.schema';
 import { NotificationService } from '../../services/notification.service';
 import { NotificationInfo } from '../../services/notification.schema';
@@ -43,13 +44,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     public authenticationService: AuthenticationService,
     private configurationService: ConfigurationService,
+    private libraryService: LibraryService,
     private notificationService: NotificationService,
     private router: Router,
     private route: ActivatedRoute
-    ) { }
+  ) { }
 
   ngOnInit() {
     const source = timer(0, 30000);
+    this.libraryService.loadHamburgers();
     const subscribe = source.subscribe(intervalNum => {
       if (this.requireAuthenticationForRead) {
         this.authenticationService.checkLoginAndToken();
@@ -57,19 +60,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-      ).subscribe((value: NavigationEnd) => {
-        this.routeTitle = this.route.root.firstChild.snapshot.data.title;
-        this.currentRouteUrl = value.url;
-        if (value.url === '/authenticate') {
-          if (this.isSidebarToggled) {
-            this.toggleSidebar();
-          }
-          this.showHamburgerButton = false;
-        } else {
-          this.showDropdown = true;
-          this.showHamburgerButton = true;
+    ).subscribe((value: NavigationEnd) => {
+      this.routeTitle = this.route.root.firstChild.snapshot.data.title;
+      this.currentRouteUrl = value.url;
+      if (value.url === '/authenticate') {
+        if (this.isSidebarToggled) {
+          this.toggleSidebar();
         }
+        this.showHamburgerButton = false;
+      } else {
+        this.showDropdown = true;
+        this.showHamburgerButton = true;
       }
+    }
     );
     this.authenticationPageLoadSubscription = this.authenticationService.authenticationPageLoad$.subscribe(
       () => {
@@ -104,7 +107,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         if (this.notificationInfo.millisecondsUntilClose > 0) {
           setTimeout(() => this.notificationInfo = null, this.notificationInfo.millisecondsUntilClose);
         }
-    });
+      });
     this.loginResponseSubscription = this.authenticationService.loginResponse$.subscribe(
       (value: LoginResponse) => {
         this.loginResponse = value;
@@ -114,22 +117,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
             this.toggleSidebar();
           }
         }
-    });
+      });
     this.logoutResponseSubscription = this.authenticationService.logoutResponse$.subscribe(
       (value: LogoutResponse) => {
         this.notificationService.createNotificationFromAuthenticationResponse(value);
         if (this.requireAuthenticationForRead) {
           this.router.navigate(['/authenticate']);
         }
-    });
+      });
     this.forgotPasswordResponseSubscription = this.authenticationService.forgotPasswordResponse$.subscribe(
       (value) => {
         this.currentAuthenticationForm = 'login';
-    });
+      });
     this.registrationResponseSubscription = this.authenticationService.registrationResponse$.subscribe(
       (value) => {
         this.currentAuthenticationForm = 'login';
-    });
+      });
   }
 
   ngOnDestroy() {
@@ -151,7 +154,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   hasSmallViewport() {
-    return (window.innerWidth <= 480);
+    return (window.innerWidth < 768);
   }
 
   signOut() {

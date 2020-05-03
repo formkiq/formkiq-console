@@ -6,11 +6,11 @@ import * as moment from 'moment-timezone';
   name: 'datetimeFormat'
 })
 export class DatetimeFormat extends DatePipe implements PipeTransform {
-transform(
-  value: string,
-  format: string = 'mediumDate',
-  timezone: string = 'America/New York'
-): string {
+  transform(
+    value: string,
+    format: string = 'mediumDate',
+    timezone: string = 'America/New_York'
+  ): string {
     const timezoneOffset = moment(value).tz(timezone).format('Z');
     return super.transform(value, format, timezoneOffset);
   }

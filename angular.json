@@ -5,14 +5,21 @@
   "projects": {
     "formkiq-console": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "customWebpackConfig": {
+              "path": "./webpack.config.js"
+            },
             "outputPath": "dist/formkiq-console",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -24,13 +31,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/font-awesome/scss/font-awesome.scss",
-              "src/assets/dist/dropzone/dropzone.scss"
+              "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/chart.js/dist/Chart.min.js"
             ]
           },
           "configurations": {
@@ -55,15 +58,19 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
                 }
               ]
             }
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
+            "customWebpackConfig": {
+              "path": "./webpack.config.js"
+            },
             "browserTarget": "formkiq-console:build"
           },
           "configurations": {
@@ -90,9 +97,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/font-awesome/scss/font-awesome.scss",
-              "src/assets/dist/dropzone/dropzone.scss"
+              "src/styles.scss"
             ],
             "scripts": []
           }

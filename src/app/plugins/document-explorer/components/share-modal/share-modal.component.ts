@@ -11,7 +11,7 @@ export class ShareModalComponent implements OnInit, AfterViewInit {
   @Output() closeEmitter: EventEmitter<boolean> = new EventEmitter();
   @ViewChild('shareUrlTextarea') textarea: ElementRef;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
   }

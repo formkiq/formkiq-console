@@ -17,7 +17,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private notificationService: NotificationService
-    ) { }
+  ) { }
 
   public form: FormGroup;
   formSubmitted = false;
@@ -48,41 +48,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.registrationResponseSubscription.unsubscribe();
   }
 
-  checkIfEmailStillInvalid(emailTooltip) {
-    if (!this.f.email.errors) {
-      emailTooltip.close();
-    }
-  }
-
-  checkIfPasswordStillInvalid(passwordTooltip) {
-    if (!this.f.password.errors) {
-      passwordTooltip.close();
-    }
-  }
-
-  checkIfPasswordConfirmationStillInvalid(passwordConfirmationTooltip) {
-    if (!this.f.passwordConfirmation.errors) {
-      passwordConfirmationTooltip.close();
-    }
-  }
-
-  createAccount(emailTooltip, passwordTooltip, passwordConfirmationTooltip) {
+  createAccount() {
     this.formSubmitted = true;
-    emailTooltip.close();
-    passwordTooltip.close();
-    passwordConfirmationTooltip.close();
     if (!this.f.email.errors && !this.f.password.errors && !this.f.passwordConfirmation.errors) {
       this.authenticationService.register(this.form.get('email').value, this.form.get('password').value);
-    } else {
-      if (this.f.email.errors) {
-        emailTooltip.open();
-      }
-      if (this.f.password.errors) {
-        passwordTooltip.open();
-      }
-      if (this.f.passwordConfirmation.errors) {
-        passwordConfirmationTooltip.open();
-      }
     }
   }
 

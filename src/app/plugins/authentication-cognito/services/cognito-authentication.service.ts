@@ -207,30 +207,8 @@ export class CognitoAuthenticationService {
         const url = 'cognito-idp.' + this.configurationService.cognito.region.toLowerCase() + '.amazonaws.com/' +
           this.configurationService.cognito.userPoolId;
         this.cognitoLogins[url] = this.idTokenValue;
-        const creds = new Aws.CognitoIdentityCredentials({
-          IdentityPoolId: this.configurationService.cognito.identityPoolId,
-          Logins: this.cognitoLogins
-        });
-        creds.clearCachedId();
-        Aws.config.update({
-          region: this.configurationService.cognito.region,
-          credentials: creds
-        });
-        const credentials: any = Aws.config.credentials;
-        credentials.get((err) => {
-          if (err) {
-            localStorage.setItem('currentUserIsAdmin', 'false');
-            this.currentUserIsAdminSubject.next(false);
-            this.loginResponseSource.next(response);
-            this.authenticationChangeSource.next();
-            return true;
-          } else {
-            localStorage.setItem('currentUserIsAdmin', 'true');
-            this.currentUserIsAdminSubject.next(true);
-            this.loginResponseSource.next(response);
-            this.authenticationChangeSource.next();
-          }
-        });
+        this.loginResponseSource.next(response);
+        this.authenticationChangeSource.next();
       },
       onFailure: (err) => {
         response.success = false;

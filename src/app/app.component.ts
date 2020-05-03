@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'kiqconsole';
+  title = 'FormKiQ Stacks Console';
 
   public isSidebarToggled = true;
 
@@ -19,7 +19,7 @@ export class AppComponent {
   }
 
   onSidebarItemClick() {
-    if (window.innerWidth <= 480) {
+    if (window.innerWidth < 768) {
       if (this.isSidebarToggled) {
         this.toggleSidebar();
       }

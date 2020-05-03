@@ -1,198 +1,274 @@
-<nav id="sidebar" *ngIf="isSidebarToggled" class="navbar pl-3 pr-0 formkiq-font navbar-dark formkiq-dark-blue-background">
-  <ul *ngIf="!authenticationService.requireAuthenticationForRead || authenticationService.loggedInUser != null" class="navbar-nav mr-auto">
-    <li class="nav-item" [ngClass]="{ 'active': currentUrl == '/' }">
-      <a class="nav-link"
+<nav *ngIf="isSidebarToggled" class="pb-8 bg-orange-600" style="min-height: 75vh">
+  <ul *ngIf="authenticationService.loggedInUser != null">
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/' }"
+      class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
         [routerLink]="['/']"
-        (click)="emitSidebarItemClick()">
-        Dashboard <span *ngIf="currentUrl == '/'" class="sr-only">(current)</span>
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        Dashboard
       </a>
     </li>
-    <li class="nav-item"  [ngClass]="{ 'active': currentUrl == '/documents' }">
-      <a class="nav-link"
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/documents' }"
+      class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
         [routerLink]="['/documents']"
-        (click)="emitSidebarItemClick()">
-        Documents <span *ngIf="currentUrl == '/documents'" class="sr-only">(current)</span>
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        Document Explorer
       </a>
     </li>
-    <div class="subnav-container has-scrollbar">
-      <li *ngIf="currentUrl.indexOf('/documents') == 0" class="nav-item nav-sub-item" [ngClass]="{ 'active': currentUrl == '/documents/add' }">
-        <a class="nav-link"
-          [routerLink]="['/documents/add']"
-          (click)="emitSidebarItemClick()">
-          Add Documents <span *ngIf="currentUrl == '/documents/add'" class="sr-only">(current)</span>
-        </a>
-      </li>
-    </div>
-    <li class="nav-item"  [ngClass]="{ 'active': currentUrl == '/api' }">
-      <a class="nav-link"
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/documents/add' }"
+      class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/documents/add']"
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        Add Documents
+      </a>
+    </li>
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api' }"
+      class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
         [routerLink]="['/api']"
-        (click)="emitSidebarItemClick('apiTopClicked')">
-        API <span *ngIf="currentUrl == '/api'" class="sr-only">(current)</span>
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        API Explorer
       </a>
     </li>
-    <div #apiSubnav class="subnav-container has-scrollbar">
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item-header pr-1" [ngClass]="{ 'active': currentUrl == '/api/#documents' }">
-        <a #headerDocuments class="nav-link"
-          [routerLink]="['/api']"
-          fragment="documents"
-          (click)="emitSidebarItemClick('apiHeaderDocumentsClicked');">
-          DOCUMENTS
-        </a>
-      </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#GET-documents' }">
-        <a #getDocuments class="nav-link"
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api/#documents' }"
+      class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/api']"
+        fragment="documents"
+        (click)="emitSidebarItemClick('apiHeaderDocumentsClicked')"
+        class="cursor-pointer"
+        >
+        Documents
+      </a>
+    </li>
+    <div *ngIf="currentUrl && currentUrl.indexOf('/api') > -1 && currentUrl.indexOf('document') > 4">
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-documents' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
           fragment="GET-documents"
-          (click)="emitSidebarItemClick('apiGetDocumentsClicked');">
-          GET
-          <br />
-          /documents
+          (click)="emitSidebarItemClick('apiGetDocumentsClicked')"
+          class="cursor-pointer"
+          >
+          GET /documents
         </a>
       </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#POST-document' }">
-        <a #postDocument class="nav-link"
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-documents' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
-          fragment="POST-document"
-          (click)="emitSidebarItemClick('apiPostDocumentClicked')">
-          POST
-          <br />
-          /documents
+          fragment="POST-documents"
+          (click)="emitSidebarItemClick('apiPostDocumentsClicked')"
+          class="cursor-pointer"
+          >
+          POST /documents
         </a>
       </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#GET-document' }">
-        <a #getDocument class="nav-link"
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
           fragment="GET-document"
-          (click)="emitSidebarItemClick('apiGetDocumentClicked')">
-          GET
-          <br />
-          /documents/<span class="api-method-parameter">DOCU_ID</span>
+          (click)="emitSidebarItemClick('apiGetDocumentClicked')"
+          class="cursor-pointer"
+          >
+          GET /document/<strong>&#123;id&#125;</strong>
         </a>
       </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#PATCH-document' }">
-        <a #patchDocument class="nav-link"
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#PATCH-document' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
           fragment="PATCH-document"
-          (click)="emitSidebarItemClick('apiPatchDocumentClicked')">
-          PATCH
-          <br />
-          /documents/<span class="api-method-parameter">DOCU_ID</span>
+          (click)="emitSidebarItemClick('apiPatchDocumentClicked')"
+          class="cursor-pointer"
+          >
+          PATCH /document/<strong>&#123;id&#125;</strong>
         </a>
       </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#DELETE-document' }">
-        <a #deleteDocument class="nav-link"
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#DELETE-document' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
           fragment="DELETE-document"
-          (click)="emitSidebarItemClick('apiDeleteDocumentClicked')">
-          DELETE
-          <br />
-          /documents/<span class="api-method-parameter">DOCU_ID</span>
+          (click)="emitSidebarItemClick('apiDeleteDocumentClicked')"
+          class="cursor-pointer"
+          >
+          DELETE /document/<strong>&#123;id&#125;</strong>
         </a>
       </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#GET-document-url' }">
-        <a #getDocumentUrl class="nav-link"
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-url' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
           fragment="GET-document-url"
-          (click)="emitSidebarItemClick('apiGetDocumentUrlClicked')">
-          GET
-          <br />
-          /documents/<span class="api-method-parameter">DOCU_ID</span>/url
+          (click)="emitSidebarItemClick('apiGetDocumentUrlClicked')"
+          class="cursor-pointer"
+          >
+          GET /document/<strong>&#123;id&#125;</strong>/url
         </a>
       </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#GET-document-tags' }">
-        <a class="nav-link"
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-document-tags' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
-          fragment="GET-document-tags"
-          (click)="emitSidebarItemClick('apiGetDocumentTagsClicked')">
-          GET
-          <br />
-          /documents/<span class="api-method-parameter">DOCU_ID</span>/tags
+          fragment="POST-document-tags"
+          (click)="emitSidebarItemClick('apiPostDocumentTagsClicked')"
+          class="cursor-pointer"
+          >
+          POST /document/<strong>&#123;id&#125;</strong>/tags
         </a>
       </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#POST-document-tag' }">
-        <a class="nav-link"
-          [routerLink]="['/api']"
-          fragment="POST-document-tag"
-          (click)="emitSidebarItemClick('apiPostDocumentTagClicked')">
-          POST
-          <br />
-          /documents/<span class="api-method-parameter">DOCU_ID</span>/tags
-        </a>
-      </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#GET-document-tag' }">
-        <a class="nav-link"
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-tag' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
           fragment="GET-document-tag"
-          (click)="emitSidebarItemClick('apiGetDocumentTagClicked')">
-          GET
-          <br />
-          /documents/<span class="api-method-parameter">DOCU_ID</span>
-          <br />
-          /tags/<span class="api-method-parameter">TAG_KEY</span>
+          (click)="emitSidebarItemClick('apiGetDocumentTagClicked')"
+          class="cursor-pointer"
+          >
+          GET /document/<strong>&#123;id&#125;</strong>/tag/<strong>&#123;tag&#125;</strong>
         </a>
       </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#DELETE-document-tag' }">
-        <a class="nav-link"
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#DELETE-document-tag' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
           fragment="DELETE-document-tag"
-          (click)="emitSidebarItemClick('apiDeleteDocumentTagClicked')">
+          (click)="emitSidebarItemClick('apiDeleteDocumentTagClicked')"
+          class="cursor-pointer"
+          >
           DELETE
-          <br />
-          /documents/<span class="api-method-parameter">DOCU_ID</span>
-          <br />
-          /tags/<span class="api-method-parameter">TAG_KEY</span>
+          /document/<strong class="tracking-tighter">&#123;id&#125;</strong>/tag/<strong class="tracking-tighter">&#123;tag&#125;</strong>
         </a>
       </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#GET-documents-upload' }">
-        <a class="nav-link"
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-documents-upload' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
           fragment="GET-documents-upload"
-          (click)="emitSidebarItemClick('apiGetDocumentsUploadClicked')">
-          GET
-          <br />
-          /documents/upload
+          (click)="emitSidebarItemClick('apiGetDocumentsUploadClicked')"
+          class="cursor-pointer"
+          >
+          GET /documents/upload/
         </a>
       </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#GET-document-upload' }">
-        <a class="nav-link"
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-upload' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
           [routerLink]="['/api']"
           fragment="GET-document-upload"
-          (click)="emitSidebarItemClick('apiGetDocumentUploadClicked')">
-          GET
-          <br />
-          /documents/<span class="api-method-parameter">DOCU_ID</span>/upload
-        </a>
-      </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item-header pt-1 pr-1" [ngClass]="{ 'active': currentUrl == '/api/#search' }">
-        <a #headerSearch class="nav-link"
-          [routerLink]="['/api']"
-          fragment="search"
-          (click)="emitSidebarItemClick('apiHeaderSearchClicked')">
-          SEARCH
-        </a>
-      </li>
-      <li *ngIf="currentUrl.indexOf('/api') == 0" class="nav-item nav-sub-item pr-1" [ngClass]="{ 'active': currentUrl == '/api/#POST-search' }">
-        <a class="nav-link"
-          [routerLink]="['/api']"
-          fragment="POST-search"
-          (click)="emitSidebarItemClick('apiPostSearchClicked')">
-          POST
-          <br />
-          /search
+          (click)="emitSidebarItemClick('apiGetDocumentUploadClicked')"
+          class="cursor-pointer"
+          >
+          GET /document/<strong>&#123;id&#125;</strong>/upload/
         </a>
       </li>
     </div>
-    <li *ngIf="authenticationService.loggedInUser != null" class="nav-item" [ngClass]="{ 'active': currentUrl == '/signOut' }">
-      <a class="nav-link"
-        [routerLink]="['/signOut']"
-        (click)="signOut();emitSidebarItemClick()">
-        Sign Out <span *ngIf="currentUrl == '/signOut'" class="sr-only">(current)</span>
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api/#search' }"
+      class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/api']"
+        fragment="search"
+        (click)="emitSidebarItemClick('apiHeaderSearchClicked')"
+        class="cursor-pointer"
+        >
+        Search
+      </a>
+    </li>
+    <div *ngIf="currentUrl && currentUrl.indexOf('/api') > -1 && currentUrl.indexOf('search') > 4">
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-search' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="POST-search"
+          (click)="emitSidebarItemClick('apiPostSearchClicked')"
+          class="cursor-pointer"
+          >
+          POST /search
+        </a>
+      </li>
+    </div>
+    <li
+      class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        (click)="signOut()"
+        class="cursor-pointer"
+        >
+        Sign Out
       </a>
     </li>
   </ul>
 </nav>
-<footer>
-  Console version:
-  <span class="version">{{ version }}</span>
+<footer class="bg-orange-600 md:pt-8">
+  <p class="text-sm text-center text-orange-900 pl-2 pr-3 pt-4 pb-4 md:bg-orange-700">
+    Console version:
+    <span class="font-bold">{{ version }}</span>
+  </p>
 </footer>
-

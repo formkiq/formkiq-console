@@ -1,68 +1,114 @@
-<div class="row">
-  <div class="col-12 mb-1">
-    <app-searchbar #searchbar [currentTimezone]="currentTimezone" (documentQueryResultEmitter)="displayResults($event)"></app-searchbar>
-  </div>
-  <div class="col-12 mb-1">
-    <input type="button" class="btn btn-primary" value="Add Documents..." (click)="addDocuments()" />
-  </div>
-  <div class="result-container">
-    <div *ngIf="this.dateSearchSubmitted || this.tagSearchSubmitted" class="inflight">
-      <div class="spinner-border" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-    </div>
-    <div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
-      <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
-    </div>
-    <div class="col-12">
-      <div class="table">
-        <table class="table table-hover" *ngIf="results$ | async as results">
+<div class="relative bg-white overflow-scroll-y mx-4">
+  <div class="mt-8">
+    <div class="max-w-screen-xl mx-auto relative">
+      <h2 class="text-2xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
+        Document Explorer
+      </h2>
+      <app-searchbar #searchbar [currentTimezone]="currentTimezone" (documentQueryResultEmitter)="displayResults($event)"></app-searchbar>
+      <section class="lg:w-full mb-4 md:mb-8">
+        <button
+          class="px-8 py-2 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+            text-white focus:outline-none focus:shadow-outline
+            bg-green-600 hover:bg-green-500
+            transition duration-150 ease-in-out md:text-lg"
+          (click)="addDocuments()"
+          >
+          Add Documents...
+        </button>
+      </section>
+      <section class="lg:w-full mb-4 md:mb-8">
+        <div *ngIf="results$ | async as results" class="text-center">
+          <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
+        </div>
+        <table
+          *ngIf="results$ | async as results"
+          class="border-collapse w-full"
+          >
           <thead>
             <tr>
-              <th scope="col">Document</th>
-              <th scope="col">Path</th>
-              <th scope="col">Type</th>
-              <th scope="col">User</th>
-              <th scope="col">Date Inserted</th>
+              <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+                Document ID
+              </th>
+              <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+                Path
+              </th>
+              <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+                Content Type
+              </th>
+              <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+                Added By
+              </th>
+              <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+                Date Added
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngIf="results.documents.length == 0">
-              <td>
-                No documents found
-                <span *ngIf="!tagSearchSubmitted">for this date</span>
-                <span *ngIf="tagSearchSubmitted">for this tag search</span>
+            <tr
+              *ngIf="!results.documents.length"
+              class="bg-gray-100 flex text-center py-2 px-1 lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0"
+              >
+              <td
+                colspan="100%"
+                >
+                No documents have been found that match your
+                <span *ngIf="searchbar.currentSearch == 'date'">date</span>
+                <span *ngIf="searchbar.currentSearch == 'tag'">tag</span>
+                search.
               </td>
             </tr>
-            <tr *ngFor="let result of results.documents">
-              <td>
-                <strong>
-                {{result.documentId}}
-                </strong>
-                <p class="py-2">
-                  <input type="button" class="mx-1" value="Share..." (click)="shareDocument(result.documentId, shareModal)" />
-                  <input type="button" class="mx-1" value="Tags..." (click)="viewDocumentTags(result.documentId)" />
-                </p>
+            <tr
+              *ngFor="let document of results.documents"
+              class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0"
+              >
+              <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Document ID</span>
+                {{ document.documentId }}
+                <div>
+                  <button
+                    class="mt-1 px-2 py-1 w-full md:w-auto mx-1 border border-transparent text-sm leading-6 font-medium rounded-md shadow
+                      text-white focus:outline-none focus:shadow-outline
+                      bg-green-600 hover:bg-green-500
+                      transition duration-150 ease-in-out md:text-base"
+                    (click)="shareDocument(document.documentId, shareModal)"
+                    >
+                    Share...
+                  </button>
+                  <button
+                    class="mt-1 px-2 py-1 w-full md:w-auto mx-1 border border-transparent text-sm leading-6 font-medium rounded-md shadow
+                      text-white focus:outline-none focus:shadow-outline
+                      bg-green-600 hover:bg-green-500
+                      transition duration-150 ease-in-out md:text-base"
+                    (click)="viewDocumentTags(document.documentId)"
+                    >
+                    Info and Tags...
+                  </button>
+                </div>
               </td>
-              <td>{{result.path}}&nbsp;</td>
-              <td>{{result.contentType}}&nbsp;</td>
-              <td>{{result.userId}}&nbsp;</td>
-              <td>{{ result.inserteddate | datetimeFormat: 'yyyy-MM-dd HH:mm Z':currentTimezone }}</td>
+              <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3  text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Path</span>
+                {{ document.path }}
+              </td>
+              <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3  text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Content Type</span>
+                {{ document.contentType }}
+              </td>
+              <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3  text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Added By</span>
+                {{ document.userId }}
+              </td>
+              <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Date Added</span>
+                {{ document.inserteddate | datetimeFormat: 'yyyy-MM-dd HH:mm Z':currentTimezone }}
+              </td>
             </tr>
           </tbody>
         </table>
-      </div>
-      <div *ngIf="results$ | async as results" class="col-12 text-center">
-        <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
-      </div>
+        <div *ngIf="results$ | async as results" class="text-center">
+          <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
+        </div>
+      </section>
     </div>
   </div>
 </div>
-<ng-template #shareModal let-modal>
-  <app-share-modal
-    #shareModalComponent
-    [shareUrl]="shareUrl"
-    (closeEmitter)="closeModal($event)"
-  ></app-share-modal>
-</ng-template>
-
+<app-share-modal *ngIf="showModal" [shareUrl]="shareUrl" (closeEmitter)="showModal = false"></app-share-modal>

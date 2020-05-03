@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, Injectable, ElementRef, Renderer2} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Injectable, ElementRef, Renderer2 } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -32,14 +32,14 @@ export class SidebarComponent implements OnInit {
     private navigationService: NavigationService,
     private router: Router,
     private renderer: Renderer2
-    ) { }
+  ) { }
 
   ngOnInit() {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-      ).subscribe((value: NavigationEnd) => {
-        this.currentUrl = value.url;
-      }
+    ).subscribe((value: NavigationEnd) => {
+      this.currentUrl = value.url;
+    }
     );
     this.version = this.configurationService.version;
   }
@@ -48,10 +48,13 @@ export class SidebarComponent implements OnInit {
     if (this.requireAuthenticationForRead) {
       this.authenticationService.checkLoginAndToken();
     }
-    if (source && window.innerWidth > 480) {
+    if (source) {
       const clickData = new NavItemClickData();
       clickData.source = source;
       clickData.collapseItem = false;
+      if (window.innerWidth < 768) {
+        this.sidebarItemClickEmitter.emit();
+      }
       this.navigationService.navItemClickedSource.next(clickData);
     } else {
       this.sidebarItemClickEmitter.emit();

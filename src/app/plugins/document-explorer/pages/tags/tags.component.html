@@ -1,67 +1,205 @@
-<div class="col-12 mt-2">
-  <h5 class="formkiq-font">
-    Document:
-    {{ documentId }}
-  </h5>
-  <button class="btn btn-primary" (click)="backToList()"><i name="chevron-left"></i> Back to Results</button>
-</div>
-<div class="result-container">
-  <div *ngIf="this.loading" class="inflight">
-    <div class="spinner-border" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-  </div>
-  <div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
-    <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
-  </div>
-  <div class="col-12">
-    <div class="table">
-      <table class="table table-hover" *ngIf="results$ | async as results">
+<div class="relative bg-white overflow-scroll-y mx-4">
+  <div class="mt-4 max-w-screen-xl mx-auto relative">
+    <h3 class="mb-0 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:mb-4 md:text-3xl">
+      <a
+        [routerLink]="['/documents']"
+        class="rounded-md text-orange-600 hover:text-orange-900 focus:text-orange-900"
+        >
+        Document Explorer
+      </a>
+    </h3>
+    <h2 class="text-2xl tracking-tight leading-10 text-gray-900 sm:leading-none md:text-4xl mb-4">
+      <span class="font-extrabold">
+        Document:
+      </span>
+      {{ documentId }}
+    </h2>
+    <button
+      class="mb-2 md:mb-4 md:mt-1 px-2 py-1 w-full md:w-auto mx-1 border border-transparent text-sm leading-6 font-medium rounded-md shadow
+        text-white focus:outline-none focus:shadow-outline
+        bg-green-600 hover:bg-green-500
+        transition duration-150 ease-in-out md:text-base"
+        (click)="backToList()"
+      >
+      <svg
+        width="0.6em"
+        height="0.6em"
+        viewBox="0 0 256 256"
+        class="inline mr-1 -mt-1 fill-current"
+        ><g><g><polygon points="207.093,30.187 176.907,0 48.907,128 176.907,256 207.093,225.813 109.28,128"/></g></g>
+      </svg>
+      Back to Results
+    </button>
+    <section class="lg:w-full mb-4 md:mb-8">
+      <div *ngIf="results$ | async as results" class="text-center">
+        <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
+      </div>
+      <table
+        *ngIf="results$ | async as results"
+        class="border-collapse w-full"
+        >
         <thead>
           <tr>
-            <th scope="col">Key</th>
-            <th scope="col">Value</th>
-            <th scope="col">Date Inserted</th>
-            <th scope="col">&nbsp;</th>
+            <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+              Key
+            </th>
+            <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+              Value
+            </th>
+            <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+              Date Added
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="results.tags.length == 0"><td>No Tags Found</td></tr>
-          <tr *ngFor="let result of results.tags">
-            <td>{{result.key}}</td>
-            <td>{{result.value}}&nbsp;</td>
-            <td>{{result.inserteddate}}&nbsp;</td>
-            <td *ngIf="f.tagKey.value != result.key">
-              <input type="button" value="Edit" (click)="editTag(result.key, result.value)" />
-              <input type="button" value="Delete" (click)="deleteTag(result.key)" />
+          <tr
+            *ngIf="!results.tags.length"
+            class="bg-gray-100 flex text-center py-2 px-1 lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0"
+            >
+            <td
+              colspan="100%"
+              >
+              No tags have been found for this document.
             </td>
-            <td *ngIf="f.tagKey.value == result.key">
-              <input type="button" value="Cancel Edit" (click)="cancelEdit()" />
+          </tr>
+          <tr
+            *ngFor="let tag of results.tags"
+            class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0"
+            >
+            <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+              <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Key</span>
+              {{ tag.key }}
+              <div>
+                <button
+                  *ngIf="f.tagKey.value != tag.key"
+                  class="mt-1 px-2 py-1 w-full md:w-auto mx-1 border border-transparent text-sm leading-6 font-medium rounded-md shadow
+                    text-white focus:outline-none focus:shadow-outline
+                    bg-green-600 hover:bg-green-500
+                    transition duration-150 ease-in-out md:text-base"
+                  (click)="editTag(tag.key, tag.value)"
+                  >
+                  Edit
+                </button>
+                <button
+                  *ngIf="f.tagKey.value != tag.key"
+                  class="mt-1 px-2 py-1 w-full md:w-auto mx-1 border border-transparent text-sm leading-6 font-medium rounded-md shadow
+                    text-white focus:outline-none focus:shadow-outline
+                    bg-green-600 hover:bg-green-500
+                    transition duration-150 ease-in-out md:text-base"
+                  (click)="deleteTag(tag.key)"
+                  >
+                  Delete
+                </button>
+                <button
+                  *ngIf="f.tagKey.value == tag.key"
+                  class="mt-1 px-2 py-1 w-full md:w-auto mx-1 border border-transparent text-sm leading-6 font-medium rounded-md shadow
+                    text-white focus:outline-none focus:shadow-outline
+                    bg-green-600 hover:bg-green-500
+                    transition duration-150 ease-in-out md:text-base"
+                  (click)="cancelEdit()"
+                  >
+                  Cancel Edit
+                </button>
+              </div>
+            </td>
+            <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3  text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+              <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Value</span>
+              {{ tag.value }}
+            </td>
+            <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+              <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Date Added</span>
+              {{ tag.insertedDate | datetimeFormat: 'yyyy-MM-dd HH:mm Z':currentTimezone }}
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
-    <div *ngIf="results$ | async as results" class="col-12 text-center mt-2">
-      <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
-    </div>
-</div>
-  <form [formGroup]="addTagForm" (ngSubmit)="saveTag()">
-    <div class="row mb-2">
-      <div class="col-12">
-        <label *ngIf="isTagEditMode">Edit Tag:</label>
-        <label *ngIf="!isTagEditMode">New Tag:</label>
+      <div *ngIf="results$ | async as results" class="text-center">
+        <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
       </div>
-      <div class="col-12 col-md-4">
-        <input type="text" class="form-control" formControlName="tagKey" placeholder="key name" [ngClass]="{ 'is-invalid': submitted && f.tagKey.errors }" />
+    </section>
+    <form [formGroup]="form" (ngSubmit)="saveTag()">
+      <h6
+        id="formHeader"
+        class="mx-4 md:mx-6 mr-4 mt-6 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-extrabold text-orange-600 sm:leading-none md:text-2xl"
+        >
+        <span *ngIf="isTagEditMode">
+          Edit
+        </span>
+        <span *ngIf="!isTagEditMode">
+          New
+        </span>
+        Tag
+      </h6>
+      <div class="md:flex md:items-center mx-4 mb-4 relative">
+        <div class="md:w-1/6">
+          <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="tagKey">
+            Key
+          </label>
+        </div>
+        <div class="md:w-1/3">
+          <input
+            aria-label="Key"
+            name="tagKey"
+            formControlName="tagKey"
+            type="text"
+            class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
+              placeholder-gray-500 text-gray-900 rounded-t-md
+              focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+            [ngClass]="{ 'bg-red-200': this.formSubmitted && this.form.controls.tagKey.errors }"
+            />
+        </div>
+        <div class="md:w-1/6">
+          <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="tagValue">
+            Value
+          </label>
+        </div>
+        <div class="md:w-1/3">
+          <input
+            aria-label="Value"
+            name="tagValue"
+            formControlName="tagValue"
+            type="text"
+            class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
+              placeholder-gray-500 text-gray-900 rounded-t-md
+              focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+            [ngClass]="{ 'bg-red-200': this.formSubmitted && this.form.controls.tagValue.errors }"
+            />
+        </div>
       </div>
-      <div class="col-12 col-md-4">
-        <input type="text" class="form-control" formControlName="tagValue" placeholder="tag value">
+      <div class="md:flex md:items-center mx-4 mb-4 relative">
+        <div class="md:w-1/6">
+        </div>
+        <div class="md:w-5/6">
+          <button
+            (click)="saveTag()"
+            [disabled]="this.form.invalid"
+            class="px-2 md:px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+              text-white focus:outline-none focus:shadow-outline
+              transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+            [ngClass]="{
+                'bg-green-600 hover:bg-green-500': !this.form.invalid,
+                'bg-gray-500 hover:bg-gray-500': this.form.invalid
+              }"
+            >
+              <span *ngIf="isTagEditMode">
+                Save
+              </span>
+              <span *ngIf="!isTagEditMode">
+                Add
+              </span>
+          </button>
+          <button
+            *ngIf="isTagEditMode"
+            (click)="cancelEdit()"
+            class="px-2 md:px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+              text-white focus:outline-none focus:shadow-outline
+              bg-green-600 hover:bg-green-500
+              transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+            >
+              Cancel
+          </button>
+        </div>
       </div>
-      <div class="col-12 col-md-4">
-        <input type="button" class="btn btn-primary" [attr.value]="isTagEditMode ? 'Save' : 'Add'" (click)="saveTag()" />
-        <input *ngIf="isTagEditMode" type="button" class="btn btn-secondary ml-1" value="Cancel" (click)="cancelEdit()" />
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

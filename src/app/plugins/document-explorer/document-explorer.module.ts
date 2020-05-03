@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { DocumentExplorerRoutingModule } from './document-explorer-routing.module';
 import { DatetimeFormat } from '../../utils/pipes/datetime-format';
@@ -27,8 +26,7 @@ import { TagsComponent } from './pages/tags/tags.component';
     CommonModule,
     DocumentExplorerRoutingModule,
     FormsModule,
-    ReactiveFormsModule,
-    NgbModule
+    ReactiveFormsModule
   ]
 })
 export class DocumentExplorerModule { }

@@ -39,6 +39,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
 
   private httpRequest: string;
   private curlRequest: string;
+  currentRequestTab = 'http';
   private queryString = '';
   responseData: any;
   loading$ = new Subject<boolean>();
@@ -116,11 +117,9 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
       } else {
         this.isCollapsed = collapseItem;
       }
-      if (window.innerWidth > 480) {
-        setTimeout(() => {
-          this.headerElement.nativeElement.scrollIntoView({ behavior: 'auto', block: 'end' });
-        }, 10);
-      }
+      setTimeout(() => {
+        this.headerElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
     }
   }
 
@@ -201,6 +200,10 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     }
   }
 
+  setCurrentRequestTab(tab: string) {
+    this.currentRequestTab = tab;
+  }
+
   getHttpRequest(): string {
     return this.httpRequest;
   }
@@ -239,6 +242,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -248,15 +252,17 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
-      case 'postDocument':
+      case 'postDocuments':
         this.apiService.postDocument(this.f.postJson.value, this).subscribe((data: object) => {
           if (data.hasOwnProperty('status')) {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -266,6 +272,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -275,6 +282,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -284,15 +292,17 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
-      case 'postDocumentTag':
+      case 'postDocumentTags':
         this.apiService.postDocumentTag(this.f.documentID.value, this.f.postJson.value, this).subscribe((data: object) => {
           if (data.hasOwnProperty('status')) {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -302,6 +312,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -311,6 +322,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -320,6 +332,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -329,6 +342,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -338,6 +352,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -347,6 +362,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
             this.isErrorResponse = true;
           }
           this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
           this.loading$.next(false);
         });
         break;
@@ -354,6 +370,15 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
         this.loading$.next(false);
         break;
     }
+  }
+
+  scrollToResponse(apiServiceMethodName) {
+    setTimeout(() => {
+      const responseContainer = document.getElementById(apiServiceMethodName + 'Response');
+      if (responseContainer) {
+        responseContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    }, 50);
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {

@@ -1,7 +1,21 @@
-<app-navbar (toggleSidebarEmitter)="toggleSidebar()" [isSidebarToggled]="isSidebarToggled"></app-navbar>
-<div class="wrapper">
-  <app-sidebar (sidebarItemClickEmitter)="onSidebarItemClick()" [isSidebarToggled]="isSidebarToggled"></app-sidebar>
-  <div class="main-content stretch-width has-scrollbar has-scrollbar-light-bg">
-    <router-outlet></router-outlet>
+<div class="max-h-screen h-screen overflow-hidden">
+  <div>
+    <app-navbar (toggleSidebarEmitter)="toggleSidebar()" [isSidebarToggled]="isSidebarToggled"></app-navbar>
+  </div>
+  <div class="h-full">
+    <div class="flex flex-row h-full">
+      <div
+        [ngClass]="{'hidden': !isSidebarToggled}"
+        class="pt-16 h-full w-full md:w-64 flex-grow-0 flex-shrink-0 bg-orange-600 overflow-y-auto overflow-x-hidden"
+        >
+        <app-sidebar (sidebarItemClickEmitter)="onSidebarItemClick()" [isSidebarToggled]="isSidebarToggled"></app-sidebar>
+      </div>
+      <div
+        [ngClass]="{'hidden': isSidebarToggled}"
+        class="h-full md:block flex-grow pt-16 px-2 md:px-8 overflow-y-auto"
+        >
+        <router-outlet></router-outlet>
+      </div>
+    </div>
   </div>
 </div>
