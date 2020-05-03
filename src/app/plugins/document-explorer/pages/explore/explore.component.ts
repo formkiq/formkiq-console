@@ -17,6 +17,7 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
   results$: Observable<{} | Document[]>;
   dateSearchSubmitted = false;
   tagSearchSubmitted = false;
+  showModal = false;
   shareUrl = '';
   @ViewChild('searchbar') searchbar: SearchbarComponent;
 
@@ -92,7 +93,7 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
       const shareInfo = JSON.parse(JSON.stringify(data));
       if (shareInfo.hasOwnProperty('url')) {
         this.shareUrl = shareInfo.url;
-        // this.modalService.open(content, { centered: true, size: 'lg' });
+        this.showModal = true;
       } else {
         this.shareUrl = '';
       }

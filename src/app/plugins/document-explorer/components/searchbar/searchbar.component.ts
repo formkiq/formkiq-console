@@ -45,6 +45,8 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   public tagFormSubmitted$ = this.tagFormSubmittedSource.asObservable();
 
   results$: Observable<{} | Document[]>;
+  public nextToken = null;
+  public previousToken = null;
 
   public get currentSearch(): string {
     return this.searchParameters.searchType;

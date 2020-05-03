@@ -1,19 +1,29 @@
-<span *ngIf="results.previous">
-  <a [routerLink]="" (click)="previous()">
+<div *ngIf="results" class="text-gray-800">
+  <span *ngIf="results.previous">
+    <a
+      [routerLink]=""
+      (click)="previous()"
+      class="font-black hover:text-orange-600"
+      >
+      &lt; prev
+    </a>
+  </span>
+  <span *ngIf="!results.previous" class="faded">
     &lt; prev
-  </a>
-</span>
-<span *ngIf="!results.previous" class="faded">
-  &lt; prev
-</span>
-<span class="px-2">
-  |
-</span>
-<span *ngIf="results.next">
-  <a [routerLink]="" (click)="next()">
+  </span>
+  <span class="px-2">
+    |
+  </span>
+  <span *ngIf="results.next">
+    <a
+      [routerLink]=""
+      (click)="next()"
+      class="font-black hover:text-orange-600"
+      >
+      next &gt;
+    </a>
+  </span>
+  <span *ngIf="!results.next" class="faded">
     next &gt;
-  </a>
-</span>
-<span *ngIf="!results.next" class="faded">
-  next &gt;
-</span>
+  </span>
+</div>
