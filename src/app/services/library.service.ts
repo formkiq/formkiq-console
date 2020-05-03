@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, isDevMode } from '@angular/core';
 import { HttpClient, HttpBackend } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
 import { ReplaySubject, Observable, forkJoin, ObservableInput, of } from 'rxjs';
@@ -59,6 +59,9 @@ export class LibraryService {
   }
 
   private loadScript(url: string, module: boolean = false): Observable<any> {
+    if (!isDevMode() && url.indexOf('assets/') === 0) {
+      url = '/' + url;
+    }
     if (this.loadedLibraries[url]) {
       return this.loadedLibraries[url].asObservable();
     }
@@ -80,6 +83,9 @@ export class LibraryService {
   }
 
   private loadStyle(url: string): Observable<any> {
+    if (!isDevMode() && url.indexOf('assets/') === 0) {
+      url = '/' + url;
+    }
     if (this.loadedLibraries[url]) {
       return this.loadedLibraries[url].asObservable();
     }
