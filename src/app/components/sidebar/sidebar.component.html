@@ -152,6 +152,20 @@
         </a>
       </li>
       <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-versions' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="GET-document-versions"
+          (click)="emitSidebarItemClick('apiGetDocumentVersionsClicked')"
+          class="cursor-pointer"
+          >
+          GET /document/<strong>&#123;id&#125;</strong>/versions
+        </a>
+      </li>
+      <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-document-tags' }"
         class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"

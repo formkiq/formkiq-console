@@ -27,6 +27,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
 
   @Input() apiItem;
   @Input() isCollapsed = true;
+  @Input() allowsVersionID = false;
   @Input() allowsDate = false;
   @Input() allowsLimit = false;
   @Input() hasPagingTokens = false;
@@ -65,8 +66,11 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     if (this.apiItem.requiresFileUpload) {
       fieldsForFormBuilder.fileUpload = ['', [Validators.required]];
     }
+    if (this.apiItem.allowsVersionID) {
+      fieldsForFormBuilder.versionID = ['', [Validators.minLength(1)]];
+    }
     if (this.apiItem.allowsDate) {
-      fieldsForFormBuilder.date = ['', [Validators.pattern('\\d{4}-\\d{2}-\\d{2}')]];
+      fieldsForFormBuilder.OKZbnKFXt9L7VtcQFmz4AgBOpjG3YjT4 = ['', [Validators.pattern('\\d{4}-\\d{2}-\\d{2}')]];
       fieldsForFormBuilder.tz = ['', [Validators.pattern('(([+-]?)(\\d{2}):?(\\d{0,2}))')]];
     }
     if (this.apiItem.allowsLimit) {
@@ -149,6 +153,9 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     }
     if (this.apiItem.method === 'GET') {
       const params: Map<string, string> = new Map<string, string>();
+      if (this.f.versionID && this.f.versionID.status === 'VALID' && this.f.versionID.value.length > 0) {
+        params.set('versionId', this.f.versionID.value);
+      }
       if (this.f.date && this.f.date.status === 'VALID' && this.f.date.value.length > 0) {
         params.set('date', this.f.date.value);
         if (this.f.tz && this.f.tz.status === 'VALID' && this.f.tz.value.length > 0) {
@@ -327,7 +334,17 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
         });
         break;
       case 'getDocumentUrl':
-        this.apiService.getDocumentUrl(this.f.documentID.value, this).subscribe((data: string) => {
+        this.apiService.getDocumentUrl(this.f.documentID.value, this.queryString, this).subscribe((data: string) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
+      case 'getDocumentVersions':
+        this.apiService.getDocumentVersions(this.f.documentID.value, this).subscribe((data: string) => {
           if (data.hasOwnProperty('status')) {
             this.isErrorResponse = true;
           }

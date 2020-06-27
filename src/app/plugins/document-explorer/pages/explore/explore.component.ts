@@ -89,7 +89,7 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
   }
 
   shareDocument(documentId, content) {
-    this.apiService.getDocumentUrl(documentId, this).subscribe((data: string) => {
+    this.apiService.getDocumentUrl(documentId, '', this).subscribe((data: string) => {
       const shareInfo = JSON.parse(JSON.stringify(data));
       if (shareInfo.hasOwnProperty('url')) {
         this.shareUrl = shareInfo.url;

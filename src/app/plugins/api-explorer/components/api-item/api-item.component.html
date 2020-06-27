@@ -126,6 +126,28 @@
           </div>
         </div>
         <div
+          *ngIf="apiItem.allowsVersionID"
+          class="md:flex md:items-center mx-4 mb-4 relative"
+          >
+          <div class="md:w-1/3">
+            <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="limit">
+              Version ID
+            </label>
+          </div>
+          <div class="md:w-2/3 lg:w-1/2">
+            <input
+                aria-label="Version ID"
+                name="versionID"
+                formControlName="versionID"
+                type="text"
+                class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
+                  placeholder-gray-500 text-gray-900 rounded-t-md
+                  focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+                [ngClass]="{ 'bg-red-200': this.formSubmitted && this.form.controls.versionID.errors }"
+              />
+          </div>
+        </div>
+        <div
           *ngIf="apiItem.allowsDate"
           class="md:flex md:items-center mx-4 mb-4 relative"
           >
