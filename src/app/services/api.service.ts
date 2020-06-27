@@ -96,9 +96,16 @@ export class ApiService {
         catchError(callback.handleApiError));
   }
 
-  getDocumentUrl(documentID: string, callback: HttpErrorCallback): Observable<{} | string> {
+  getDocumentUrl(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
-      .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/url', this.getHttpOptions())
+      .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/url' + queryString, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
+  getDocumentVersions(documentID: string, callback: HttpErrorCallback): Observable<{} | string> {
+    return this.httpClient
+      .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/versions', this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }

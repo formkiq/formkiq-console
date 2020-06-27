@@ -22,6 +22,7 @@ export class ApiItem {
   requiresTagKey: boolean;
   requiresPostJson: boolean;
   requiresFileUpload: boolean;
+  allowsVersionID: boolean;
   allowsDate: boolean;
   allowsLimit: boolean;
   hasPagingTokens: boolean;
