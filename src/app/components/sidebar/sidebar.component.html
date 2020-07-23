@@ -268,6 +268,36 @@
       </li>
     </div>
     <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api/#sites' }"
+      class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/api']"
+        fragment="sites"
+        (click)="emitSidebarItemClick('apiHeaderSitesClicked')"
+        class="cursor-pointer"
+        >
+        Sites
+      </a>
+    </li>
+    <div *ngIf="currentUrl && currentUrl.indexOf('/api') > -1 && currentUrl.indexOf('site') > 4">
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-sites' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="GET-sites"
+          (click)="emitSidebarItemClick('apiGetSitesClicked')"
+          class="cursor-pointer"
+          >
+          GET /sites
+        </a>
+      </li>
+    </div>
+    <li
       class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
       >

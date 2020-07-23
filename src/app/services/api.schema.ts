@@ -3,6 +3,11 @@ export class Document {
   constructor() {}
 }
 
+export class Site {
+  data: any;
+  constructor() {}
+}
+
 export class Tag {
   key: string;
   value: string;
@@ -17,6 +22,7 @@ export class ApiItem {
   username: string;
   token: string;
   host: string;
+  hasNoParams: boolean;
   requiresAuthentication: boolean;
   requiresDocumentID: boolean;
   requiresTagKey: boolean;

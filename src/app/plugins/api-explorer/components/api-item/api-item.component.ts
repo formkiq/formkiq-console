@@ -383,6 +383,16 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
           this.loading$.next(false);
         });
         break;
+      case 'getAllSites':
+        this.apiService.getAllSites(this.queryString, this).subscribe((data: Array<object>) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
       default:
         this.loading$.next(false);
         break;

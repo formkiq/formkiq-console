@@ -19,10 +19,12 @@ export class ExploreComponent implements OnInit {
 
   documentsFragment = 'documents';
   searchFragment = 'search';
+  sitesFragment = 'sites';
 
   @ViewChild('header') headerElement: ElementRef;
   @ViewChild('headerDocuments') headerDocumentsElement: ElementRef;
   @ViewChild('headerSearch') headerSearchElement: ElementRef;
+  @ViewChild('headerSites') headerSitesElement: ElementRef;
 
   getDocumentsApiItem: ApiItem = {
     apiServiceMethodName: 'getAllDocuments',
@@ -32,6 +34,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresTagKey: false,
@@ -52,6 +55,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresTagKey: false,
@@ -72,6 +76,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresTagKey: false,
@@ -92,6 +97,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresTagKey: false,
@@ -112,6 +118,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresTagKey: false,
@@ -132,6 +139,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresTagKey: false,
@@ -152,6 +160,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresTagKey: false,
@@ -172,6 +181,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresTagKey: true,
@@ -192,6 +202,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresTagKey: true,
@@ -212,6 +223,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresTagKey: false,
@@ -232,6 +244,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresTagKey: false,
@@ -252,6 +265,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresTagKey: false,
@@ -272,6 +286,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresTagKey: false,
@@ -292,6 +307,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
+    hasNoParams: false,
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresTagKey: false,
@@ -304,6 +320,26 @@ export class ExploreComponent implements OnInit {
     allowsPath: false
   };
 
+  getSitesApiItem: ApiItem = {
+    apiServiceMethodName: 'getAllSites',
+    clickedSubscriptionName: 'apiGetSitesClicked',
+    method: 'GET',
+    path: '/sites',
+    username: 'Cognito User',
+    token: this.authenticationService.loggedInAccessToken,
+    host: this.configurationService.apigateway.url,
+    hasNoParams: true,
+    requiresAuthentication: true,
+    requiresDocumentID: false,
+    requiresTagKey: false,
+    requiresPostJson: false,
+    requiresFileUpload: false,
+    allowsVersionID: false,
+    allowsDate: false,
+    allowsLimit: false,
+    hasPagingTokens: false,
+    allowsPath: false
+  };
 
   ngOnInit() {
     this.navigationService.navItemClicked$.subscribe(
@@ -320,6 +356,10 @@ export class ExploreComponent implements OnInit {
           } else if (navData.source === 'apiHeaderSearchClicked') {
             setTimeout(() => {
               this.headerSearchElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 10);
+          } else if (navData.source === 'apiHeaderSitesClicked') {
+            setTimeout(() => {
+              this.headerSitesElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 10);
           }
         }
