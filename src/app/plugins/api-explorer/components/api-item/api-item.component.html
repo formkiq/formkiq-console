@@ -52,7 +52,7 @@
             </select>
           </div>
         </div>
-        <div>
+        <div *ngIf="!apiItem.hasNoParams">
           <h6
             class="mx-4 md:mx-6 mr-4 mt-6 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-2xl"
             >

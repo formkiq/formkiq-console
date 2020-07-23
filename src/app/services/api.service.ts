@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, shareReplay, map } from 'rxjs/operators';
 import { AuthenticationService } from '../plugins/authentication/services/authentication.service';
 import { ConfigurationService } from '../services/configuration.service';
-import { Document, Tag } from '../services/api.schema';
+import { Document, Site, Tag } from '../services/api.schema';
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +128,13 @@ export class ApiService {
     const body = JSON.parse(json);
     return this.httpClient
       .post<Array<Document>>(this.configurationService.apigateway.url + 'search' + queryString, body, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
+  getAllSites(queryString: string, callback: HttpErrorCallback): Observable<{} | Site[]> {
+    return this.httpClient
+      .get<Site[]>(this.configurationService.apigateway.url + 'sites' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
