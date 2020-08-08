@@ -60,19 +60,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe((value: NavigationEnd) => {
-      this.routeTitle = this.route.root.firstChild.snapshot.data.title;
-      this.currentRouteUrl = value.url;
-      if (value.url === '/authenticate') {
-        if (this.isSidebarToggled) {
-          this.toggleSidebar();
+      ).subscribe((value: NavigationEnd) => {
+        this.routeTitle = this.route.root.firstChild.snapshot.data.title;
+        this.currentRouteUrl = value.url;
+        if (value.url === '/authenticate') {
+          if (this.isSidebarToggled) {
+            this.toggleSidebar();
+          }
+          this.showHamburgerButton = false;
+        } else {
+          this.showDropdown = true;
+          this.showHamburgerButton = true;
         }
-        this.showHamburgerButton = false;
-      } else {
-        this.showDropdown = true;
-        this.showHamburgerButton = true;
       }
-    }
     );
     this.authenticationPageLoadSubscription = this.authenticationService.authenticationPageLoad$.subscribe(
       () => {

@@ -60,6 +60,16 @@ const routes: Routes = [
     canActivate: [AuthenticationGuardService]
   },
   {
+    path: 'tagging',
+    loadChildren: () =>
+      import('./plugins/tagging-tool/tagging-tool.module')
+        .then(m => m.TaggingToolModule),
+    data: {
+      title: 'Documents'
+    },
+    canActivate: [AuthenticationGuardService]
+  },
+  {
     path: 'signOut',
     component: AuthenticateComponent,
     data: { title: 'Authentication' }

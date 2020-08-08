@@ -1,0 +1,13 @@
+{
+  "version": "0.dev",
+  "cognito": {
+    "identityPoolId": "us-east-1:eeb6aed3-d321-4ab8-b67d-e0ad660f3e28",
+    "userPoolId": "us-east-1_GcbhmRxXc",
+    "region": "us-east-1",
+    "clientId": "19md99981o60hipr35ph2vab1v",
+    "allowUserSelfRegistration": false
+  },
+  "apigateway": {
+    "url": "https://api-dev.lankcreative.com/"
+  }
+}
