@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
@@ -17,6 +18,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
     private apiService: ApiService,
     private searchService: SearchService
   ) {
@@ -25,12 +27,14 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
   }
 
   results$: Observable<any>;
+  tagResults$: Observable<any>;
   loading$ = new Subject<boolean>();
   documentUrl$: Observable<any>;
   currentDocument: any;
   documentEmbedUrl = '';
   resultsLimit = 20;
   reachedEndOfUntaggedDocuments = false;
+  form: FormGroup;
 
   ngOnInit() {
     const event = new Event('requestSidebarClose');
@@ -48,9 +52,29 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     const searchQuery = this.searchService.buildTagSearchQuery(searchParameters.tagQuery);
     const queryString = '?limit=' + this.resultsLimit;
     this.getNextUntaggedDocuments(searchQuery, queryString);
+    this.form = this.formBuilder.group({
+      tagKey: ['', Validators.required],
+      tagValue: []
+    });
   }
 
   ngAfterViewInit() {
+  }
+
+  get f() {
+    return this.form.controls;
+  }
+
+  setTextareaHeights() {
+    const textareaElements = Array.from(document.getElementsByTagName('TEXTAREA'));
+    textareaElements.forEach( (element: HTMLTextAreaElement) => {
+      element.setAttribute('style', 'height: ' + (element.scrollHeight + 10) + 'px');
+      element.addEventListener(
+        'dblclick', () => {
+        element.select();
+        }
+      );
+    });
   }
 
   getNextUntaggedDocuments(searchQuery, queryString) {
@@ -93,15 +117,20 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         this.getNextUntaggedDocuments(searchQuery, queryString);
         return false;
       }
-      console.log(this.currentDocument);
+      this.tagResults$ = this.apiService.getDocumentTags(this.currentDocument.documentId, '', this);
+      this.tagResults$.subscribe((result) => {
+        setTimeout(() => {
+          this.setTextareaHeights();
+        }, 100);
+      });
       this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
       this.documentUrl$.subscribe((result) => {
         this.loading$.next(false);
         if (result.url) {
           this.documentEmbedUrl = result.url;
           document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
-          // TODO: calculate window width and height and document dimensions
-          document.getElementById('documentFrame').setAttribute('style', 'height: 500px');
+          const heightAvailable = window.innerHeight - 240;
+          document.getElementById('documentFrame').setAttribute('style', 'height: ' + heightAvailable + 'px');
         }
       });
     });

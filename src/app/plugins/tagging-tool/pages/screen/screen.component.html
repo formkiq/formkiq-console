@@ -27,9 +27,91 @@
       No untagged documents found.
     </p>
   </div>
-  <iframe
+  <div
     *ngIf="!this.reachedEndOfUntaggedDocuments"
-    id="documentFrame"
-    class="border w-full"
-    ></iframe>
+    class="lg:flex lg:flex-columns"
+    >
+    <div class="lg:inline w-full lg:w-64 lg:flex-grow-0">
+      <button
+        class="lg:hidden px-2 md:px-8 py-2 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+        text-white bg-green-500 hover:bg-green-500 focus:outline-none focus:shadow-outline
+        transition duration-150 ease-in-out md:py-2 md:px-10"
+        >
+        Add/Edit Tags...
+      </button>
+      <h4 class="text-lg font-bold mb-4">
+        Tags
+      </h4>
+      <div class="hidden lg:block pr-2">
+        <form [formGroup]="form">
+          <textarea
+            aria-label="Key"
+            name="tagKey"
+            formControlName="tagKey"
+            placeholder="key"
+            class="mb-4 font-bold text-sm tracking-tight appearance-none rounded-md relative block w-full px-2 py-2 border border-gray-600
+              placeholder-gray-800 text-gray-900 rounded-t-md
+              focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:leading-5"
+            ></textarea>
+          <textarea
+            rows="2"
+            maxlength="2000"
+            aria-label="Value"
+            name="tagValue"
+            formControlName="tagValue"
+            placeholder="value"
+            class="mb-3 text-sm tracking-tight appearance-none rounded-md relative block w-full px-2 py-2 border border-gray-600
+              placeholder-gray-500 text-gray-900 rounded-t-md
+              focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:leading-5"
+            ></textarea>
+            <button
+              (click)="saveTag()"
+              [disabled]="this.form.invalid"
+              class="w-full mb-4 px-2 py-2 border border-transparent text-sm tracking-tight leading-6 font-medium rounded-md shadow
+                text-white focus:outline-none focus:shadow-outline
+                transition duration-150 ease-in-out"
+              [ngClass]="{
+                  'bg-green-600 hover:bg-green-500': !this.form.invalid,
+                  'bg-gray-500 hover:bg-gray-500': this.form.invalid
+                }"
+              >
+              Add
+          </button>
+        </form>
+        <table
+          *ngIf="tagResults$ | async as tagResults"
+          class="border-collapse"
+          >
+          <tbody>
+            <tr
+              *ngIf="!tagResults.tags.length"
+              class="bg-gray-100 flex text-center py-2 px-1 flex-row flex-wrap mb-10"
+              >
+              <td
+                colspan="100%"
+                >
+                No tags have been found for this document.
+              </td>
+            </tr>
+            <tr
+              *ngFor="let tag of tagResults.tags"
+              [hidden]="tag.key === 'untagged'"
+              class="bg-white flex flex-row flex-wrap mb-1"
+              >
+              <td *ngIf="tag.key !== 'untagged'" class="w-full text-gray-800 block">
+                <textarea readonly="true" rows="1" class="font-bold text-sm tracking-tight w-full resize-none focus:outline-none">{{ tag.key }}</textarea>
+              </td>
+              <td *ngIf="tag.key !== 'untagged'" class="w-full text-gray-800 block">
+                <textarea readonly="true" rows="1" class="text-sm tracking-tight w-full resize-none focus:outline-none">{{ tag.value }}</textarea>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <iframe
+      id="documentFrame"
+      class="lg:flex-grow border w-full"
+      ></iframe>
+  </div>
 </div>
