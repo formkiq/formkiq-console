@@ -1,6 +1,7 @@
 export enum SearchType {
   Date = 'date',
-  Tag = 'tag'
+  Tag = 'tag',
+  Id = 'id'
 }
 
 export class TagQuery {
@@ -15,4 +16,5 @@ export interface SearchParameters {
   searchType: SearchType;
   documentDate: string;
   tagQuery: TagQuery;
+  documentId: string;
 }

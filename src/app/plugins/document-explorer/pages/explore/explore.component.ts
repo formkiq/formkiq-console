@@ -109,7 +109,11 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
   }
 
   viewDocumentTags(documentId) {
-    this.router.navigate(['/documents/' + documentId + '/tags']);
+    const queryParams: any = {};
+    if (this.tagToSearch) {
+      queryParams.tagToSearch = JSON.stringify(this.tagToSearch);
+    }
+    this.router.navigate(['/documents/' + documentId + '/tags'], { queryParams });
   }
 
   closeModal(event) {

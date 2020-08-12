@@ -25,6 +25,7 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   currentTab = 'date';
   public searchParameters: SearchParameters = {
     documentDate: null,
+    documentId: null,
     tagQuery: null,
     searchType: SearchType.Tag
   };
@@ -45,6 +46,10 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   public tagSearchForm: FormGroup;
   public tagFormSubmittedSource = new Subject<boolean>();
   public tagFormSubmitted$ = this.tagFormSubmittedSource.asObservable();
+
+  public idSearchForm: FormGroup;
+  public idFormSubmittedSource = new Subject<boolean>();
+  public idFormSubmitted$ = this.idFormSubmittedSource.asObservable();
 
   results$: Observable<{} | Document[]>;
   public nextToken = null;
@@ -71,6 +76,9 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
       operator: [],
       tagValue: []
     });
+    this.idSearchForm = this.formBuilder.group({
+      documentId: ['', [Validators.minLength(16), Validators.required]]
+    });
     const now = new Date();
     this.dateForPicker = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
     this.calculatePickerDays();
@@ -90,6 +98,7 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
       this.searchParameters = {
         searchType: SearchType.Tag,
         documentDate: null,
+        documentId: null,
         tagQuery
       };
       if (tagQuery.key === 'untagged') {
@@ -115,6 +124,10 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
         this.tagSearchForm.get('operator').setValue(this.searchParameters.tagQuery.operator);
       }
       this.runTagSearch();
+    } else if (this.searchParameters.documentId) {
+      this.setCurrentTab('id');
+      this.idSearchForm.get('documentId').setValue(this.searchParameters.documentId);
+      this.runIdSearch();
     }
   }
 
@@ -257,6 +270,35 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
 
   public loadPreviousTagPage() {
     this.runTagSearch(this.searchParameters.tagQuery, this.previousToken);
+  }
+
+  runIdSearch() {
+    if (this.idSearchForm.invalid) {
+      return;
+    }
+    this.idFormSubmittedSource.next(true);
+    let documentId = this.idSearchForm.controls.documentId.value;
+    if (documentId && documentId.length > 0) {
+      documentId = documentId.trim();
+    }
+    this.results$ = this.apiService.getDocument(documentId, this);
+    this.results$.subscribe((results: any) => {
+      if (results.documentId) {
+        const documents = {
+          documents: [
+            results
+          ]
+        };
+        this.searchParameters.documentDate = null;
+        this.searchParameters.documentId = results.documentId;
+        this.searchParameters.tagQuery = null;
+        this.searchParameters.searchType = SearchType.Id;
+        localStorage.setItem('documentSearchParameters', JSON.stringify(this.searchParameters));
+        this.documentQueryResultEmitter.emit(documents);
+      } else {
+        this.documentQueryResultEmitter.emit({documents: []});
+      }
+    });
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {

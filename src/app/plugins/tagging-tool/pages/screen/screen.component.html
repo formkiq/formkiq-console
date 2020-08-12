@@ -1,12 +1,3 @@
-<div class="relative bg-white overflow-scroll-y mx-4">
-  <div class="mt-8">
-    <div class="max-w-screen-xl mx-auto relative">
-      <h2 class="text-2xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
-        Document Tagging
-      </h2>
-    </div>
-  </div>
-</div>
 <div
   class="md:flex md:items-center mx-4 mb-4 relative"
   >
@@ -78,9 +69,12 @@
               Add
           </button>
         </form>
+        <div *ngIf="tagResults$ | async as tagResults" class="text-center">
+          <app-paging [results]="tagResults" (previousEmitter)="loadPreviousTagPage()" (nextEmitter)="loadNextTagPage()"></app-paging>
+        </div>
         <table
           *ngIf="tagResults$ | async as tagResults"
-          class="border-collapse"
+          class="w-full border-collapse mt-2"
           >
           <tbody>
             <tr
@@ -95,23 +89,47 @@
             </tr>
             <tr
               *ngFor="let tag of tagResults.tags"
-              [hidden]="tag.key === 'untagged'"
-              class="bg-white flex flex-row flex-wrap mb-1"
+              class="flex flex-row flex-wrap mb-1 border rounded-md"
+              [ngClass]="{
+                'bg-orange-500': tag.key === 'untagged',
+                'bg-yellow-500': tag.key !== 'untagged'
+              }"
               >
-              <td *ngIf="tag.key !== 'untagged'" class="w-full text-gray-800 block">
-                <textarea readonly="true" rows="1" class="font-bold text-sm tracking-tight w-full resize-none focus:outline-none">{{ tag.key }}</textarea>
+              <div class="absolute left-0 pt-2 pl-2">
+                <i class="fas fa-pen text-xl" title="Edit"></i>
+              </div>
+              <td
+                class="w-full block px-1"
+                >
+                <textarea readonly="true" rows="1" class="bg-transparent font-bold text-sm tracking-tight w-full resize-none focus:outline-none">{{ tag.key }}</textarea>
               </td>
-              <td *ngIf="tag.key !== 'untagged'" class="w-full text-gray-800 block">
-                <textarea readonly="true" rows="1" class="text-sm tracking-tight w-full resize-none focus:outline-none">{{ tag.value }}</textarea>
+              <td
+                class="w-full block px-1"
+                >
+                <textarea *ngIf="tag.value" readonly="true" rows="1" class="bg-transparent text-sm tracking-tight w-full resize-none focus:outline-none">{{ tag.value }}</textarea>
               </td>
             </tr>
           </tbody>
         </table>
+        <div *ngIf="tagResults$ | async as tagResults" class="text-center">
+          <app-paging [results]="tagResults" (previousEmitter)="loadPreviousTagPage()" (nextEmitter)="loadNextTagPage()"></app-paging>
+        </div>
       </div>
     </div>
-    <iframe
-      id="documentFrame"
-      class="lg:flex-grow border w-full"
-      ></iframe>
+    <div class="w-full lg:flex-grow">
+      <div class="max-w-screen-xl mx-4 relative">
+        <h2 class="text-2xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
+          Document Tagging
+          <span *ngIf="currentDocument" class="mt-2 block text-lg tracking-tight">
+            Document:
+            <span class="font-normal">{{ currentDocument.documentId }}</span>
+          </span>
+        </h2>
+      </div>
+      <iframe
+        id="documentFrame"
+        class="border w-full"
+        ></iframe>
+    </div>
   </div>
 </div>

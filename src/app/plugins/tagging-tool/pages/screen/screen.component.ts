@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
+import { LibraryService } from '../../../../services/library.service';
 import { Document, Tag } from '../../../../services/api.schema';
 import { SearchService } from '../../services/search.service';
 import { TagQuery, SearchParameters, SearchType } from '../../services/search.schema';
@@ -20,6 +21,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
+    private libraryService: LibraryService,
     private searchService: SearchService
   ) {
     route.data.pipe().subscribe(routeData => {
@@ -35,8 +37,11 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
   resultsLimit = 20;
   reachedEndOfUntaggedDocuments = false;
   form: FormGroup;
+  tagPreviousToken = null;
+  tagNextToken = null;
 
   ngOnInit() {
+    this.libraryService.loadFontAwesome();
     const event = new Event('requestSidebarClose');
     window.dispatchEvent(event);
     const tagQuery: TagQuery = {
@@ -68,6 +73,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
   setTextareaHeights() {
     const textareaElements = Array.from(document.getElementsByTagName('TEXTAREA'));
     textareaElements.forEach( (element: HTMLTextAreaElement) => {
+      element.setAttribute('style', 'height: auto');
       element.setAttribute('style', 'height: ' + (element.scrollHeight + 10) + 'px');
       element.addEventListener(
         'dblclick', () => {
@@ -117,12 +123,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         this.getNextUntaggedDocuments(searchQuery, queryString);
         return false;
       }
-      this.tagResults$ = this.apiService.getDocumentTags(this.currentDocument.documentId, '', this);
-      this.tagResults$.subscribe((result) => {
-        setTimeout(() => {
-          this.setTextareaHeights();
-        }, 100);
-      });
+      this.loadTags();
       this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
       this.documentUrl$.subscribe((result) => {
         this.loading$.next(false);
@@ -134,6 +135,41 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         }
       });
     });
+  }
+
+  loadTags(previousToken = '', nextToken = '') {
+    this.tagPreviousToken = null;
+    this.tagNextToken = null;
+    let queryString = '?limit=5';
+    if (previousToken) {
+      queryString += '&previous=' + previousToken;
+    } else if (nextToken) {
+      queryString += '&next=' + nextToken;
+    }
+    this.tagResults$ = this.apiService.getDocumentTags(this.currentDocument.documentId, queryString, this);
+    this.tagResults$.subscribe((result) => {
+      if (result.previous) {
+        this.tagPreviousToken = result.previous;
+      }
+      if (result.next) {
+        this.tagNextToken = result.next;
+      }
+      setTimeout(() => {
+        this.setTextareaHeights();
+      }, 100);
+    });
+  }
+
+  loadPreviousTagPage() {
+    if (this.tagPreviousToken) {
+      this.loadTags(this.tagPreviousToken);
+    }
+  }
+
+  loadNextTagPage() {
+    if (this.tagNextToken) {
+      this.loadTags('', this.tagNextToken);
+    }
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {
