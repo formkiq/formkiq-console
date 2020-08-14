@@ -6,6 +6,8 @@ import { Observable, Subject } from 'rxjs';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
 import { LibraryService } from '../../../../services/library.service';
 import { Document, Tag } from '../../../../services/api.schema';
+import { NotificationService } from '../../../../services/notification.service';
+import { NotificationInfoType } from '../../../../services/notification.schema';
 import { SearchService } from '../../services/search.service';
 import { TagQuery, SearchParameters, SearchType } from '../../services/search.schema';
 
@@ -22,6 +24,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private libraryService: LibraryService,
+    private notificationService: NotificationService,
     private searchService: SearchService
   ) {
     route.data.pipe().subscribe(routeData => {
@@ -30,6 +33,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
 
   results$: Observable<any>;
   tagResults$: Observable<any>;
+  tags: Array<any>;
   loading$ = new Subject<boolean>();
   documentUrl$: Observable<any>;
   currentDocument: any;
@@ -154,8 +158,13 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       if (result.next) {
         this.tagNextToken = result.next;
       }
+      this.tags = [];
+      result.tags.forEach(tag => {
+        this.tags.push(tag);
+      });
       setTimeout(() => {
         this.setTextareaHeights();
+        this.editTag(-1);
       }, 100);
     });
   }
@@ -170,6 +179,175 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     if (this.tagNextToken) {
       this.loadTags('', this.tagNextToken);
     }
+  }
+
+  editTag(tagIndex = -1) {
+    const tagTable = document.getElementById('tag-table');
+    if (!tagTable) {
+      return false;
+    }
+    const tagRows = Array.from(tagTable.getElementsByTagName('TR'));
+    tagRows.forEach((tagRow, index) => {
+      const editDiv = Array.from(tagRow.getElementsByClassName('absolute'))[0];
+      const columns = Array.from(tagRow.getElementsByTagName('TD'));
+      const textareas = Array.from(tagRow.getElementsByTagName('TEXTAREA'));
+      let tagKey = '';
+      let tagValue = '';
+      this.tags.forEach(tagResult => {
+        if (tagRow.getAttribute('id') === 'tag-' + tagResult.key) {
+          tagKey = tagResult.key;
+          tagValue = tagResult.value;
+          return false;
+        }
+      });
+      if (index === tagIndex) {
+        tagRow.classList.remove('bg-yellow-500');
+        tagRow.classList.add('bg-white');
+        if (editDiv) {
+          editDiv.classList.add('hidden');
+        }
+        columns.forEach(column => {
+          if (column.classList.contains('pl-1')) {
+            column.classList.remove('pr-8');
+          } else if (column.classList.contains('text-center')) {
+            column.classList.remove('hidden');
+            const saveButton = Array.from(column.getElementsByClassName('identifier-save-button'))[0];
+            const tagValueTextarea = Array.from(
+              tagRow.getElementsByClassName('identifier-tag-value-textarea') as HTMLCollectionOf<HTMLTextAreaElement>
+            )[0];
+            if (saveButton && tagValueTextarea) {
+              tagValueTextarea.addEventListener(
+                'keyup',
+                (e: Event) => {
+                  if (tagValue === tagValueTextarea.value) {
+                    saveButton.classList.remove('bg-green-600', 'hover:bg-green-500');
+                    saveButton.classList.add('bg-gray-500', 'hover:bg-gray-500');
+                  } else {
+                    saveButton.classList.remove('bg-gray-500', 'hover:bg-gray-500');
+                    saveButton.classList.add('bg-green-600', 'hover:bg-green-500');
+                  }
+                }
+              );
+              saveButton.addEventListener(
+                'click',
+                (e: Event) => {
+                  if (tagValue !== tagValueTextarea.value) {
+                    this.saveTag(tagKey, tagValueTextarea.value);
+                  }
+                }
+              );
+            }
+          }
+        });
+        textareas.forEach((textarea, textareaIndex) => {
+          if (textareaIndex === 1) {
+            textarea.removeAttribute('readonly');
+            textarea.setAttribute('rows', '2');
+            textarea.classList.remove('hidden', 'bg-transparent', 'resize-none');
+            textarea.classList.add('bg-white', 'border', 'border-gray-600', 'text-gray-900', 'rounded-md', 'p-2');
+          }
+        });
+      } else {
+        if (tagRow.classList.contains('bg-white')) {
+          tagRow.classList.remove('bg-white');
+          tagRow.classList.add('bg-yellow-500');
+        }
+        if (editDiv) {
+          editDiv.classList.remove('hidden');
+        }
+        columns.forEach(column => {
+          if (column.classList.contains('pl-1')) {
+            column.classList.add('pr-8');
+          } else if (column.classList.contains('text-center')) {
+            column.classList.add('hidden');
+          }
+        });
+        textareas.forEach((textarea: HTMLTextAreaElement, textareaIndex) => {
+          if (textareaIndex === 1) {
+            if (tagValue) {
+              textarea.value = tagValue;
+            } else {
+              textarea.value = '';
+            }
+            if (!textarea.value.length) {
+              textarea.classList.add('hidden');
+            }
+            textarea.setAttribute('readonly', 'true');
+            textarea.setAttribute('rows', '1');
+            textarea.classList.add('bg-transparent', 'resize-none');
+            textarea.classList.remove('bg-white', 'border', 'border-gray-600', 'text-gray-900', 'rounded-md', 'p-2');
+          }
+        });
+      }
+      this.setTextareaHeights();
+    });
+  }
+
+  deleteTag(tagKey) {
+    if (confirm('Are you sure you want to delete this tag? (cannot be undone)')) {
+      this.apiService.deleteDocumentTag(this.currentDocument.documentId, tagKey, this).subscribe((result) => {
+        this.notificationService.createNotification(
+          NotificationInfoType.Success,
+          result.message,
+          2000,
+          false
+        );
+        this.loadTags();
+      });
+    }
+  }
+
+  addTag() {
+    if (this.form.invalid) {
+      return false;
+    }
+    const key = this.form.controls.tagKey.value;
+    const value = this.form.controls.tagValue.value;
+    let json;
+    if (value) {
+      json = {
+        key,
+        value
+      };
+    } else {
+      json = {
+        key
+      };
+    }
+    this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this).subscribe((result) => {
+      this.form.reset();
+      this.notificationService.createNotification(
+        NotificationInfoType.Success,
+        result.message,
+        2000,
+        false
+      );
+      this.loadTags();
+    });
+  }
+
+  saveTag(key, value) {
+    let json;
+    if (value) {
+      json = {
+        key,
+        value
+      };
+    } else {
+      json = {
+        key
+      };
+    }
+    this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this).subscribe((result) => {
+      this.form.reset();
+      this.notificationService.createNotification(
+        NotificationInfoType.Success,
+        'Changes to Tag "' + key + '" have been saved.',
+        2000,
+        false
+      );
+      this.loadTags();
+    });
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {

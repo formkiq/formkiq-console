@@ -84,14 +84,18 @@ export class ApiService {
 
   getDocumentTag(documentID: string, key: string, callback: HttpErrorCallback): Observable<any> {
     return this.httpClient
-      .get<Tag>(this.configurationService.apigateway.url + 'documents/' + documentID + '/tags/' + key, this.getHttpOptions())
+      .get<Tag>(
+        this.configurationService.apigateway.url + 'documents/' + documentID + '/tags/' + encodeURIComponent(key), this.getHttpOptions()
+      )
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   deleteDocumentTag(documentID: string, key: string, callback: HttpErrorCallback): Observable<any> {
     return this.httpClient
-      .delete<Tag>(this.configurationService.apigateway.url + 'documents/' + documentID + '/tags/' + key, this.getHttpOptions())
+      .delete<Tag>(
+        this.configurationService.apigateway.url + 'documents/' + documentID + '/tags/' + encodeURIComponent(key), this.getHttpOptions()
+      )
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
