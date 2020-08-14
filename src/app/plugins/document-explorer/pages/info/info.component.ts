@@ -58,7 +58,6 @@ export class InfoComponent implements OnInit, AfterViewInit {
 
   getDocument() {
     this.apiService.getDocument(this.documentId, this).subscribe(result => {
-      console.log(result);
       this.currentDocument = result;
     });
   }
@@ -103,7 +102,6 @@ export class InfoComponent implements OnInit, AfterViewInit {
   deleteTag(key) {
     if (confirm('Delete this tag?')) {
       this.apiService.deleteDocumentTag(this.documentId, key, this).subscribe((result) => {
-        console.log(result);
         this.loadTags();
       });
     }
@@ -121,7 +119,6 @@ export class InfoComponent implements OnInit, AfterViewInit {
       value
     };
     this.apiService.postDocumentTag(this.documentId, JSON.stringify(json), this).subscribe((result) => {
-      console.log(result);
       this.form.reset();
       this.formSubmitted = false;
       this.loadTags();

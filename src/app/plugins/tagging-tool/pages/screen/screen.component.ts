@@ -150,7 +150,6 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         });
       }
       if (!this.currentDocument) {
-        console.log('need another page');
         if (!results.next) {
           this.reachedEndOfUntaggedDocuments = true;
           this.loading$.next(false);
