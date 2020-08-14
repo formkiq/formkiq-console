@@ -29,6 +29,13 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
   ) {
     route.data.pipe().subscribe(routeData => {
     });
+    route.params.subscribe(params => {
+      if (params.id) {
+        this.getDocumentFromId(params.id);
+      } else {
+        this.setUpUntaggedSearch();
+      }
+    });
   }
 
   searchQuery: any;
@@ -51,19 +58,6 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     this.libraryService.loadFontAwesome();
     const event = new Event('requestSidebarClose');
     window.dispatchEvent(event);
-    const tagQuery: TagQuery = {
-      key: 'untagged',
-      operator: 'eq',
-      value: ''
-    };
-    const searchParameters: SearchParameters = {
-      searchType: SearchType.Tag,
-      documentDate: null,
-      tagQuery
-    };
-    this.searchQuery = this.searchService.buildTagSearchQuery(searchParameters.tagQuery);
-    const queryString = '?limit=' + this.resultsLimit;
-    this.getNextUntaggedDocuments(queryString);
     this.form = this.formBuilder.group({
       tagKey: ['', Validators.required],
       tagValue: []
@@ -77,6 +71,22 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     return this.form.controls;
   }
 
+  setUpUntaggedSearch() {
+    const tagQuery: TagQuery = {
+      key: 'untagged',
+      operator: 'eq',
+      value: ''
+    };
+    const searchParameters: SearchParameters = {
+      searchType: SearchType.Tag,
+      documentDate: null,
+      tagQuery
+    };
+    this.searchQuery = this.searchService.buildTagSearchQuery(searchParameters.tagQuery);
+    const queryString = '?limit=' + this.resultsLimit;
+    this.getNextUntaggedDocuments(queryString);
+  }
+
   setTextareaHeights() {
     const textareaElements = Array.from(document.getElementsByTagName('TEXTAREA'));
     textareaElements.forEach( (element: HTMLTextAreaElement) => {
@@ -87,6 +97,26 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         element.select();
         }
       );
+    });
+  }
+
+  getDocumentFromId(documentId) {
+    this.apiService.getDocument(documentId, this).subscribe(result => {
+      const document: any = result;
+      if (document.documentId) {
+        this.currentDocument = result;
+        const documentResult = {
+          documents: [
+            this.currentDocument
+          ]
+        };
+        this.results$ = Observable.create((observer) => {
+          observer.next(documentResult);
+          this.checkUntaggedStatus();
+          this.loadTags();
+          this.loadDocumentContent();
+        });
+      }
     });
   }
 
@@ -130,24 +160,32 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         this.getNextUntaggedDocuments(queryString);
         return false;
       }
-      this.apiService.getDocumentTag(this.currentDocument.documentId, 'untagged', this).subscribe(result => {
-        if (result.key) {
-          this.currentDocumentIsMarkedUntagged = true;
-        } else {
-          this.currentDocumentIsMarkedUntagged = false;
-        }
-      });
+      this.checkUntaggedStatus();
       this.loadTags();
-      this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
-      this.documentUrl$.subscribe((result) => {
-        this.loading$.next(false);
-        if (result.url) {
-          this.documentEmbedUrl = result.url;
-          document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
-          const heightAvailable = window.innerHeight - 240;
-          document.getElementById('documentFrame').setAttribute('style', 'height: ' + heightAvailable + 'px');
-        }
-      });
+      this.loadDocumentContent();
+    });
+  }
+
+  checkUntaggedStatus() {
+    this.apiService.getDocumentTag(this.currentDocument.documentId, 'untagged', this).subscribe(result => {
+      if (result.key) {
+        this.currentDocumentIsMarkedUntagged = true;
+      } else {
+        this.currentDocumentIsMarkedUntagged = false;
+      }
+    });
+  }
+
+  loadDocumentContent() {
+    this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
+    this.documentUrl$.subscribe((result) => {
+      this.loading$.next(false);
+      if (result.url) {
+        this.documentEmbedUrl = result.url;
+        document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
+        const heightAvailable = window.innerHeight - 240;
+        document.getElementById('documentFrame').setAttribute('style', 'height: ' + heightAvailable + 'px');
+      }
     });
   }
 
