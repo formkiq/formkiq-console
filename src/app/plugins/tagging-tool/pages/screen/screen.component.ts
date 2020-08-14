@@ -31,12 +31,15 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     });
   }
 
+  searchQuery: any;
   results$: Observable<any>;
   tagResults$: Observable<any>;
   tags: Array<any>;
   loading$ = new Subject<boolean>();
   documentUrl$: Observable<any>;
   currentDocument: any;
+  previousDocument: any;
+  currentDocumentIsMarkedUntagged = false;
   documentEmbedUrl = '';
   resultsLimit = 20;
   reachedEndOfUntaggedDocuments = false;
@@ -58,9 +61,9 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       documentDate: null,
       tagQuery
     };
-    const searchQuery = this.searchService.buildTagSearchQuery(searchParameters.tagQuery);
+    this.searchQuery = this.searchService.buildTagSearchQuery(searchParameters.tagQuery);
     const queryString = '?limit=' + this.resultsLimit;
-    this.getNextUntaggedDocuments(searchQuery, queryString);
+    this.getNextUntaggedDocuments(queryString);
     this.form = this.formBuilder.group({
       tagKey: ['', Validators.required],
       tagValue: []
@@ -87,16 +90,16 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     });
   }
 
-  getNextUntaggedDocuments(searchQuery, queryString) {
+  getNextUntaggedDocuments(queryString) {
     this.loading$.next(true);
-    this.results$ = this.apiService.postSearch(JSON.stringify(searchQuery), queryString, this);
+    this.results$ = this.apiService.postSearch(JSON.stringify(this.searchQuery), queryString, this);
     this.results$.subscribe((results) => {
       this.reachedEndOfUntaggedDocuments = false;
       if (!results.documents && !results.documents.length) {
         this.currentDocument = null;
       } else {
         results.documents.forEach(document => {
-          if (!this.currentDocument) {
+          if (!this.currentDocument && (!this.previousDocument || this.previousDocument.documentId !== document.documentId)) {
             let canEmbed = false;
             if (document.contentType) {
               // TODO: add other content types
@@ -124,9 +127,16 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
           return false;
         }
         queryString = '?limit=' + this.resultsLimit + '&next=' + results.next;
-        this.getNextUntaggedDocuments(searchQuery, queryString);
+        this.getNextUntaggedDocuments(queryString);
         return false;
       }
+      this.apiService.getDocumentTag(this.currentDocument.documentId, 'untagged', this).subscribe(result => {
+        if (result.key) {
+          this.currentDocumentIsMarkedUntagged = true;
+        } else {
+          this.currentDocumentIsMarkedUntagged = false;
+        }
+      });
       this.loadTags();
       this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
       this.documentUrl$.subscribe((result) => {
@@ -347,6 +357,14 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         false
       );
       this.loadTags();
+    });
+  }
+
+  markAsTagged() {
+    this.apiService.deleteDocumentTag(this.currentDocument.documentId, 'untagged', this).subscribe(result => {
+      this.previousDocument = this.currentDocument;
+      this.currentDocument = null;
+      this.getNextUntaggedDocuments('?limit=' + this.resultsLimit);
     });
   }
 
