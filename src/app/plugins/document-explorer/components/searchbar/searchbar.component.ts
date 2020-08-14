@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
 import { NavigationService } from '../../../../services/navigation.service';
-import { Document } from '../../../../services/api.schema';
+import { Document, Tag } from '../../../../services/api.schema';
 import { SearchService } from '../../services/search.service';
 import { TagQuery, SearchParameters, SearchType } from '../../services/search.schema';
 import * as moment from 'moment-timezone';
@@ -18,11 +18,14 @@ import * as moment from 'moment-timezone';
 export class SearchbarComponent implements OnInit, HttpErrorCallback {
 
   @Input() currentTimezone: string;
+  @Input() tagToSearch: any;
   @Output() documentQueryResultEmitter: EventEmitter<any> = new EventEmitter();
 
+  showSearchFields = true;
   currentTab = 'date';
   public searchParameters: SearchParameters = {
     documentDate: null,
+    documentId: null,
     tagQuery: null,
     searchType: SearchType.Tag
   };
@@ -43,6 +46,10 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   public tagSearchForm: FormGroup;
   public tagFormSubmittedSource = new Subject<boolean>();
   public tagFormSubmitted$ = this.tagFormSubmittedSource.asObservable();
+
+  public idSearchForm: FormGroup;
+  public idFormSubmittedSource = new Subject<boolean>();
+  public idFormSubmitted$ = this.idFormSubmittedSource.asObservable();
 
   results$: Observable<{} | Document[]>;
   public nextToken = null;
@@ -69,11 +76,35 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
       operator: [],
       tagValue: []
     });
+    this.idSearchForm = this.formBuilder.group({
+      documentId: ['', [Validators.minLength(16), Validators.required]]
+    });
     const now = new Date();
     this.dateForPicker = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
     this.calculatePickerDays();
     this.tagSearchForm.get('operator').setValue('eq');
-    if (localStorage.getItem('documentSearchParameters')) {
+    if (this.tagToSearch) {
+      const tagQuery: TagQuery = {
+        key: this.tagToSearch.key,
+        operator: 'eq',
+        value: ''
+      };
+      if (this.tagToSearch.operator) {
+        tagQuery.operator = this.tagToSearch.operator;
+      }
+      if (this.tagToSearch.value) {
+        tagQuery.value = this.tagToSearch.value;
+      }
+      this.searchParameters = {
+        searchType: SearchType.Tag,
+        documentDate: null,
+        documentId: null,
+        tagQuery
+      };
+      if (tagQuery.key === 'untagged') {
+        this.showSearchFields = false;
+      }
+    } else if (localStorage.getItem('documentSearchParameters')) {
       this.searchParameters = JSON.parse(localStorage.getItem('documentSearchParameters'));
     }
     if (this.searchParameters.documentDate) {
@@ -93,6 +124,10 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
         this.tagSearchForm.get('operator').setValue(this.searchParameters.tagQuery.operator);
       }
       this.runTagSearch();
+    } else if (this.searchParameters.documentId) {
+      this.setCurrentTab('id');
+      this.idSearchForm.get('documentId').setValue(this.searchParameters.documentId);
+      this.runIdSearch();
     }
   }
 
@@ -215,7 +250,9 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
       this.searchParameters.tagQuery = new TagQuery(key, operator, value);
     }
     this.searchParameters.searchType = SearchType.Tag;
-    localStorage.setItem('documentSearchParameters', JSON.stringify(this.searchParameters));
+    if (this.searchParameters.tagQuery.key !== 'untagged') {
+      localStorage.setItem('documentSearchParameters', JSON.stringify(this.searchParameters));
+    }
     const searchQuery = this.searchService.buildTagSearchQuery(this.searchParameters.tagQuery);
     this.results$ = this.apiService.postSearch(JSON.stringify(searchQuery), queryString, this);
     this.results$.subscribe((results) => {
@@ -224,10 +261,7 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   }
 
   viewAllUntaggedDocuments() {
-    this.tagSearchForm.get('tagKey').setValue('untagged');
-    this.tagSearchForm.get('operator').setValue('eq');
-    this.tagSearchForm.get('tagValue').setValue('');
-    this.runTagSearch();
+    this.router.navigate(['/documents/explore/untagged']);
   }
 
   public loadNextTagPage() {
@@ -236,6 +270,35 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
 
   public loadPreviousTagPage() {
     this.runTagSearch(this.searchParameters.tagQuery, this.previousToken);
+  }
+
+  runIdSearch() {
+    if (this.idSearchForm.invalid) {
+      return;
+    }
+    this.idFormSubmittedSource.next(true);
+    let documentId = this.idSearchForm.controls.documentId.value;
+    if (documentId && documentId.length > 0) {
+      documentId = documentId.trim();
+    }
+    this.results$ = this.apiService.getDocument(documentId, this);
+    this.results$.subscribe((results: any) => {
+      if (results.documentId) {
+        const documents = {
+          documents: [
+            results
+          ]
+        };
+        this.searchParameters.documentDate = null;
+        this.searchParameters.documentId = results.documentId;
+        this.searchParameters.tagQuery = null;
+        this.searchParameters.searchType = SearchType.Id;
+        localStorage.setItem('documentSearchParameters', JSON.stringify(this.searchParameters));
+        this.documentQueryResultEmitter.emit(documents);
+      } else {
+        this.documentQueryResultEmitter.emit({documents: []});
+      }
+    });
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {

@@ -1,6 +1,10 @@
 
-
-<section class="lg:w-full mb-12">
+<section [hidden]="showSearchFields" class="lg:w-full mb-12">
+  <h3 class="mb-2 md:mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-3xl">
+    Untagged Documents
+  </h3>
+</section>
+<section [hidden]="!showSearchFields" class="lg:w-full mb-12">
   <h3 class="mb-2 md:mb-8 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-3xl">
     Document Search
   </h3>
@@ -21,6 +25,15 @@
         (click)="setCurrentTab('tag')"
         >
         By Tag
+      </a>
+    </li>
+    <li class="-mb-px mr-1">
+      <a
+        class="inline-block cursor-pointer border-l border-t border-r rounded-t py-2 px-4 font-semibold"
+        [ngClass]="{'font-bold text-orange-600 cursor-text': currentTab == 'id'}"
+        (click)="setCurrentTab('id')"
+        >
+        By ID
       </a>
     </li>
   </ul>
@@ -252,4 +265,49 @@
       </div>
     </div>
   </form>
+  <form
+    [formGroup]="idSearchForm"
+    (ngSubmit)="runIdSearch()"
+    [ngClass]="{'hidden': currentTab !== 'id'}"
+    >
+    <div class="md:flex md:items-center mx-4 mb-4 md:mb-8 relative">
+      <div class="md:w-1/4">
+        <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="documentId">
+          Document ID
+        </label>
+      </div>
+      <div class="md:w-1/2 lg:w-1/3">
+        <input
+          aria-label="Document ID"
+          name="documentId"
+          formControlName="documentId"
+          type="text"
+          class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
+            placeholder-gray-500 text-gray-900 rounded-t-md
+            focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+          [ngClass]="{ 'bg-red-200': this.idSearchForm.controls.documentId.errors }"
+        />
+      </div>
+    </div>
+    <div class="md:flex md:items-center mx-4 mb-4 md:mb-8 relative">
+      <div class="md:w-1/4">
+      </div>
+      <div class="md:w-1/4">
+        <button
+          class="px-8 py-2 w-full md:w-auto mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+            text-white focus:outline-none focus:shadow-outline
+            transition duration-150 ease-in-out md:text-lg"
+          (click)="runIdSearch()"
+          [disabled]="this.idSearchForm.invalid"
+          [ngClass]="{
+                'bg-green-600 hover:bg-green-500': !this.idSearchForm.invalid,
+                'bg-gray-500 hover:bg-gray-500': this.idSearchForm.invalid
+              }"
+          >
+          Run ID Search
+        </button>
+      </div>
+    </div>
+  </form>
+
 </section>

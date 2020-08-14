@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
 import { Document } from '../../../../services/api.schema';
 import { SearchbarComponent } from '../../components/searchbar/searchbar.component';
@@ -15,6 +15,8 @@ import * as moment from 'moment-timezone';
 export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallback {
 
   results$: Observable<{} | Document[]>;
+  currentTimezone: string;
+  tagToSearch: any;
   dateSearchSubmitted = false;
   tagSearchSubmitted = false;
   showModal = false;
@@ -23,10 +25,16 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private apiService: ApiService
-  ) { }
+  ) {
+    route.data.pipe().subscribe(routeData => {
+      if (routeData && routeData.tagToSearch) {
+        this.tagToSearch = routeData.tagToSearch;
+      }
+    });
+  }
 
-  currentTimezone: string;
 
   ngOnInit() {
     this.currentTimezone = moment.tz.guess();
@@ -101,7 +109,11 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
   }
 
   viewDocumentTags(documentId) {
-    this.router.navigate(['/documents/' + documentId + '/tags']);
+    const queryParams: any = {};
+    if (this.tagToSearch) {
+      queryParams.tagToSearch = JSON.stringify(this.tagToSearch);
+    }
+    this.router.navigate(['/documents/' + documentId + '/tags'], { queryParams });
   }
 
   closeModal(event) {

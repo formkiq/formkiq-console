@@ -27,6 +27,19 @@
       </a>
     </li>
     <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/documents/explore/untagged' }"
+      class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/documents/explore/untagged']"
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        Untagged Documents
+      </a>
+    </li>
+    <li
       [ngClass]="{'font-bold bg-orange-900': currentUrl == '/documents/add' }"
       class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
@@ -37,6 +50,19 @@
         class="cursor-pointer"
         >
         Add Documents
+      </a>
+    </li>
+    <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/tagging' }"
+      class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/tagging']"
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        Document Tagging
       </a>
     </li>
     <li

@@ -13,6 +13,16 @@ const routes: Routes = [
     data: { title: 'Documents' }
   },
   {
+    path: 'explore/untagged',
+    component: ExploreComponent,
+    data: {
+      title: 'Untagged Documents',
+      tagToSearch: {
+        key: 'untagged'
+      }
+    }
+  },
+  {
     path: 'add',
     component: AddComponent,
     data: { title: 'Add Documents' }

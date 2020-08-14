@@ -4,7 +4,7 @@
       <h2 class="text-2xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
         Document Explorer
       </h2>
-      <app-searchbar #searchbar [currentTimezone]="currentTimezone" (documentQueryResultEmitter)="displayResults($event)"></app-searchbar>
+      <app-searchbar #searchbar [currentTimezone]="currentTimezone" [tagToSearch]="tagToSearch" (documentQueryResultEmitter)="displayResults($event)"></app-searchbar>
       <section class="lg:w-full mb-4 md:mb-8">
         <button
           class="px-8 py-2 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
@@ -45,7 +45,7 @@
           </thead>
           <tbody>
             <tr
-              *ngIf="!results.documents.length"
+              *ngIf="!results.documents || !results.documents.length"
               class="bg-gray-100 flex text-center py-2 px-1 lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0"
               >
               <td

@@ -1,0 +1,190 @@
+<div
+  class="md:flex md:items-center mx-4 mb-4 relative"
+  >
+  <div class="md:w-full">
+    <div *ngIf="loading$ | async" class="absolute top-0 -mt-1 w-full h-20 px-4 py-4 text-center">
+      <div class="lds-ellipsis">
+        <div class="bg-orange-600"></div>
+        <div class="bg-orange-600"></div>
+        <div class="bg-orange-600"></div>
+        <div class="bg-orange-600"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="results$ | async as results">
+  <div *ngIf="this.reachedEndOfUntaggedDocuments" class="mx-4">
+    <p>
+      No untagged documents found.
+    </p>
+  </div>
+  <div
+    *ngIf="!this.reachedEndOfUntaggedDocuments"
+    class="lg:flex lg:flex-columns"
+    >
+    <div class="lg:inline w-full lg:w-128 lg:flex-grow-0">
+      <h4 class="text-lg font-bold mb-4">
+        Tags
+      </h4>
+      <div class="block pr-2">
+        <form [formGroup]="form">
+          <h5 class="text-sm tracking-tight font-bold mb-2">
+            Add New:
+          </h5>
+          <textarea
+            rows="2"
+            aria-label="Key"
+            name="tagKey"
+            formControlName="tagKey"
+            placeholder="key"
+            class="mb-4 font-bold text-sm tracking-tight appearance-none rounded-md relative block w-full p-2 border border-gray-600
+              placeholder-gray-800 text-gray-900 rounded-t-md
+              focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:leading-5"
+            ></textarea>
+          <textarea
+            rows="2"
+            maxlength="2000"
+            aria-label="Value"
+            name="tagValue"
+            formControlName="tagValue"
+            placeholder="value"
+            class="mb-3 text-sm tracking-tight appearance-none rounded-md relative block w-full p-2 border border-gray-600
+              placeholder-gray-500 text-gray-900 rounded-t-md
+              focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:leading-5"
+            ></textarea>
+          <button
+              (click)="addTag()"
+              [disabled]="this.form.invalid"
+              class="w-full mb-4 p-2 border border-transparent text-sm tracking-tight leading-6 font-medium rounded-md shadow
+                text-white focus:outline-none focus:shadow-outline
+                transition duration-150 ease-in-out"
+              [ngClass]="{
+                  'bg-green-600 hover:bg-green-500': !this.form.invalid,
+                  'bg-gray-500 hover:bg-gray-500': this.form.invalid
+                }"
+              >
+              Add
+          </button>
+        </form>
+        <div *ngIf="tagResults$ | async as tagResults" class="text-center">
+          <app-paging [results]="tagResults" (previousEmitter)="loadPreviousTagPage()" (nextEmitter)="loadNextTagPage()"></app-paging>
+        </div>
+        <table
+          id="tag-table"
+          *ngIf="tagResults$ | async as tagResults"
+          class="w-full border-collapse mt-2 relative"
+          >
+          <tbody>
+            <tr
+              *ngIf="!tagResults.tags.length"
+              class="bg-gray-100 flex text-center py-2 px-1 flex-row flex-wrap mb-10"
+              >
+              <td
+                colspan="100%"
+                >
+                No tags have been found for this document.
+              </td>
+            </tr>
+            <tr
+              *ngFor="let tag of tagResults.tags; index as i"
+              [attr.id]="tag ? 'tag-' + tag.key : ''"
+              class="flex flex-row flex-wrap mb-1 border rounded-md"
+              [ngClass]="{
+                'bg-orange-500': tag.key === 'untagged',
+                'bg-yellow-500': tag.key !== 'untagged'
+              }"
+              >
+              <div
+                *ngIf="tag.type === 'userdefined'"
+                class="absolute flex right-0 py-2 pr-2"
+                >
+                <div
+                  (click)="editTag(i)"
+                  class="cursor-pointer"
+                  >
+                  <i class="fas fa-pen text-lg" title="Edit"></i>
+                </div>
+                <div
+                  (click)="deleteTag(tag.key)"
+                  class="ml-2 cursor-pointer"
+                  >
+                  <i class="fas fa-trash-alt text-lg" title="Delete"></i>
+                </div>
+              </div>
+              <td
+                class="w-full block pl-1 pr-8"
+                >
+                <textarea
+                  readonly="true"
+                  rows="1"
+                  class="bg-transparent font-bold text-sm tracking-tight w-full resize-none focus:outline-none"
+                  >{{ tag.key }}</textarea>
+              </td>
+              <td
+                class="w-full block px-1"
+                >
+                <textarea
+                  readonly="true"
+                  rows="1"
+                  class="identifier-tag-value-textarea bg-transparent text-sm tracking-tight w-full resize-none focus:outline-none"
+                  >{{ tag.value }}</textarea>
+              </td>
+              <td
+                class="hidden text-center w-full px-1"
+                >
+                <div class="flex w-full">
+                  <button
+                    class="identifier-save-button w-full mx-1 mb-4 p-2 border border-transparent text-sm tracking-tight leading-6 font-medium rounded-md shadow
+                      text-white focus:outline-none focus:shadow-outline
+                      bg-gray-500 hover:bg-gray-500
+                      transition duration-150 ease-in-out"
+                    >Save</button>
+                  <button
+                    (click)="editTag(-1)"
+                    class="w-full mx-1 mb-4 p-2 border border-transparent text-sm tracking-tight leading-6 font-medium rounded-md shadow
+                      text-white focus:outline-none focus:shadow-outline
+                      bg-orange-500 hover:bg-orange-700
+                      transition duration-150 ease-in-out"
+                    >Cancel</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="tagResults$ | async as tagResults" class="text-center">
+          <app-paging [results]="tagResults" (previousEmitter)="loadPreviousTagPage()" (nextEmitter)="loadNextTagPage()"></app-paging>
+        </div>
+      </div>
+    </div>
+    <div class="w-full lg:flex-grow">
+      <div class="max-w-screen-xl mx-4 relative">
+        <div class="absolute right-0">
+          <button
+            *ngIf="currentDocumentIsMarkedUntagged"
+            (click)="markAsTagged()"
+            class="w-full mb-4 p-2 border border-transparent text-lg tracking-tight leading-6 font-medium rounded-md shadow
+              text-white focus:outline-none focus:shadow-outline
+              bg-green-600 hover:bg-green-500
+              transition duration-150 ease-in-out"
+            >
+            Mark as Tagged
+            <span class="block text-xs">
+              (and Go To Next)
+            </span>
+          </button>
+        </div>
+        <h2 class="text-2xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
+          Document Tagging
+          <span *ngIf="currentDocument" class="mt-2 block text-lg tracking-tight">
+            Document:
+            <span class="font-normal">{{ currentDocument.documentId }}</span>
+          </span>
+        </h2>
+      </div>
+      <iframe
+        id="documentFrame"
+        class="border w-full"
+        ></iframe>
+    </div>
+  </div>
+</div>

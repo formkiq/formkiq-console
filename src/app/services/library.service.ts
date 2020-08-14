@@ -58,6 +58,12 @@ export class LibraryService {
     ]);
   }
 
+  loadFontAwesome(): Observable<any> {
+    return forkJoin([
+      this.loadStyle('assets/dist/font-awesome/css/all.min.css'),
+    ]);
+  }
+
   private loadScript(url: string, module: boolean = false): Observable<any> {
     if (!isDevMode() && url.indexOf('assets/') === 0) {
       url = '/' + url;

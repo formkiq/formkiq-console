@@ -26,6 +26,7 @@ export class TagsComponent implements OnInit, AfterViewInit {
   documentId = '';
   results$: any;
   form: FormGroup;
+  tagToSearch: any;
   formSubmitted = false;
   isTagEditMode = false;
   nextToken = null;
@@ -36,6 +37,11 @@ export class TagsComponent implements OnInit, AfterViewInit {
     this.form = this.formBuilder.group({
       tagKey: ['', Validators.required],
       tagValue: []
+    });
+    this.route.queryParams.subscribe(params => {
+      if (params.tagToSearch) {
+        this.tagToSearch = JSON.parse(params.tagToSearch);
+      }
     });
   }
 
@@ -135,6 +141,12 @@ export class TagsComponent implements OnInit, AfterViewInit {
   }
 
   backToList() {
+    if (this.tagToSearch && this.tagToSearch.key) {
+      if (this.tagToSearch.key === 'untagged') {
+        this.router.navigate(['/documents/explore/untagged']);
+        return;
+      }
+    }
     this.router.navigate(['/documents']);
   }
 
