@@ -15,7 +15,7 @@ import {
   throwError
 } from 'rxjs';
 import {
-  catchError,
+  catchError, mergeMap,
 } from 'rxjs/operators';
 import { AuthenticationService } from '../plugins/authentication/services/authentication.service';
 @Injectable()
@@ -24,21 +24,22 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(private router: Router, private authenticationService: AuthenticationService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (!this.authenticationService.loggedInAccessToken) {
-      this.authenticationService.checkLoginAndToken();
-      return;
-    }
-    request = request.clone({
-      setHeaders: {
-        Authorization: this.authenticationService.loggedInAccessToken
-      }
-    });
-    return next.handle(request).pipe(catchError(err => {
-      if (err.status === 401 || err.status === 0) {
-        this.router.navigate(['/login']);
-      }
-      const error = err.error.message || err.statusText;
-      return throwError(error);
+
+    return this.authenticationService.verifyToken().pipe(mergeMap((token) => {
+
+      request = request.clone({
+        setHeaders: {
+          Authorization: this.authenticationService.loggedInAccessToken
+        }
+      });
+
+      return next.handle(request).pipe(catchError(err => {
+        if (err.status === 401 || err.status === 0) {
+          this.router.navigate(['/login']);
+        }
+        const error = err.error.message || err.statusText;
+        return throwError(error);
+      }));
     }));
   }
 }

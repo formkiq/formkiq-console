@@ -32,6 +32,10 @@ export class AuthenticationService {
     return this.authenticationProviderService.currentUserValue;
   }
 
+  public get isAccessTokenExpired(): boolean {
+    return this.authenticationProviderService.isAccessTokenExpired;
+  }
+
   public get loggedInAccessToken(): string {
     return this.authenticationProviderService.apiAccessToken;
   }
@@ -50,16 +54,6 @@ export class AuthenticationService {
       allowUserSelfRegistration = this.configurationService.cognito.allowUserSelfRegistration;
     }
     return allowUserSelfRegistration;
-  }
-
-  checkLoginAndToken(): void {
-    if (this.authenticationProviderService.apiAccessTokenTimeLeft <= 0) {
-      this.verifyToken().subscribe((valid: boolean) => {
-        if (!valid) {
-          this.closeSession();
-        }
-      });
-    }
   }
 
   verifyToken(): Observable<boolean> {
