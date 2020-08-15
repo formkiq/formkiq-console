@@ -8,7 +8,7 @@ import { SearchbarComponent } from './components/searchbar/searchbar.component';
 import { ShareModalComponent } from './components/share-modal/share-modal.component';
 import { AddComponent } from './pages/add/add.component';
 import { ExploreComponent } from './pages/explore/explore.component';
-import { TagsComponent } from './pages/tags/tags.component';
+import { InfoComponent } from './pages/info/info.component';
 
 
 @NgModule({
@@ -17,7 +17,7 @@ import { TagsComponent } from './pages/tags/tags.component';
     ShareModalComponent,
     AddComponent,
     ExploreComponent,
-    TagsComponent
+    InfoComponent
   ],
   imports: [
     CommonModule,

@@ -9,6 +9,11 @@ const routes: Routes = [
     path: 'screen',
     component: ScreenComponent,
     data: { title: 'Tagging Tool' }
+  },
+  {
+    path: ':id',
+    component: ScreenComponent,
+    data: { title: 'Tagging Tool' }
   }
 ];
 
