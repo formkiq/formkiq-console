@@ -24,15 +24,15 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(private router: Router, private authenticationService: AuthenticationService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
     return this.authenticationService.verifyToken().pipe(mergeMap((token) => {
-
+      if (!token) {
+        this.authenticationService.closeSession();
+      }
       request = request.clone({
         setHeaders: {
           Authorization: this.authenticationService.loggedInAccessToken
         }
       });
-
       return next.handle(request).pipe(catchError(err => {
         if (err.status === 401 || err.status === 0) {
           this.router.navigate(['/login']);
@@ -42,4 +42,5 @@ export class TokenInterceptor implements HttpInterceptor {
       }));
     }));
   }
+
 }

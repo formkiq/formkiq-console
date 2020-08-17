@@ -91,7 +91,6 @@ export class TagsComponent implements OnInit, AfterViewInit {
   deleteTag(key) {
     if (confirm('Delete this tag?')) {
       this.apiService.deleteDocumentTag(this.documentId, key, this).subscribe((result) => {
-        console.log(result);
         this.loadTags();
       });
     }
@@ -109,7 +108,6 @@ export class TagsComponent implements OnInit, AfterViewInit {
       value
     };
     this.apiService.postDocumentTag(this.documentId, JSON.stringify(json), this).subscribe((result) => {
-      console.log(result);
       this.form.reset();
       this.formSubmitted = false;
       this.loadTags();
@@ -122,7 +120,6 @@ export class TagsComponent implements OnInit, AfterViewInit {
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {
-    console.log(errorResponse);
     return Observable.create((observer) => {
       observer.next(errorResponse);
     });

@@ -76,7 +76,7 @@ export class CognitoAuthenticationService {
   }
 
   public get isAccessTokenExpired(): boolean {
-    return this.expiredStorage.isExpired('idToken')
+    return this.expiredStorage.isExpired('idToken');
   }
 
   public get apiAccessToken(): string {
@@ -140,33 +140,27 @@ export class CognitoAuthenticationService {
       RefreshToken
     };
 
-    if (!this.isAccessTokenExpired) {
-      return Observable.create((observer) => {
-        observer.next(true);
-      });
-    } else {
-
-      var username = localStorage.getItem('email');
+    if (this.isAccessTokenExpired) {
+      const username = localStorage.getItem('email');
       const cognitoUser: CognitoUser = this.getCognitoUser(username);
-      const RefreshToken = new CognitoRefreshToken({RefreshToken: this.refreshTokenValue});
-
+      let refreshToken = new CognitoRefreshToken({RefreshToken: this.refreshTokenValue});
       return Observable.create((observer) => {
         cognitoUser.refreshSession(RefreshToken, (err, session) => {
-
           if (err) {
             observer.next(false);
-
           } else {
-
             const idToken = session.getIdToken().getJwtToken();
             const accessToken = session.getAccessToken().getJwtToken();
-            const refreshToken = session.getRefreshToken().getToken();
+            refreshToken = session.getRefreshToken().getToken();
             this.setCredentials(idToken, accessToken, refreshToken);
             observer.next(true);
           }
         });
       });
-
+    } else {
+      return Observable.create((observer) => {
+        observer.next(true);
+      });
     }
   }
 
@@ -483,7 +477,7 @@ export class CognitoAuthenticationService {
 
   getCognitoUser(username: string) {
     const userData = {
-      Username : username, 
+      Username : username,
       Pool : this.getUserPool()
     };
     return new CognitoUser(userData);
