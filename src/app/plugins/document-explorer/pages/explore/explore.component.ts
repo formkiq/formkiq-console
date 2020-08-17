@@ -64,13 +64,15 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
     this.dateSearchSubmitted = false;
     this.tagSearchSubmitted = false;
     this.results$ = Observable.create((observer) => {
-      this.searchbar.nextToken = null;
-      this.searchbar.previousToken = null;
-      if (results.next) {
-        this.searchbar.nextToken = results.next;
-      }
-      if (results.previous) {
-        this.searchbar.previousToken = results.previous;
+      if (this.searchbar) {
+        this.searchbar.nextToken = null;
+        this.searchbar.previousToken = null;
+        if (results.next) {
+          this.searchbar.nextToken = results.next;
+        }
+        if (results.previous) {
+          this.searchbar.previousToken = results.previous;
+        }
       }
       observer.next(results);
     });

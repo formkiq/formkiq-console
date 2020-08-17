@@ -131,7 +131,6 @@ export class InfoComponent implements OnInit, AfterViewInit {
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {
-    console.log(errorResponse);
     return Observable.create((observer) => {
       observer.next(errorResponse);
     });

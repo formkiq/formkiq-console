@@ -75,6 +75,10 @@ export class CognitoAuthenticationService {
     return this.currentUserSubject.value;
   }
 
+  public get isAccessTokenExpired(): boolean {
+    return this.expiredStorage.isExpired('idToken');
+  }
+
   public get apiAccessToken(): string {
     return this.idTokenValue;
   }
@@ -115,60 +119,47 @@ export class CognitoAuthenticationService {
   }
 
   verifyToken(): Observable<boolean> {
-    if (this.idTokenValue == null || this.accessTokenValue == null) {
-      if (this.refreshTokenValue == null) {
-        return Observable.create((observer) => {
-          observer.next(false);
-        });
+    const IdToken: CognitoIdToken = new CognitoIdToken(
+      {
+        IdToken: this.idTokenValue
       }
-    } else {
-      const IdToken: CognitoIdToken = new CognitoIdToken(
-        {
-          IdToken: this.idTokenValue
-        }
-      );
-      const AccessToken: CognitoAccessToken = new CognitoAccessToken(
-        {
-          AccessToken: this.accessTokenValue
-        }
-      );
-      const RefreshToken: CognitoRefreshToken = new CognitoRefreshToken(
-        {
-          RefreshToken: this.refreshTokenValue
-        }
-      );
-      const sessionData = {
-        IdToken,
-        AccessToken,
-        RefreshToken
-      };
-      const cachedSession = new CognitoUserSession(sessionData);
-      if (cachedSession.isValid()) {
-        return Observable.create((observer) => {
-          observer.next(true);
-        });
+    );
+    const AccessToken: CognitoAccessToken = new CognitoAccessToken(
+      {
+        AccessToken: this.accessTokenValue
       }
-    }
-    if (this.currentUserValue != null && typeof this.currentUserValue.refreshSession === 'function') {
-      const refreshToken: CognitoRefreshToken = new CognitoRefreshToken(
-        {
-          RefreshToken: this.refreshTokenValue
-        }
-      );
-      const cognitoUser: CognitoUser = this.currentUserValue;
-      cognitoUser.refreshSession(refreshToken, (err, session) => {
-        if (err) {
-          return Observable.create((observer) => {
+    );
+    const RefreshToken: CognitoRefreshToken = new CognitoRefreshToken(
+      {
+        RefreshToken: this.refreshTokenValue
+      }
+    );
+    const sessionData = {
+      IdToken,
+      AccessToken,
+      RefreshToken
+    };
+
+    if (this.isAccessTokenExpired) {
+      const username = localStorage.getItem('email');
+      const cognitoUser: CognitoUser = this.getCognitoUser(username);
+      let refreshToken = new CognitoRefreshToken({RefreshToken: this.refreshTokenValue});
+      return Observable.create((observer) => {
+        cognitoUser.refreshSession(RefreshToken, (err, session) => {
+          if (err) {
             observer.next(false);
-          });
-        }
-        return Observable.create((observer) => {
-          observer.next(true);
+          } else {
+            const idToken = session.getIdToken().getJwtToken();
+            const accessToken = session.getAccessToken().getJwtToken();
+            refreshToken = session.getRefreshToken().getToken();
+            this.setCredentials(idToken, accessToken, refreshToken);
+            observer.next(true);
+          }
         });
       });
     } else {
       return Observable.create((observer) => {
-        observer.next(false);
+        observer.next(true);
       });
     }
   }
@@ -177,15 +168,11 @@ export class CognitoAuthenticationService {
     if (this.cognitoCreds) {
       this.cognitoCreds.clearCachedId();
     }
-    const userPool = this.getUserPool();
     const authenticationDetails = new AuthenticationDetails({
       Username: email,
       Password: password
     });
-    const cognitoUser = new CognitoUser({
-      Username: email,
-      Pool: userPool
-    });
+    const cognitoUser = this.getCognitoUser(email);
     const response = new LoginResponse();
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: (result) => {
@@ -193,17 +180,15 @@ export class CognitoAuthenticationService {
         response.message = 'You have signed in successfully.';
         response.email = email;
         response.forcePasswordChange = false;
+        localStorage.setItem('email', email);
         localStorage.setItem('currentUser', JSON.stringify(cognitoUser));
         this.currentUserSubject.next(cognitoUser);
+
         const idToken = result.getIdToken().getJwtToken();
-        this.expiredStorage.setItem('idToken', JSON.stringify(idToken), 3500);
-        this.idTokenSubject.next(idToken);
         const accessToken = result.getAccessToken().getJwtToken();
-        this.expiredStorage.setItem('accessToken', JSON.stringify(accessToken), 3500);
-        this.accessTokenSubject.next(accessToken);
         const refreshToken = result.getRefreshToken().getToken();
-        this.expiredStorage.setItem('refreshToken', JSON.stringify(refreshToken), 2590000);
-        this.refreshTokenSubject.next(refreshToken);
+        this.setCredentials(idToken, accessToken, refreshToken);
+
         const url = 'cognito-idp.' + this.configurationService.cognito.region.toLowerCase() + '.amazonaws.com/' +
           this.configurationService.cognito.userPoolId;
         this.cognitoLogins[url] = this.idTokenValue;
@@ -278,6 +263,7 @@ export class CognitoAuthenticationService {
   }
 
   closeSession() {
+    localStorage.removeItem('email');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('idToken');
     localStorage.removeItem('accessToken');
@@ -471,10 +457,7 @@ export class CognitoAuthenticationService {
 
   requestPasswordResetVerificationCodeResend(username: string) {
     const userPool = this.getUserPool();
-    const cognitoUser = new CognitoUser({
-      Username: username,
-      Pool: userPool
-    });
+    const cognitoUser = this.getCognitoUser(username);
     const response = new ForgotPasswordResponse();
     cognitoUser.forgotPassword({
       onSuccess: (data: any) => {
@@ -492,4 +475,20 @@ export class CognitoAuthenticationService {
     });
   }
 
+  getCognitoUser(username: string) {
+    const userData = {
+      Username : username,
+      Pool : this.getUserPool()
+    };
+    return new CognitoUser(userData);
+  }
+
+  setCredentials(idToken, accessToken, refreshToken) {
+    this.expiredStorage.setItem('idToken', JSON.stringify(idToken), 3500);
+    this.idTokenSubject.next(idToken);
+    this.expiredStorage.setItem('accessToken', JSON.stringify(accessToken), 3500);
+    this.accessTokenSubject.next(accessToken);
+    this.expiredStorage.setItem('refreshToken', JSON.stringify(refreshToken), 2590000);
+    this.refreshTokenSubject.next(refreshToken);
+  }
 }

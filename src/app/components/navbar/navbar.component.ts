@@ -53,11 +53,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const source = timer(0, 30000);
     this.libraryService.loadHamburgers();
-    const subscribe = source.subscribe(intervalNum => {
-      if (this.requireAuthenticationForRead) {
-        this.authenticationService.checkLoginAndToken();
-      }
-    });
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
       ).subscribe((value: NavigationEnd) => {

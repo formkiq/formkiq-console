@@ -45,9 +45,6 @@ export class SidebarComponent implements OnInit {
   }
 
   emitSidebarItemClick(source: string) {
-    if (this.requireAuthenticationForRead) {
-      this.authenticationService.checkLoginAndToken();
-    }
     if (source) {
       const clickData = new NavItemClickData();
       clickData.source = source;
