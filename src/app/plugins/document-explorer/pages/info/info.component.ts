@@ -10,11 +10,11 @@ import { HttpErrorCallback } from '../../../../services/api.service';
 import { Document, Tag } from '../../../../services/api.schema';
 
 @Component({
-  selector: 'app-docs-tags',
-  templateUrl: './tags.component.html',
-  styleUrls: ['./tags.component.scss']
+  selector: 'app-docs-info',
+  templateUrl: './info.component.html',
+  styleUrls: ['./info.component.scss']
 })
-export class TagsComponent implements OnInit, AfterViewInit {
+export class InfoComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router,
@@ -24,6 +24,10 @@ export class TagsComponent implements OnInit, AfterViewInit {
   ) { }
 
   documentId = '';
+  currentDocument: any;
+  documentUrl$: Observable<any>;
+  documentEmbedUrl = '';
+  quickLookExpanded = false;
   results$: any;
   form: FormGroup;
   tagToSearch: any;
@@ -33,7 +37,6 @@ export class TagsComponent implements OnInit, AfterViewInit {
   previousToken = null;
 
   ngOnInit() {
-    this.loadTags();
     this.form = this.formBuilder.group({
       tagKey: ['', Validators.required],
       tagValue: []
@@ -43,33 +46,41 @@ export class TagsComponent implements OnInit, AfterViewInit {
         this.tagToSearch = JSON.parse(params.tagToSearch);
       }
     });
+    this.route.params.subscribe(params => {
+      this.documentId = params.id;
+      this.getDocument();
+      this.loadTags();
+    });
   }
 
   ngAfterViewInit() {
   }
 
+  getDocument() {
+    this.apiService.getDocument(this.documentId, this).subscribe(result => {
+      this.currentDocument = result;
+    });
+  }
+
   loadTags(previousToken = '', nextToken = '') {
     this.previousToken = null;
     this.nextToken = null;
-    this.route.params.subscribe(params => {
-      let queryString = '';
-      if (previousToken) {
-        queryString += '?previous=' + previousToken;
-      } else if (nextToken) {
-        queryString += '?next=' + nextToken;
+    let queryString = '';
+    if (previousToken) {
+      queryString += '?previous=' + previousToken;
+    } else if (nextToken) {
+      queryString += '?next=' + nextToken;
+    }
+    const container = this;
+    this.isTagEditMode = false;
+    this.results$ = this.apiService.getDocumentTags(this.documentId, queryString, this);
+    this.results$.subscribe((result) => {
+      if (result.previous) {
+        this.previousToken = result.previous;
       }
-      this.documentId = params.id;
-      const container = this;
-      this.isTagEditMode = false;
-      this.results$ = this.apiService.getDocumentTags(this.documentId, queryString, this);
-      this.results$.subscribe((result) => {
-        if (result.previous) {
-          this.previousToken = result.previous;
-        }
-        if (result.next) {
-          this.nextToken = result.next;
-        }
-      });
+      if (result.next) {
+        this.nextToken = result.next;
+      }
     });
   }
 
@@ -135,6 +146,25 @@ export class TagsComponent implements OnInit, AfterViewInit {
     if (this.nextToken) {
       this.loadTags('', this.nextToken);
     }
+  }
+
+  openForQuickLook() {
+    document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
+    this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
+    this.documentUrl$.subscribe((result) => {
+      if (result.url) {
+        this.documentEmbedUrl = result.url;
+        this.quickLookExpanded = true;
+        document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
+        const heightAvailable = window.innerHeight - 240;
+        document.getElementById('documentFrame').setAttribute('style', 'height: ' + heightAvailable + 'px');
+      }
+    });
+  }
+
+  closeQuickLook() {
+    this.quickLookExpanded = false;
+    document.getElementById('documentFrame').removeAttribute('src');
   }
 
   backToList() {

@@ -31,6 +31,111 @@
       Back to Results
     </button>
     <section class="lg:w-full mb-4 md:mb-8">
+      <table
+        *ngIf="currentDocument"
+        class="border-collapse w-full"
+        >
+        <tbody>
+          <tr
+            class="bg-white flex lg:table-row flex-row flex-wrap mb-2 "
+            >
+            <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
+              <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Content Type</span>
+              <span class="font-bold">
+                {{ currentDocument.contentType }}
+              </span>
+            </td>
+          </tr>
+          <tr
+            class="bg-white flex lg:table-row flex-row flex-wrap mb-2 "
+            >
+            <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
+              <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Content Length</span>
+              <span class="font-bold">
+                {{ currentDocument.contentLength | number }} bytes
+              </span>
+            </td>
+          </tr>
+          <tr
+            class="bg-white flex lg:table-row flex-row flex-wrap mb-2 "
+            >
+            <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
+              <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Checksum</span>
+              <span class="font-bold">
+                {{ currentDocument.checksum }} bytes
+              </span>
+            </td>
+          </tr>
+          <tr
+            class="bg-white flex lg:table-row flex-row flex-wrap mb-2 "
+            >
+            <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
+              <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Document Path</span>
+              <span class="font-bold">
+                {{ currentDocument.path }}
+              </span>
+            </td>
+          </tr>
+          <tr
+            class="bg-white flex lg:table-row flex-row flex-wrap mb-2 "
+            >
+            <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
+              <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Added By</span>
+              <span class="font-bold">
+                {{ currentDocument.userId }}
+              </span>
+            </td>
+          </tr>
+          <tr
+            class="bg-white flex lg:table-row flex-row flex-wrap mb-2 "
+            >
+            <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
+              <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Date Added</span>
+              <span class="font-bold">
+                {{ currentDocument.insertedDate | datetimeFormat: 'yyyy-MM-dd HH:mm Z':currentTimezone }}
+              </span>
+            </td>
+          </tr>
+          <tr
+            class="bg-white flex lg:table-row flex-row flex-wrap mb-2 "
+            >
+            <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
+              <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Site Group</span>
+              <span class="font-bold">
+                {{ currentDocument.siteId }}
+              </span>
+            </td>
+          </tr>
+          <tr
+            class="bg-white flex lg:table-row flex-row flex-wrap mb-2 "
+            >
+            <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
+              <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">View Document</span>
+              <span
+                *ngIf="!quickLookExpanded"
+                class="underline cursor-pointer"
+                (click)="openForQuickLook()"
+                >
+                click here to view document
+              </span>
+              <span
+                *ngIf="quickLookExpanded"
+                class="underline cursor-pointer"
+                (click)="closeQuickLook()"
+                >
+                close
+              </span>
+              <iframe
+                [hidden]="!quickLookExpanded"
+                id="documentFrame"
+                class="border w-full"
+                ></iframe>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="lg:w-full mb-4 md:mb-8">
       <div *ngIf="results$ | async as results" class="text-center">
         <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
       </div>

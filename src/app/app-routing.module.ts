@@ -1,13 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, ExtraOptions } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
-import { ExploreComponent as ApiExploreComponent } from './plugins/api-explorer/pages/explore/explore.component';
 import { AuthenticateComponent } from './plugins/authentication/pages/authenticate/authenticate.component';
 import { ConfirmUserComponent } from './plugins/authentication/pages/confirm-user/confirm-user.component';
 import { ResetPasswordComponent } from './plugins/authentication/pages/reset-password/reset-password.component';
-import { ExploreComponent as DocumentsExploreComponent } from './plugins/document-explorer/pages/explore/explore.component';
-import { AddComponent as DocumentsAddComponent } from './plugins/document-explorer/pages/add/add.component';
-import { TagsComponent as DocumentsTagsComponent } from './plugins/document-explorer/pages/tags/tags.component';
 import { AuthenticationGuardService } from './plugins/authentication/guards/authentication-guard.service';
 
 const routerOptions: ExtraOptions = {

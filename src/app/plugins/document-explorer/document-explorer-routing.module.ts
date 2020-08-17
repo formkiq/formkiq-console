@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AddComponent } from './pages/add/add.component';
 import { ExploreComponent } from './pages/explore/explore.component';
-import { TagsComponent } from './pages/tags/tags.component';
+import { InfoComponent } from './pages/info/info.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'explore', pathMatch: 'full' },
@@ -28,9 +28,9 @@ const routes: Routes = [
     data: { title: 'Add Documents' }
   },
   {
-    path: ':id/tags',
-    component: TagsComponent,
-    data: { title: 'Document Tags' }
+    path: ':id',
+    component: InfoComponent,
+    data: { title: 'Document Info' }
   },
 ];
 

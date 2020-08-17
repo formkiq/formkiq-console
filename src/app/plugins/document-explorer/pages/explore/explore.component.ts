@@ -115,11 +115,11 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
     if (this.tagToSearch) {
       queryParams.tagToSearch = JSON.stringify(this.tagToSearch);
     }
-    this.router.navigate(['/documents/' + documentId + '/tags'], { queryParams });
+    this.router.navigate(['/documents/' + documentId], { queryParams });
   }
 
-  closeModal(event) {
-    // this.modalService.dismissAll();
+  openTaggingTool(documentId) {
+    this.router.navigate(['/tagging/' + documentId ]);
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {
