@@ -30,6 +30,7 @@ export class InfoComponent implements OnInit, AfterViewInit {
   results$: any;
   form: FormGroup;
   tagToSearch: any;
+  explorePagingToken: null;
   formSubmitted = false;
   isTagEditMode = false;
   nextToken = null;
@@ -47,6 +48,9 @@ export class InfoComponent implements OnInit, AfterViewInit {
     this.route.queryParams.subscribe(params => {
       if (params.tagToSearch) {
         this.tagToSearch = JSON.parse(params.tagToSearch);
+      }
+      if (params.explorePagingToken) {
+        this.explorePagingToken = params.explorePagingToken;
       }
     });
     this.route.params.subscribe(params => {
@@ -171,13 +175,17 @@ export class InfoComponent implements OnInit, AfterViewInit {
   }
 
   backToList() {
+    const queryParams: any = {};
+    if (this.explorePagingToken) {
+      queryParams.page = this.explorePagingToken;
+    }
     if (this.tagToSearch && this.tagToSearch.key) {
       if (this.tagToSearch.key === 'untagged') {
-        this.router.navigate(['/documents/explore/untagged']);
+        this.router.navigate(['/documents/explore/untagged'], { queryParams });
         return;
       }
     }
-    this.router.navigate(['/documents']);
+    this.router.navigate(['/documents'], { queryParams });
   }
 
 }

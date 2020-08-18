@@ -16,6 +16,7 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
 
   results$: Observable<{} | Document[]>;
   currentTimezone: string;
+  currentPage: string = null;
   tagToSearch: any;
   dateSearchSubmitted = false;
   tagSearchSubmitted = false;
@@ -41,6 +42,11 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
     if (!this.currentTimezone) {
       this.currentTimezone = 'America/New_York';
     }
+    this.route.queryParams.subscribe(params => {
+      if (params.page) {
+        this.currentPage = params.page;
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -110,11 +116,15 @@ export class ExploreComponent implements OnInit, AfterViewInit, HttpErrorCallbac
     });
   }
 
-  viewDocumentTags(documentId) {
+  viewDocumentInfo(documentId) {
     const queryParams: any = {};
     if (this.tagToSearch) {
       queryParams.tagToSearch = JSON.stringify(this.tagToSearch);
     }
+    if (this.searchbar.currentPagingToken) {
+      queryParams.explorePagingToken = this.searchbar.currentPagingToken;
+    }
+    // TODO: add paging token
     this.router.navigate(['/documents/' + documentId], { queryParams });
   }
 

@@ -17,6 +17,7 @@ import * as moment from 'moment-timezone';
 })
 export class SearchbarComponent implements OnInit, HttpErrorCallback {
 
+  @Input() currentPage: string;
   @Input() currentTimezone: string;
   @Input() tagToSearch: any;
   @Output() documentQueryResultEmitter: EventEmitter<any> = new EventEmitter();
@@ -52,6 +53,7 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   public idFormSubmitted$ = this.idFormSubmittedSource.asObservable();
 
   results$: Observable<{} | Document[]>;
+  public currentPagingToken = null;
   public nextToken = null;
   public previousToken = null;
 
@@ -65,9 +67,12 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
     public navigationService: NavigationService,
     private searchService: SearchService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
+    this.currentPagingToken = this.currentPage;
+    console.log(this.currentPagingToken);
     this.dateSearchForm = this.formBuilder.group({
       date: ['', [Validators.required, Validators.pattern('\\d{4}-\\d{2}-\\d{2}')]]
     });
@@ -193,9 +198,10 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
     let queryString = '?date=' + documentDate + '&tz=' + currentUtcOffset;
     if (nextToken !== '') {
       queryString += '&next=' + nextToken;
-    }
-    if (previousToken !== '') {
+    } else if (previousToken !== '') {
       queryString += '&previous=' + previousToken;
+    } else if (this.currentPagingToken) {
+      queryString += '?next=' + this.currentPagingToken;
     }
     this.dateFormSubmittedSource.next(true);
     this.searchParameters.searchType = SearchType.Date;
@@ -215,10 +221,12 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   }
 
   public loadNextDatePage() {
+    this.currentPagingToken = this.nextToken;
     this.runDateSearch(this.searchParameters.documentDate, '', this.nextToken);
   }
 
   public loadPreviousDatePage() {
+    this.currentPagingToken = this.previousToken;
     this.runDateSearch(this.searchParameters.documentDate, this.previousToken);
   }
 
@@ -230,6 +238,8 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
         queryString = '?previous=' + previousToken;
       } else if (nextToken) {
         queryString = '?next=' + nextToken;
+      } else if (this.currentPagingToken) {
+        queryString += '?next=' + this.currentPagingToken;
       }
     } else {
       this.searchParameters.tagQuery = null;
@@ -265,10 +275,12 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   }
 
   public loadNextTagPage() {
+    this.currentPagingToken = this.nextToken;
     this.runTagSearch(this.searchParameters.tagQuery, '', this.nextToken);
   }
 
   public loadPreviousTagPage() {
+    this.currentPagingToken = this.previousToken;
     this.runTagSearch(this.searchParameters.tagQuery, this.previousToken);
   }
 
