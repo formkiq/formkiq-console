@@ -70,7 +70,7 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
       fieldsForFormBuilder.versionID = ['', [Validators.minLength(1)]];
     }
     if (this.apiItem.allowsDate) {
-      fieldsForFormBuilder.OKZbnKFXt9L7VtcQFmz4AgBOpjG3YjT4 = ['', [Validators.pattern('\\d{4}-\\d{2}-\\d{2}')]];
+      fieldsForFormBuilder.date = ['', [Validators.pattern('\\d{4}-\\d{2}-\\d{2}')]];
       fieldsForFormBuilder.tz = ['', [Validators.pattern('(([+-]?)(\\d{2}):?(\\d{0,2}))')]];
     }
     if (this.apiItem.allowsLimit) {
