@@ -28,6 +28,9 @@ export class TokenInterceptor implements HttpInterceptor {
       if (!token) {
         this.authenticationService.closeSession();
       }
+      if (!this.authenticationService.loggedInAccessToken) {
+        this.authenticationService.closeSession();
+      }
       request = request.clone({
         setHeaders: {
           Authorization: this.authenticationService.loggedInAccessToken
