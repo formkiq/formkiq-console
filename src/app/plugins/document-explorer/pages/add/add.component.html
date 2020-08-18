@@ -11,10 +11,7 @@
     <h2 class="text-2xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
       Add Documents
     </h2>
-    <section class="lg:w-full h-64 md:h-128 mb-4 md:mb-8">
-      <div #dropzone id="dropzone" class="dropzone"></div>
-    </section>
-    <section class="lg:w-full">
+    <section class="lg:w-full mb-12">
       <h3 class="mb-2 md:mb-4 text-xl tracking-tight leading-10 font-extrabold text-orange-600 sm:leading-none md:text-2xl">
         Documents Added
       </h3>
@@ -69,6 +66,12 @@
           </tr>
         </tbody>
       </table>
+    </section>
+    <section class="relative lg:w-full mb-4 md:mb-8">
+      <h3 class="mb-2 md:mb-4 text-xl tracking-tight leading-10 font-extrabold text-orange-600 sm:leading-none md:text-2xl">
+        Upload New
+      </h3>
+      <div #dropzone id="dropzone" class="flex flex-columns flex-wrap dropzone w-full h-full max-h-full flex-grow-0"></div>
     </section>
   </div>
 </div>
