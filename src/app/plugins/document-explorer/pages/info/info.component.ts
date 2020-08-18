@@ -4,10 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { ApiService } from '../../../../services/api.service';
-import { HttpErrorCallback } from '../../../../services/api.service';
-import { Document, Tag } from '../../../../services/api.schema';
+import * as moment from 'moment-timezone';
 
 @Component({
   selector: 'app-docs-info',
@@ -23,6 +21,7 @@ export class InfoComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
   ) { }
 
+  currentTimezone: string;
   documentId = '';
   currentDocument: any;
   documentUrl$: Observable<any>;
@@ -37,6 +36,10 @@ export class InfoComponent implements OnInit, AfterViewInit {
   previousToken = null;
 
   ngOnInit() {
+    this.currentTimezone = moment.tz.guess();
+    if (!this.currentTimezone) {
+      this.currentTimezone = 'America/New_York';
+    }
     this.form = this.formBuilder.group({
       tagKey: ['', Validators.required],
       tagValue: []
