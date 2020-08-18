@@ -4,7 +4,14 @@
       <h2 class="text-2xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
         Document Explorer
       </h2>
-      <app-searchbar #searchbar [currentTimezone]="currentTimezone" [tagToSearch]="tagToSearch" (documentQueryResultEmitter)="displayResults($event)"></app-searchbar>
+      <app-searchbar
+        #searchbar
+        [currentPage]="currentPage"
+        [currentTimezone]="currentTimezone"
+        [tagToSearch]="tagToSearch"
+        (documentQueryResultEmitter)="displayResults($event)"
+        >
+      </app-searchbar>
       <section class="lg:w-full mb-4 md:mb-8">
         <button
           class="px-8 py-2 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
@@ -88,7 +95,7 @@
                       text-white focus:outline-none focus:shadow-outline
                       bg-green-600 hover:bg-green-500
                       transition duration-150 ease-in-out md:text-base"
-                    (click)="viewDocumentTags(document.documentId)"
+                    (click)="viewDocumentInfo(document.documentId)"
                     >
                     More Info...
                   </button>
