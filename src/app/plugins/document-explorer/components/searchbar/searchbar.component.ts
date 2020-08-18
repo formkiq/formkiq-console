@@ -201,7 +201,7 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
     } else if (previousToken !== '') {
       queryString += '&previous=' + previousToken;
     } else if (this.currentPagingToken) {
-      queryString += '?next=' + this.currentPagingToken;
+      queryString += '&next=' + this.currentPagingToken;
     }
     this.dateFormSubmittedSource.next(true);
     this.searchParameters.searchType = SearchType.Date;
@@ -242,6 +242,9 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
         queryString += '?next=' + this.currentPagingToken;
       }
     } else {
+      if (this.currentPagingToken) {
+        queryString += '?next=' + this.currentPagingToken;
+      }
       this.searchParameters.tagQuery = null;
       this.searchParameters.documentDate = null;
       if (this.tagSearchForm.invalid) {
