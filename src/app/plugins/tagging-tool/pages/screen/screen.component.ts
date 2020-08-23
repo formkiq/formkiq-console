@@ -35,10 +35,16 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       } else {
         this.setUpUntaggedSearch();
       }
+      this.getCurrentTaggingPreset();
     });
   }
 
   searchQuery: any;
+  taggingPresetResults$: Observable<any>;
+  taggingPresets: Array<any>;
+  currentTaggingPreset = '';
+  showAddTagFormOnPreset = false;
+  presetTags: Array<any>;
   results$: Observable<any>;
   tagResults$: Observable<any>;
   tags: Array<any>;
@@ -62,6 +68,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       tagKey: ['', Validators.required],
       tagValue: []
     });
+    this.loadTaggingPresets();
   }
 
   ngAfterViewInit() {
@@ -69,6 +76,60 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
 
   get f() {
     return this.form.controls;
+  }
+
+  getCurrentTaggingPreset() {
+    let preset = '';
+    const presetTags = [];
+    const taggingPresetSelect = document.getElementById('taggingPresets') as HTMLSelectElement;
+    if (taggingPresetSelect) {
+      if (taggingPresetSelect.selectedIndex > -1) {
+        preset = taggingPresetSelect.options[taggingPresetSelect.selectedIndex].value;
+        // TODO: retrieve preset tags
+        if (preset === 'ebook') {
+          presetTags.push({
+            key: 'Title',
+            value: '',
+          });
+          presetTags.push({
+            key: 'Author',
+            value: '',
+          });
+          presetTags.push({
+            key: 'Language',
+            value: 'English',
+          });
+        } else if (preset === 'form') {
+          presetTags.push({
+            key: 'First Name',
+            value: '',
+          });
+          presetTags.push({
+            key: 'Last Name',
+            value: '',
+          });
+        }
+      }
+    }
+    this.currentTaggingPreset = preset;
+    this.presetTags = presetTags;
+  }
+
+  loadTaggingPresets() {
+    // TODO: replace with actual preset api call
+    this.taggingPresets = [];
+    let preset = {
+      siteId: 'default',
+      name: 'ebook',
+      type: 'tagging'
+    };
+    this.taggingPresets.push(preset);
+    preset = {
+      siteId: 'default',
+      name: 'form',
+      type: 'tagging'
+    };
+    this.taggingPresets.push(preset);
   }
 
   setUpUntaggedSearch() {
