@@ -104,14 +104,14 @@
               Add
           </button>
         </form>
-        <div *ngIf="presetTags && presetTags.length" class="text-center">
+        <div *ngIf="currentTaggingPreset && currentTaggingPreset.tags && currentTaggingPreset.tags.length" class="text-center">
           <table
             id="preset-tag-table"
             class="w-full border-collapse mt-2 relative"
             >
             <tbody>
               <tr
-                *ngFor="let tag of presetTags"
+                *ngFor="let tag of currentTaggingPreset.tags"
                 class="flex flex-row flex-wrap mb-1 border rounded-md"
                 [ngClass]="{
                   'bg-orange-500': tag.key === 'untagged',

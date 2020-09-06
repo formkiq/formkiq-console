@@ -3,13 +3,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+import * as ExpiredStorage from 'expired-storage';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
 import { LibraryService } from '../../../../services/library.service';
-import { Document, Tag } from '../../../../services/api.schema';
+import { Preset } from '../../../../services/api.schema';
 import { NotificationService } from '../../../../services/notification.service';
 import { NotificationInfoType } from '../../../../services/notification.schema';
 import { SearchService } from '../../services/search.service';
 import { TagQuery, SearchParameters, SearchType } from '../../services/search.schema';
+import { isArray } from 'util';
 
 @Component({
   selector: 'app-tagtool-screen',
@@ -17,6 +19,9 @@ import { TagQuery, SearchParameters, SearchType } from '../../services/search.sc
   styleUrls: ['./screen.component.scss']
 })
 export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback {
+
+  private expiredStorage: ExpiredStorage;
+  private presetCacheInSeconds = 120; // two minutes
 
   constructor(
     private router: Router,
@@ -27,6 +32,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     private notificationService: NotificationService,
     private searchService: SearchService
   ) {
+    this.expiredStorage = new ExpiredStorage();
     route.data.pipe().subscribe(routeData => {
     });
     route.params.subscribe(params => {
@@ -41,8 +47,8 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
 
   searchQuery: any;
   taggingPresetResults$: Observable<any>;
-  taggingPresets: Array<any>;
-  currentTaggingPreset = '';
+  taggingPresets: Array<Preset>;
+  currentTaggingPreset = null;
   showAddTagFormOnPreset = false;
   presetTags: Array<any>;
   results$: Observable<any>;
@@ -79,57 +85,49 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
   }
 
   getCurrentTaggingPreset() {
-    let preset = '';
+    let presetName = '';
     const presetTags = [];
     const taggingPresetSelect = document.getElementById('taggingPresets') as HTMLSelectElement;
-    if (taggingPresetSelect) {
-      if (taggingPresetSelect.selectedIndex > -1) {
-        preset = taggingPresetSelect.options[taggingPresetSelect.selectedIndex].value;
-        // TODO: retrieve preset tags
-        if (preset === 'ebook') {
-          presetTags.push({
-            key: 'Title',
-            value: '',
-          });
-          presetTags.push({
-            key: 'Author',
-            value: '',
-          });
-          presetTags.push({
-            key: 'Language',
-            value: 'English',
-          });
-        } else if (preset === 'form') {
-          presetTags.push({
-            key: 'First Name',
-            value: '',
-          });
-          presetTags.push({
-            key: 'Last Name',
-            value: '',
-          });
-        }
-      }
+    if (!taggingPresetSelect || taggingPresetSelect.selectedIndex === -1) {
+      this.currentTaggingPreset = [];
+      return true;
     }
-    this.currentTaggingPreset = preset;
-    this.presetTags = presetTags;
+    presetName = taggingPresetSelect.options[taggingPresetSelect.selectedIndex].value;
+    const filteredPresets = this.taggingPresets.filter((preset: Preset) => preset.name === presetName);
+    if (filteredPresets.length) {
+      this.currentTaggingPreset = filteredPresets[0];
+    } else {
+      this.currentTaggingPreset = [];
+    }
   }
 
   loadTaggingPresets() {
-    // TODO: replace with actual preset api call
     this.taggingPresets = [];
-    let preset = {
-      siteId: 'default',
-      name: 'ebook',
-      type: 'tagging'
-    };
-    this.taggingPresets.push(preset);
-    preset = {
-      siteId: 'default',
-      name: 'form',
-      type: 'tagging'
-    };
-    this.taggingPresets.push(preset);
+    if (this.expiredStorage.getItem('presets')) {
+      this.taggingPresets = this.expiredStorage.getJson('presets');
+      return true;
+    }
+    this.apiService.getAllPresets('', this).subscribe((result) => {
+      const presetResponse: any = result;
+      if (presetResponse.presets) {
+        const presetTagPromises: Promise<any>[]  = [];
+        presetResponse.presets.forEach((preset: Preset) => {
+          presetTagPromises.push(new Promise((resolve) => {
+            this.apiService.getPresetTags(preset.id, '', this).subscribe((tagsResult) => {
+              const presetTagsResult: any = tagsResult;
+              if (presetTagsResult.tags) {
+                preset.tags = presetTagsResult.tags;
+              }
+              this.taggingPresets.push(preset);
+              resolve();
+            });
+          }));
+        });
+        Promise.all(presetTagPromises).then(() => {
+          this.expiredStorage.setJson('presets', this.taggingPresets, this.presetCacheInSeconds);
+        });
+      }
+    });
   }
 
   setUpUntaggedSearch() {
