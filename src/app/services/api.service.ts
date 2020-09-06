@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, shareReplay, map } from 'rxjs/operators';
 import { AuthenticationService } from '../plugins/authentication/services/authentication.service';
 import { ConfigurationService } from '../services/configuration.service';
-import { Document, Site, Tag } from '../services/api.schema';
+import { Document, Preset, Site, Tag } from '../services/api.schema';
 
 @Injectable({
   providedIn: 'root'
@@ -142,6 +142,52 @@ export class ApiService {
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
+
+  getAllPresets(queryString: string, callback: HttpErrorCallback): Observable<{} | Site[]> {
+    return this.httpClient
+      .get<Site[]>(this.configurationService.apigateway.url + 'presets' + queryString, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
+  postPreset(json: string, callback: HttpErrorCallback): any {
+    const body = JSON.parse(json);
+    return this.httpClient
+      .post<Preset>(this.configurationService.apigateway.url + 'presets', body, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
+  deletePreset(presetID: string, callback: HttpErrorCallback): Observable<{} | Preset> {
+    return this.httpClient
+      .delete<Preset>(this.configurationService.apigateway.url + 'presets/' + presetID, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+  getPresetTags(presetID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | Array<Tag>> {
+    return this.httpClient
+      .get<Array<Tag>>(this.configurationService.apigateway.url + 'presets/' + presetID + '/tags' + queryString, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
+  postPresetTag(presetID: string, json: string, callback: HttpErrorCallback): Observable<any> {
+    const body = JSON.parse(json);
+    return this.httpClient
+      .post<Tag>(this.configurationService.apigateway.url + 'presets/' + presetID + '/tags', body, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
+  deletePresetTag(presetID: string, key: string, callback: HttpErrorCallback): Observable<any> {
+    return this.httpClient
+      .delete<Tag>(
+        this.configurationService.apigateway.url + 'presets/' + presetID + '/tags/' + encodeURIComponent(key), this.getHttpOptions()
+      )
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
 
 }
 

@@ -324,6 +324,106 @@
       </li>
     </div>
     <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api/#presets' }"
+      class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/api']"
+        fragment="presets"
+        (click)="emitSidebarItemClick('apiHeaderPresetsClicked')"
+        class="cursor-pointer"
+        >
+        Presets
+      </a>
+    </li>
+    <div *ngIf="currentUrl && currentUrl.indexOf('/api') > -1 && currentUrl.indexOf('preset') > 4">
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-presets' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="GET-presets"
+          (click)="emitSidebarItemClick('apiGetPresetsClicked')"
+          class="cursor-pointer"
+          >
+          GET /presets
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-presets' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="POST-presets"
+          (click)="emitSidebarItemClick('apiPostPresetsClicked')"
+          class="cursor-pointer"
+          >
+          POST /presets
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#DELETE-preset' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="DELETE-preset"
+          (click)="emitSidebarItemClick('apiDeletePresetClicked')"
+          class="cursor-pointer"
+          >
+          DELETE /presets/<strong>&#123;id&#125;</strong>
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-preset-tags' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="GET-preset-tags"
+          (click)="emitSidebarItemClick('apiGetPresetTagsClicked')"
+          class="cursor-pointer"
+          >
+          GET /presets/<strong>&#123;id&#125;</strong>/tags
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-preset-tags' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="POST-preset-tags"
+          (click)="emitSidebarItemClick('apiPostPresetTagsClicked')"
+          class="cursor-pointer"
+          >
+          POST /presets/<strong>&#123;id&#125;</strong>/tags
+        </a>
+      </li>
+      <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#DELETE-preset-tag' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="DELETE-preset-tag"
+          (click)="emitSidebarItemClick('apiDeletePresetTagClicked')"
+          class="cursor-pointer"
+          >
+          DELETE /presets/<strong>&#123;id&#125;</strong>/tags/<strong class="tracking-tighter">&#123;tag&#125;</strong>
+        </a>
+      </li>
+    </div>
+    <li
       class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
       >

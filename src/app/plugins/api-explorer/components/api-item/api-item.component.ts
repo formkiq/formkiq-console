@@ -53,6 +53,9 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     if (this.apiItem.requiresDocumentID) {
       fieldsForFormBuilder.documentID = ['', [Validators.required, Validators.minLength(1)]];
     }
+    if (this.apiItem.requiresPresetID) {
+      fieldsForFormBuilder.presetID = ['', [Validators.required, Validators.minLength(1)]];
+    }
     if (this.apiItem.requiresTagKey) {
       fieldsForFormBuilder.tagKey = ['', [Validators.required, Validators.minLength(1)]];
     }
@@ -138,6 +141,11 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     if (this.apiItem.requiresDocumentID) {
       if (this.f.documentID && this.f.documentID.status === 'VALID') {
         path = path.replace(' DOCUMENT_ID ', this.f.documentID.value);
+      }
+    }
+    if (this.apiItem.requiresPresetID) {
+      if (this.f.presetID && this.f.presetID.status === 'VALID') {
+        path = path.replace(' PRESET_ID ', this.f.presetID.value);
       }
     }
     if (this.apiItem.requiresTagKey) {
@@ -393,6 +401,66 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
           this.loading$.next(false);
         });
         break;
+      case 'getAllPresets':
+          this.apiService.getAllPresets(this.queryString, this).subscribe((data: Array<object>) => {
+            if (data.hasOwnProperty('status')) {
+              this.isErrorResponse = true;
+            }
+            this.responseData = data;
+            this.scrollToResponse(this.apiItem.apiServiceMethodName);
+            this.loading$.next(false);
+          });
+          break;
+        case 'postPresets':
+          this.apiService.postPreset(this.f.postJson.value, this).subscribe((data: object) => {
+            if (data.hasOwnProperty('status')) {
+              this.isErrorResponse = true;
+            }
+            this.responseData = data;
+            this.scrollToResponse(this.apiItem.apiServiceMethodName);
+            this.loading$.next(false);
+          });
+          break;
+        case 'deletePreset':
+          this.apiService.deletePreset(this.f.presetID.value, this).subscribe((data: object) => {
+            if (data.hasOwnProperty('status')) {
+              this.isErrorResponse = true;
+            }
+            this.responseData = data;
+            this.scrollToResponse(this.apiItem.apiServiceMethodName);
+            this.loading$.next(false);
+          });
+          break;
+        case 'getPresetTags':
+          this.apiService.getPresetTags(this.f.presetID.value, this.queryString, this).subscribe((data: object) => {
+            if (data.hasOwnProperty('status')) {
+              this.isErrorResponse = true;
+            }
+            this.responseData = data;
+            this.scrollToResponse(this.apiItem.apiServiceMethodName);
+            this.loading$.next(false);
+          });
+          break;
+        case 'postPresetTags':
+          this.apiService.postPresetTag(this.f.presetID.value, this.f.postJson.value, this).subscribe((data: object) => {
+            if (data.hasOwnProperty('status')) {
+              this.isErrorResponse = true;
+            }
+            this.responseData = data;
+            this.scrollToResponse(this.apiItem.apiServiceMethodName);
+            this.loading$.next(false);
+          });
+          break;
+        case 'deletePresetTag':
+          this.apiService.deletePresetTag(this.f.presetID.value, this.f.tagKey.value, this).subscribe((data: object) => {
+            if (data.hasOwnProperty('status')) {
+              this.isErrorResponse = true;
+            }
+            this.responseData = data;
+            this.scrollToResponse(this.apiItem.apiServiceMethodName);
+            this.loading$.next(false);
+          });
+          break;
       default:
         this.loading$.next(false);
         break;
