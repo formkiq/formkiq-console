@@ -36,6 +36,16 @@
               Sites
             </a>
           </li>
+          <li>
+            <a
+              [routerLink]="['/api']"
+              [fragment]="presetsFragment"
+              (click)="navigationService.emitInlineNavItemClick('apiHeaderPresetsClicked')"
+              class="font-bold text-orange-900 hover:text-orange-600"
+              >
+              Presets
+            </a>
+          </li>
         </ul>
       </nav>
       <section class="lg:w-full mb-12">
@@ -67,6 +77,17 @@
           Sites
         </h3>
         <app-api-item id="GET-sites" [apiItem]="getSitesApiItem"></app-api-item>
+      </section>
+      <section class="lg:w-full mb-12">
+        <h3 #headerPresets class="mx-4 mb-8 text-3xl tracking-tight leading-10 font-extrabold text-orange-600 sm:leading-none md:text-4xl">
+          Presets
+        </h3>
+        <app-api-item id="GET-presets" [apiItem]="getPresetsApiItem"></app-api-item>
+        <app-api-item id="POST-presets" [apiItem]="postPresetsApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="DELETE-preset" [apiItem]="deletePresetApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="GET-preset-tags" [apiItem]="getPresetTagsApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="POST-preset-tags" [apiItem]="postPresetTagsApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="DELETE-preset-tag" [apiItem]="deletePresetTagApiItem" [isCollapsed]="true"></app-api-item>
       </section>
     </div>
   </div>

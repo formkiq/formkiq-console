@@ -3,6 +3,11 @@ export class Document {
   constructor() {}
 }
 
+export class Preset {
+  data: any;
+  constructor() {}
+}
+
 export class Site {
   data: any;
   constructor() {}
@@ -25,6 +30,7 @@ export class ApiItem {
   hasNoParams: boolean;
   requiresAuthentication: boolean;
   requiresDocumentID: boolean;
+  requiresPresetID: boolean;
   requiresTagKey: boolean;
   requiresPostJson: boolean;
   requiresFileUpload: boolean;
