@@ -11,8 +11,6 @@ import { Document, Preset, Site, Tag } from '../services/api.schema';
 })
 export class ApiService {
 
-  private expiredStorage: ExpiredStorage;
-
   constructor(
     private httpClient: HttpClient,
     private authenticationService: AuthenticationService,
