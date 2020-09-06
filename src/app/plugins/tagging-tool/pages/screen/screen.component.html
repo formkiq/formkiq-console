@@ -52,20 +52,34 @@
       <h4 class="text-lg font-bold mb-4">
         Tags
         <span
-          *ngIf="currentTaggingPreset.length && !showAddTagFormOnPreset"
+          *ngIf="
+            currentTaggingPreset &&
+            currentTaggingPreset.tags &&
+            currentTaggingPreset.tags.length &&
+            !showAddTagFormOnPreset"
           class="pl-4 text-sm font-normal underline cursor-pointer"
           (click)="showAddTagFormOnPreset = true">
           Add Custom Tags
         </span>
         <span
-          *ngIf="currentTaggingPreset.length && showAddTagFormOnPreset"
+          *ngIf="
+            currentTaggingPreset &&
+            currentTaggingPreset.tags &&
+            currentTaggingPreset.tags.length &&
+            showAddTagFormOnPreset"
           class="pl-4 text-sm font-normal underline cursor-pointer"
           (click)="showAddTagFormOnPreset = false">
           Hide Custom Tag Form
         </span>
       </h4>
       <div class="block pr-2">
-        <form [hidden]="currentTaggingPreset.length && !showAddTagFormOnPreset" [formGroup]="form">
+        <form
+          [hidden]="
+            currentTaggingPreset &&
+            currentTaggingPreset.tags &&
+            currentTaggingPreset.tags.length &&
+            !showAddTagFormOnPreset"
+          [formGroup]="form">
           <h5 class="text-sm tracking-tight font-bold mb-2">
             Add New:
           </h5>
@@ -136,7 +150,7 @@
                     class="text-sm tracking-tight appearance-none rounded-md relative block w-full p-2 border border-gray-600
                       placeholder-gray-500 text-gray-900 rounded-t-md
                       focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:leading-5"
-                    >{{ tag.value }}</textarea>
+                    >{{ getTagValueIfExists(tag.key) }}</textarea>
                 </td>
               </tr>
               <tr>
@@ -145,6 +159,7 @@
                 >
                   <div class="flex w-full">
                     <button
+                      (click)="addPresetTags()"
                       class="w-full mx-1 mb-4 p-2 border border-transparent text-sm tracking-tight leading-6 font-medium rounded-md shadow
                         text-white focus:outline-none focus:shadow-outline
                         bg-green-500 hover:bg-green-500
@@ -185,7 +200,7 @@
               }"
               >
               <div
-                *ngIf="tag.type === 'userdefined'"
+                *ngIf="tag.type === 'userdefined' && !isTagInPreset(tag.key)"
                 class="absolute flex right-0 py-2 pr-2"
                 >
                 <div

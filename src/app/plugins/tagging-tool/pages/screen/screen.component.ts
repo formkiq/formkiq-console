@@ -124,10 +124,19 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
           }));
         });
         Promise.all(presetTagPromises).then(() => {
+          this.sortByName(this.taggingPresets);
           this.expiredStorage.setJson('presets', this.taggingPresets, this.presetCacheInSeconds);
         });
       }
     });
+  }
+
+  sortByName(arrayToSort) {
+    arrayToSort.sort((a, b) =>
+      (a.name).localeCompare(
+        b.name
+      )
+    );
   }
 
   setUpUntaggedSearch() {
@@ -432,6 +441,54 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     });
   }
 
+  addPresetTags() {
+    // preset-tag-table
+    const presetTagTable = document.getElementById('preset-tag-table');
+    if (!presetTagTable) {
+      // TODO: add error message
+      return true;
+    }
+    const presetTagTableRows = Array.from(presetTagTable.getElementsByTagName('TR'));
+    if (!presetTagTableRows) {
+      // TODO: add error message
+      return true;
+    }
+    const presetTagSavePromises: Promise<any>[]  = [];
+    presetTagTableRows.forEach((tableRow) => {
+      const keyFields = Array.from(tableRow.getElementsByTagName('TEXTAREA'));
+      if (keyFields && keyFields.length === 2) {
+        const key = keyFields[0].innerHTML;
+        const value = (keyFields[1] as HTMLTextAreaElement).value;
+        let json;
+        if (value) {
+          json = {
+            key,
+            value
+          };
+        } else {
+          json = {
+            key
+          };
+        }
+        presetTagSavePromises.push(new Promise((resolve) => {
+          this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this).subscribe((result) => {
+            // TODO: handle bad result
+            resolve();
+          });
+        }));
+      }
+    });
+    Promise.all(presetTagSavePromises).then(() => {
+      this.notificationService.createNotification(
+        NotificationInfoType.Success,
+        'Tags for "' + this.currentTaggingPreset.name + '" have been saved.',
+        2000,
+        false
+      );
+      this.loadTags();
+    });
+  }
+
   saveTag(key, value) {
     let json;
     if (value) {
@@ -445,7 +502,6 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       };
     }
     this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this).subscribe((result) => {
-      this.form.reset();
       this.notificationService.createNotification(
         NotificationInfoType.Success,
         'Changes to Tag "' + key + '" have been saved.',
@@ -454,6 +510,30 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       );
       this.loadTags();
     });
+  }
+
+  getTagValueIfExists(key) {
+    let value = '';
+    const matchedPresetTags = this.tags.filter((tag) => {
+      return tag.key === key;
+    });
+    if (matchedPresetTags.length) {
+      value = matchedPresetTags[0].value;
+    }
+    return value;
+  }
+
+  isTagInPreset(key) {
+    if (!this.currentTaggingPreset || !this.currentTaggingPreset.tags) {
+      return false;
+    }
+    const matchedPresetTags = this.currentTaggingPreset.tags.filter((tag) => {
+      return tag.key === key;
+    });
+    if (matchedPresetTags.length) {
+      return true;
+    }
+    return false;
   }
 
   markAsTagged() {
