@@ -4,8 +4,15 @@ export class Document {
 }
 
 export class Preset {
-  data: any;
-  constructor() {}
+  id: string;
+  insertedDate: Date;
+  name: string;
+  siteId: string;
+  type: string;
+  tags: [];
+  constructor() {
+    this.tags = [];
+  }
 }
 
 export class Site {

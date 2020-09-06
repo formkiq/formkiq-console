@@ -3,13 +3,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+import * as ExpiredStorage from 'expired-storage';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
 import { LibraryService } from '../../../../services/library.service';
-import { Document, Tag } from '../../../../services/api.schema';
+import { Preset } from '../../../../services/api.schema';
 import { NotificationService } from '../../../../services/notification.service';
 import { NotificationInfoType } from '../../../../services/notification.schema';
 import { SearchService } from '../../services/search.service';
 import { TagQuery, SearchParameters, SearchType } from '../../services/search.schema';
+import { isArray } from 'util';
 
 @Component({
   selector: 'app-tagtool-screen',
@@ -17,6 +19,9 @@ import { TagQuery, SearchParameters, SearchType } from '../../services/search.sc
   styleUrls: ['./screen.component.scss']
 })
 export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback {
+
+  private expiredStorage: ExpiredStorage;
+  private presetCacheInSeconds = 120; // two minutes
 
   constructor(
     private router: Router,
@@ -27,6 +32,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     private notificationService: NotificationService,
     private searchService: SearchService
   ) {
+    this.expiredStorage = new ExpiredStorage();
     route.data.pipe().subscribe(routeData => {
     });
     route.params.subscribe(params => {
@@ -35,10 +41,16 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       } else {
         this.setUpUntaggedSearch();
       }
+      this.getCurrentTaggingPreset();
     });
   }
 
   searchQuery: any;
+  taggingPresetResults$: Observable<any>;
+  taggingPresets: Array<Preset>;
+  currentTaggingPreset = null;
+  showAddTagFormOnPreset = false;
+  presetTags: Array<any>;
   results$: Observable<any>;
   tagResults$: Observable<any>;
   tags: Array<any>;
@@ -62,6 +74,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       tagKey: ['', Validators.required],
       tagValue: []
     });
+    this.loadTaggingPresets();
   }
 
   ngAfterViewInit() {
@@ -69,6 +82,62 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
 
   get f() {
     return this.form.controls;
+  }
+
+  getCurrentTaggingPreset() {
+    let presetId = '';
+    const presetTags = [];
+    const taggingPresetSelect = document.getElementById('taggingPresets') as HTMLSelectElement;
+    if (taggingPresetSelect && taggingPresetSelect.selectedIndex !== -1) {
+      presetId = taggingPresetSelect.options[taggingPresetSelect.selectedIndex].value;
+      const filteredPresets = this.taggingPresets.filter((preset: Preset) => preset.id === presetId);
+      if (filteredPresets.length) {
+        this.currentTaggingPreset = filteredPresets[0];
+      } else {
+        this.currentTaggingPreset = null;
+      }
+    } else {
+      this.currentTaggingPreset = null;
+    }
+    this.setTextareaHeights(100);
+  }
+
+  loadTaggingPresets() {
+    this.taggingPresets = [];
+    if (this.expiredStorage.getItem('presets')) {
+      this.taggingPresets = this.expiredStorage.getJson('presets');
+      return true;
+    }
+    this.apiService.getAllPresets('', this).subscribe((result) => {
+      const presetResponse: any = result;
+      if (presetResponse.presets) {
+        const presetTagPromises: Promise<any>[]  = [];
+        presetResponse.presets.forEach((preset: Preset) => {
+          presetTagPromises.push(new Promise((resolve) => {
+            this.apiService.getPresetTags(preset.id, '', this).subscribe((tagsResult) => {
+              const presetTagsResult: any = tagsResult;
+              if (presetTagsResult.tags) {
+                preset.tags = presetTagsResult.tags;
+              }
+              this.taggingPresets.push(preset);
+              resolve();
+            });
+          }));
+        });
+        Promise.all(presetTagPromises).then(() => {
+          this.sortByName(this.taggingPresets);
+          this.expiredStorage.setJson('presets', this.taggingPresets, this.presetCacheInSeconds);
+        });
+      }
+    });
+  }
+
+  sortByName(arrayToSort) {
+    arrayToSort.sort((a, b) =>
+      (a.name).localeCompare(
+        b.name
+      )
+    );
   }
 
   setUpUntaggedSearch() {
@@ -87,17 +156,19 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     this.getNextUntaggedDocuments(queryString);
   }
 
-  setTextareaHeights() {
-    const textareaElements = Array.from(document.getElementsByTagName('TEXTAREA'));
-    textareaElements.forEach( (element: HTMLTextAreaElement) => {
-      element.setAttribute('style', 'height: auto');
-      element.setAttribute('style', 'height: ' + (element.scrollHeight + 10) + 'px');
-      element.addEventListener(
-        'dblclick', () => {
-        element.select();
-        }
-      );
-    });
+  setTextareaHeights(timeout = 1) {
+    setTimeout(() => {
+      const textareaElements = Array.from(document.getElementsByTagName('TEXTAREA'));
+      textareaElements.forEach( (element: HTMLTextAreaElement) => {
+        element.setAttribute('style', 'height: auto');
+        element.setAttribute('style', 'height: ' + (element.scrollHeight + 10) + 'px');
+        element.addEventListener(
+          'dblclick', () => {
+          element.select();
+          }
+        );
+      });
+    }, timeout);
   }
 
   getDocumentFromId(documentId) {
@@ -208,11 +279,21 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       this.tags = [];
       result.tags.forEach(tag => {
         this.tags.push(tag);
+        if (tag.key === 'presetId') {
+          const matchingPresets = this.taggingPresets.filter((preset) => preset.id === tag.value);
+          if (matchingPresets.length) {
+            const taggingPresetSelect = document.getElementById('taggingPresets') as HTMLSelectElement;
+            Array.from(taggingPresetSelect.options).forEach((option, index) => {
+              if (option.value === matchingPresets[0].id) {
+                taggingPresetSelect.selectedIndex = index;
+                this.getCurrentTaggingPreset();
+              }
+            });
+          }
+        }
       });
-      setTimeout(() => {
-        this.setTextareaHeights();
-        this.editTag(-1);
-      }, 100);
+      this.setTextareaHeights(100);
+      this.editTag(-1);
     });
   }
 
@@ -373,6 +454,54 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     });
   }
 
+  savePresetTags() {
+    const presetTagTable = document.getElementById('preset-tag-table');
+    if (!presetTagTable) {
+      // TODO: add error message
+      return true;
+    }
+    const presetTagTableRows = Array.from(presetTagTable.getElementsByTagName('TR'));
+    if (!presetTagTableRows) {
+      // TODO: add error message
+      return true;
+    }
+    const presetTagSavePromises: Promise<any>[]  = [];
+    presetTagTableRows.forEach((tableRow) => {
+      const keyFields = Array.from(tableRow.getElementsByTagName('TEXTAREA'));
+      if (keyFields && keyFields.length === 2) {
+        const key = keyFields[0].innerHTML;
+        const value = (keyFields[1] as HTMLTextAreaElement).value;
+        let json;
+        if (value) {
+          json = {
+            key,
+            value
+          };
+        } else {
+          json = {
+            key
+          };
+        }
+        presetTagSavePromises.push(new Promise((resolve) => {
+          this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this).subscribe((result) => {
+            // TODO: handle bad result
+            resolve();
+          });
+        }));
+      }
+    });
+    this.savePresetId();
+    Promise.all(presetTagSavePromises).then(() => {
+      this.notificationService.createNotification(
+        NotificationInfoType.Success,
+        'Tags for "' + this.currentTaggingPreset.name + '" have been saved.',
+        2000,
+        false
+      );
+      this.loadTags();
+    });
+  }
+
   saveTag(key, value) {
     let json;
     if (value) {
@@ -386,7 +515,6 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       };
     }
     this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this).subscribe((result) => {
-      this.form.reset();
       this.notificationService.createNotification(
         NotificationInfoType.Success,
         'Changes to Tag "' + key + '" have been saved.',
@@ -395,6 +523,45 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       );
       this.loadTags();
     });
+  }
+
+  getTagValueIfExists(key) {
+    let value = '';
+    const matchedPresetTags = this.tags.filter((tag) => {
+      return tag.key === key;
+    });
+    if (matchedPresetTags.length) {
+      value = matchedPresetTags[0].value;
+    }
+    return value;
+  }
+
+  isTagInPreset(key) {
+    if (!this.currentTaggingPreset || !this.currentTaggingPreset.tags) {
+      return false;
+    }
+    const matchedPresetTags = this.currentTaggingPreset.tags.filter((tag) => {
+      return tag.key === key;
+    });
+    if (matchedPresetTags.length) {
+      return true;
+    }
+    return false;
+  }
+
+  savePresetId() {
+    // TODO: only save if value has changed
+    if (this.currentDocument) {
+      if (this.currentTaggingPreset) {
+        const json = {
+          key: 'presetId',
+          value: this.currentTaggingPreset.id
+        };
+        this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this);
+      } else {
+        this.apiService.deleteDocumentTag(this.currentDocument.documentId, 'presetId', this);
+      }
+    }
   }
 
   markAsTagged() {

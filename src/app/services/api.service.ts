@@ -11,6 +11,8 @@ import { Document, Preset, Site, Tag } from '../services/api.schema';
 })
 export class ApiService {
 
+  private expiredStorage: ExpiredStorage;
+
   constructor(
     private httpClient: HttpClient,
     private authenticationService: AuthenticationService,
@@ -143,7 +145,7 @@ export class ApiService {
         catchError(callback.handleApiError));
   }
 
-  getAllPresets(queryString: string, callback: HttpErrorCallback): Observable<{} | Site[]> {
+  getAllPresets(queryString: string, callback: HttpErrorCallback): Observable<{} | Preset[]> {
     return this.httpClient
       .get<Site[]>(this.configurationService.apigateway.url + 'presets' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
