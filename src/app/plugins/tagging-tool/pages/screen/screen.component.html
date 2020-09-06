@@ -18,7 +18,7 @@
     </option>
     <option
       *ngFor="let taggingPreset of taggingPresets"
-      [attr.value]="taggingPreset ? taggingPreset.name : ''"
+      [attr.value]="taggingPreset ? taggingPreset.id : ''"
       >
       {{ taggingPreset.name }}
     </option>
@@ -58,7 +58,7 @@
             currentTaggingPreset.tags.length &&
             !showAddTagFormOnPreset"
           class="pl-4 text-sm font-normal underline cursor-pointer"
-          (click)="showAddTagFormOnPreset = true">
+          (click)="showAddTagFormOnPreset = true; this.setTextareaHeights(100);">
           Add Custom Tags
         </span>
         <span
@@ -159,7 +159,7 @@
                 >
                   <div class="flex w-full">
                     <button
-                      (click)="addPresetTags()"
+                      (click)="savePresetTags()"
                       class="w-full mx-1 mb-4 p-2 border border-transparent text-sm tracking-tight leading-6 font-medium rounded-md shadow
                         text-white focus:outline-none focus:shadow-outline
                         bg-green-500 hover:bg-green-500

@@ -85,20 +85,21 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
   }
 
   getCurrentTaggingPreset() {
-    let presetName = '';
+    let presetId = '';
     const presetTags = [];
     const taggingPresetSelect = document.getElementById('taggingPresets') as HTMLSelectElement;
-    if (!taggingPresetSelect || taggingPresetSelect.selectedIndex === -1) {
-      this.currentTaggingPreset = [];
-      return true;
-    }
-    presetName = taggingPresetSelect.options[taggingPresetSelect.selectedIndex].value;
-    const filteredPresets = this.taggingPresets.filter((preset: Preset) => preset.name === presetName);
-    if (filteredPresets.length) {
-      this.currentTaggingPreset = filteredPresets[0];
+    if (taggingPresetSelect && taggingPresetSelect.selectedIndex !== -1) {
+      presetId = taggingPresetSelect.options[taggingPresetSelect.selectedIndex].value;
+      const filteredPresets = this.taggingPresets.filter((preset: Preset) => preset.id === presetId);
+      if (filteredPresets.length) {
+        this.currentTaggingPreset = filteredPresets[0];
+      } else {
+        this.currentTaggingPreset = null;
+      }
     } else {
-      this.currentTaggingPreset = [];
+      this.currentTaggingPreset = null;
     }
+    this.setTextareaHeights(100);
   }
 
   loadTaggingPresets() {
@@ -155,17 +156,19 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     this.getNextUntaggedDocuments(queryString);
   }
 
-  setTextareaHeights() {
-    const textareaElements = Array.from(document.getElementsByTagName('TEXTAREA'));
-    textareaElements.forEach( (element: HTMLTextAreaElement) => {
-      element.setAttribute('style', 'height: auto');
-      element.setAttribute('style', 'height: ' + (element.scrollHeight + 10) + 'px');
-      element.addEventListener(
-        'dblclick', () => {
-        element.select();
-        }
-      );
-    });
+  setTextareaHeights(timeout = 1) {
+    setTimeout(() => {
+      const textareaElements = Array.from(document.getElementsByTagName('TEXTAREA'));
+      textareaElements.forEach( (element: HTMLTextAreaElement) => {
+        element.setAttribute('style', 'height: auto');
+        element.setAttribute('style', 'height: ' + (element.scrollHeight + 10) + 'px');
+        element.addEventListener(
+          'dblclick', () => {
+          element.select();
+          }
+        );
+      });
+    }, timeout);
   }
 
   getDocumentFromId(documentId) {
@@ -276,11 +279,21 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       this.tags = [];
       result.tags.forEach(tag => {
         this.tags.push(tag);
+        if (tag.key === 'presetId') {
+          const matchingPresets = this.taggingPresets.filter((preset) => preset.id === tag.value);
+          if (matchingPresets.length) {
+            const taggingPresetSelect = document.getElementById('taggingPresets') as HTMLSelectElement;
+            Array.from(taggingPresetSelect.options).forEach((option, index) => {
+              if (option.value === matchingPresets[0].id) {
+                taggingPresetSelect.selectedIndex = index;
+                this.getCurrentTaggingPreset();
+              }
+            });
+          }
+        }
       });
-      setTimeout(() => {
-        this.setTextareaHeights();
-        this.editTag(-1);
-      }, 100);
+      this.setTextareaHeights(100);
+      this.editTag(-1);
     });
   }
 
@@ -441,8 +454,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     });
   }
 
-  addPresetTags() {
-    // preset-tag-table
+  savePresetTags() {
     const presetTagTable = document.getElementById('preset-tag-table');
     if (!presetTagTable) {
       // TODO: add error message
@@ -478,6 +490,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         }));
       }
     });
+    this.savePresetId();
     Promise.all(presetTagSavePromises).then(() => {
       this.notificationService.createNotification(
         NotificationInfoType.Success,
@@ -534,6 +547,21 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       return true;
     }
     return false;
+  }
+
+  savePresetId() {
+    // TODO: only save if value has changed
+    if (this.currentDocument) {
+      if (this.currentTaggingPreset) {
+        const json = {
+          key: 'presetId',
+          value: this.currentTaggingPreset.id
+        };
+        this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this);
+      } else {
+        this.apiService.deleteDocumentTag(this.currentDocument.documentId, 'presetId', this);
+      }
+    }
   }
 
   markAsTagged() {
