@@ -279,7 +279,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       this.tags = [];
       result.tags.forEach(tag => {
         this.tags.push(tag);
-        if (tag.key === 'presetId') {
+        if (tag.key === 'TAGGING:presetId') {
           const matchingPresets = this.taggingPresets.filter((preset) => preset.id === tag.value);
           if (matchingPresets.length) {
             const taggingPresetSelect = document.getElementById('taggingPresets') as HTMLSelectElement;
@@ -490,7 +490,9 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         }));
       }
     });
-    this.savePresetId();
+    presetTagSavePromises.push(new Promise((resolve) => {
+      this.buildPresetSavePromise(resolve);
+    }));
     Promise.all(presetTagSavePromises).then(() => {
       this.notificationService.createNotification(
         NotificationInfoType.Success,
@@ -500,6 +502,40 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       );
       this.loadTags();
     });
+  }
+
+  buildPresetSavePromise(resolve) {
+    if (this.currentDocument) {
+      if (this.currentTaggingPreset) {
+        const matchingPresetTags = this.tags.filter((tag) =>
+          tag.key === 'TAGGING:presetId' && tag.value === this.currentTaggingPreset.id
+        );
+        if (!matchingPresetTags.length) {
+          const json = {
+            key: 'TAGGING:presetId',
+            value: this.currentTaggingPreset.id
+          };
+          this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this).subscribe((result) => {
+            resolve();
+          });
+        } else {
+          resolve();
+        }
+      } else {
+        const presetTags = this.tags.filter((tag) =>
+          tag.key === 'TAGGING:presetId'
+        );
+        if (presetTags.length) {
+          this.apiService.deleteDocumentTag(this.currentDocument.documentId, 'TAGGING:presetId', this).subscribe((result) => {
+            resolve();
+          });
+        } else {
+          resolve();
+        }
+      }
+    } else {
+      resolve();
+    }
   }
 
   saveTag(key, value) {
@@ -549,23 +585,17 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     return false;
   }
 
-  savePresetId() {
-    // TODO: only save if value has changed
-    if (this.currentDocument) {
-      if (this.currentTaggingPreset) {
-        const json = {
-          key: 'presetId',
-          value: this.currentTaggingPreset.id
-        };
-        this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this);
-      } else {
-        this.apiService.deleteDocumentTag(this.currentDocument.documentId, 'presetId', this);
-      }
-    }
-  }
-
   markAsTagged() {
-    this.apiService.deleteDocumentTag(this.currentDocument.documentId, 'untagged', this).subscribe(result => {
+    const documentTagDeletePromises: Promise<any>[]  = [];
+    documentTagDeletePromises.push(new Promise((resolve) => {
+      this.buildPresetSavePromise(resolve);
+    }));
+    documentTagDeletePromises.push(new Promise((resolve) => {
+      this.apiService.deleteDocumentTag(this.currentDocument.documentId, 'untagged', this).subscribe(result => {
+        resolve();
+      });
+    }));
+    Promise.all(documentTagDeletePromises).then(() => {
       this.previousDocument = this.currentDocument;
       this.currentDocument = null;
       this.getNextUntaggedDocuments('?limit=' + this.resultsLimit);
