@@ -468,28 +468,6 @@ export class ExploreComponent implements OnInit {
     allowsPath: false
   };
 
-  getPresetTagApiItem: ApiItem = {
-    apiServiceMethodName: 'getPresetTag',
-    clickedSubscriptionName: 'apiGetPresetTagClicked',
-    method: 'GET',
-    path: '/presets/ PRESET_ID /tags/ TAG_KEY',
-    username: 'Cognito User',
-    token: this.authenticationService.loggedInAccessToken,
-    host: this.configurationService.apigateway.url,
-    hasNoParams: false,
-    requiresAuthentication: true,
-    requiresDocumentID: false,
-    requiresPresetID: true,
-    requiresTagKey: true,
-    requiresPostJson: false,
-    requiresFileUpload: false,
-    allowsVersionID: false,
-    allowsDate: false,
-    allowsLimit: false,
-    hasPagingTokens: false,
-    allowsPath: false
-  };
-
   deletePresetTagApiItem: ApiItem = {
     apiServiceMethodName: 'deletePresetTag',
     clickedSubscriptionName: 'apiDeletePresetTagClicked',
