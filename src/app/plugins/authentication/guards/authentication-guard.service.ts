@@ -17,15 +17,30 @@ export class AuthenticationGuardService {
 
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    if (this.requireAuthenticationForRead && this.authenticationService.loggedInUser == null) {
+    if (this.requireAuthenticationForRead) {
       const queryParams: any = {};
       if (next.routeConfig.path) {
         queryParams.rurl = next.routeConfig.path;
       }
+      if (this.authenticationService.loggedInUser) {
+        if (!this.authenticationService.loggedInAccessTokenTimeLeft) {
+          this.authenticationService.verifyToken().subscribe((valid: boolean) => {
+            return new Observable<boolean>((observer) => {
+              if (!valid) {
+                this.router.navigate(['/authenticate'], { queryParams });
+              }
+              observer.next(valid);
+            });
+          });
+        } else {
+          return true;
+        }
+      }
       this.router.navigate(['/authenticate'], { queryParams });
       return false;
+    } else {
+      return true;
     }
-    return true;
   }
 
 }

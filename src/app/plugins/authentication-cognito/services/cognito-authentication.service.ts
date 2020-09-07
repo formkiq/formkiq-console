@@ -484,11 +484,11 @@ export class CognitoAuthenticationService {
   }
 
   setCredentials(idToken, accessToken, refreshToken) {
-    this.expiredStorage.setItem('idToken', JSON.stringify(idToken), 3500);
+    this.expiredStorage.setJson('idToken', idToken, 3500);
     this.idTokenSubject.next(idToken);
-    this.expiredStorage.setItem('accessToken', JSON.stringify(accessToken), 3500);
+    this.expiredStorage.setJson('accessToken', accessToken, 3500);
     this.accessTokenSubject.next(accessToken);
-    this.expiredStorage.setItem('refreshToken', JSON.stringify(refreshToken), 2590000);
+    this.expiredStorage.setJson('refreshToken', refreshToken, 2590000);
     this.refreshTokenSubject.next(refreshToken);
   }
 }
