@@ -72,7 +72,6 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
 
   ngOnInit() {
     this.currentPagingToken = this.currentPage;
-    console.log(this.currentPagingToken);
     this.dateSearchForm = this.formBuilder.group({
       date: ['', [Validators.required, Validators.pattern('\\d{4}-\\d{2}-\\d{2}')]]
     });
