@@ -178,6 +178,20 @@
         </a>
       </li>
       <li
+        [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#POST-document-formats' }"
+        class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
+          focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+        >
+        <a
+          [routerLink]="['/api']"
+          fragment="POST-document-formats"
+          (click)="emitSidebarItemClick('apiPostDocumentFormatsClicked')"
+          class="cursor-pointer"
+          >
+          POST /document/<strong>&#123;id&#125;</strong>/formats
+        </a>
+      </li>
+      <li
         [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api#GET-document-versions' }"
         class="block pl-8 pr-2 py-1 text-base tracking-tight font-medium text-yellowGray-500 hover:bg-orange-700
           focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"

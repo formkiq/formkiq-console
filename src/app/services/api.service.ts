@@ -107,6 +107,15 @@ export class ApiService {
         catchError(callback.handleApiError));
   }
 
+  postDocumentFormat(documentID: string, json: string, callback: HttpErrorCallback): Observable<any> {
+    const body = JSON.parse(json);
+    console.log(body);
+    return this.httpClient
+      .post<any>(this.configurationService.apigateway.url + 'documents/' + documentID + '/formats', body, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
   getDocumentVersions(documentID: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
       .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/versions', this.getHttpOptions())
