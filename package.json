@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^9.0.0",
-    "@angular-devkit/build-angular": "~0.900.1",
+    "@angular-devkit/build-angular": "~0.1002.0",
     "@angular/cli": "~9.0.7",
     "@angular/compiler-cli": "~9.0.0",
     "@angular/language-service": "~9.0.0",
@@ -60,6 +60,7 @@
   "resolutions": {
     "caniuse-lite": "^1.0.30001017",
     "handlebars": "^4.3.0",
-    "serialize-javascript": "^2.1.1"
+    "http-proxy": "^1.18.1",
+    "serialize-javascript": "^5.0.1"
   }
 }
