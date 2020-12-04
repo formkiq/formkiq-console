@@ -18,8 +18,17 @@
             <h1
               class="text-lg font-bold leading-tight text-green-100 text-shadow"
               >
-              <span class="text-yellowGray-500 tracking-tight">
+              <span
+                *ngIf="configurationService.formkiqEdition && (configurationService.formkiqEdition === 'pro' || configurationService.formkiqEdition === 'enterprise')"
+                class="text-yellowGray-500 tracking-tight"
+                >
                 FormKiQ Stacks
+              </span>
+              <span
+                *ngIf="!configurationService.formkiqEdition || configurationService.formkiqEdition === 'core'"
+                class="text-yellowGray-500 tracking-tight"
+                >
+                FormKiQ Core
               </span>
               <br />
               <span class="tracking-wider uppercase">

@@ -197,6 +197,14 @@ export class ApiService {
         catchError(callback.handleApiError));
   }
 
+  getVersion(callback: HttpErrorCallback): Observable<any> {
+    return this.httpClient
+      .get<any>(
+        this.configurationService.apigateway.url + 'version', this.getHttpOptions()
+      )
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
 
 }
 

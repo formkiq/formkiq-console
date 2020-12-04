@@ -1,13 +1,13 @@
 {
   "version": "0.dev",
   "cognito": {
-    "identityPoolId": "us-east-1:a34857bd-3537-42f6-be01-feb52f7f75c5",
-    "userPoolId": "us-east-1_1nXLy3soH",
+    "identityPoolId": "us-east-2:482832d4-72db-468c-9e08-eb9163ece3e4",
+    "userPoolId": "us-east-2_W8Kt8Hg5x",
     "region": "us-east-1",
-    "clientId": "4b9bl9mkvbhpn0g0mjpj0hnhb7",
+    "clientId": "4u85cai42am19jvpr3c48ahdej",
     "allowUserSelfRegistration": false
   },
   "apigateway": {
-    "url": "https://api-demo.tryformkiq.com/"
+    "url": "https://rhwhb9xpsg.execute-api.us-east-2.amazonaws.com/"
   }
 }

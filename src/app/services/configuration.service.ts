@@ -14,4 +14,6 @@ export class ConfigurationService {
   cognito = ApplicationConfigJson.cognito;
   version = ApplicationConfigJson.version;
 
+  formkiqEdition = null;
+
 }
