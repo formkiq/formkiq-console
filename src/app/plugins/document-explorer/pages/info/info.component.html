@@ -1,6 +1,6 @@
 <div class="relative bg-white overflow-scroll-y mx-4">
   <div class="mt-4 max-w-screen-xl mx-auto relative">
-    <h3 class="mb-0 text-xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:mb-4 md:text-3xl">
+    <h3 class="mb-0 text-xl tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:mb-4 md:text-3xl">
       <a
         [routerLink]="['/documents']"
         class="rounded-md text-orange-600 hover:text-orange-900 focus:text-orange-900"
@@ -9,7 +9,7 @@
       </a>
     </h3>
     <h2 class="text-2xl tracking-tight leading-10 text-gray-900 sm:leading-none md:text-4xl mb-4">
-      <span class="font-extrabold">
+      <span class="font-bold">
         Document:
       </span>
       {{ documentId }}
@@ -226,7 +226,7 @@
     <form [formGroup]="form" (ngSubmit)="saveTag()">
       <h6
         id="formHeader"
-        class="mx-4 md:mx-6 mr-4 mt-6 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-extrabold text-orange-600 sm:leading-none md:text-2xl"
+        class="mx-4 md:mx-6 mr-4 mt-6 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-bold text-orange-600 sm:leading-none md:text-2xl"
         >
         <span *ngIf="isTagEditMode">
           Edit

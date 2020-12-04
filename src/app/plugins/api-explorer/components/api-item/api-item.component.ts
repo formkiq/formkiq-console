@@ -412,65 +412,75 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
         });
         break;
       case 'getAllPresets':
-          this.apiService.getAllPresets(this.queryString, this).subscribe((data: Array<object>) => {
-            if (data.hasOwnProperty('status')) {
-              this.isErrorResponse = true;
-            }
-            this.responseData = data;
-            this.scrollToResponse(this.apiItem.apiServiceMethodName);
-            this.loading$.next(false);
-          });
-          break;
-        case 'postPresets':
-          this.apiService.postPreset(this.f.postJson.value, this).subscribe((data: object) => {
-            if (data.hasOwnProperty('status')) {
-              this.isErrorResponse = true;
-            }
-            this.responseData = data;
-            this.scrollToResponse(this.apiItem.apiServiceMethodName);
-            this.loading$.next(false);
-          });
-          break;
-        case 'deletePreset':
-          this.apiService.deletePreset(this.f.presetID.value, this).subscribe((data: object) => {
-            if (data.hasOwnProperty('status')) {
-              this.isErrorResponse = true;
-            }
-            this.responseData = data;
-            this.scrollToResponse(this.apiItem.apiServiceMethodName);
-            this.loading$.next(false);
-          });
-          break;
-        case 'getPresetTags':
-          this.apiService.getPresetTags(this.f.presetID.value, this.queryString, this).subscribe((data: object) => {
-            if (data.hasOwnProperty('status')) {
-              this.isErrorResponse = true;
-            }
-            this.responseData = data;
-            this.scrollToResponse(this.apiItem.apiServiceMethodName);
-            this.loading$.next(false);
-          });
-          break;
-        case 'postPresetTags':
-          this.apiService.postPresetTag(this.f.presetID.value, this.f.postJson.value, this).subscribe((data: object) => {
-            if (data.hasOwnProperty('status')) {
-              this.isErrorResponse = true;
-            }
-            this.responseData = data;
-            this.scrollToResponse(this.apiItem.apiServiceMethodName);
-            this.loading$.next(false);
-          });
-          break;
-        case 'deletePresetTag':
-          this.apiService.deletePresetTag(this.f.presetID.value, this.f.tagKey.value, this).subscribe((data: object) => {
-            if (data.hasOwnProperty('status')) {
-              this.isErrorResponse = true;
-            }
-            this.responseData = data;
-            this.scrollToResponse(this.apiItem.apiServiceMethodName);
-            this.loading$.next(false);
-          });
-          break;
+        this.apiService.getAllPresets(this.queryString, this).subscribe((data: Array<object>) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
+      case 'postPresets':
+        this.apiService.postPreset(this.f.postJson.value, this).subscribe((data: object) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
+      case 'deletePreset':
+        this.apiService.deletePreset(this.f.presetID.value, this).subscribe((data: object) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
+      case 'getPresetTags':
+        this.apiService.getPresetTags(this.f.presetID.value, this.queryString, this).subscribe((data: object) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
+      case 'postPresetTags':
+        this.apiService.postPresetTag(this.f.presetID.value, this.f.postJson.value, this).subscribe((data: object) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
+      case 'deletePresetTag':
+        this.apiService.deletePresetTag(this.f.presetID.value, this.f.tagKey.value, this).subscribe((data: object) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
+      case 'getVersion':
+        this.apiService.getVersion(this).subscribe((data: any) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
       default:
         this.loading$.next(false);
         break;

@@ -1,22 +1,29 @@
 <div class="relative bg-white overflow-hidden mx-4">
   <div class="mt-8">
     <div class="max-w-screen-xl mx-auto relative">
-      <h2 class="text-3xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none md:text-4xl mb-4">
-        FormKiQ Stacks Console
-      </h2>
-      <section class="lg:w-full mb-12">
-        <p class="mt-3 text-base text-gray-700 sm:mt-5 sm:text-lg md:mt-5 md:text-xl lg:mx-0">
-          You can
-          <a [routerLink]="['/documents']" class="font-black hover:text-orange-600">
-          search documents</a>
-          or
-          <a [routerLink]="['/documents/add']" class="font-black hover:text-orange-600">
-          add new documents</a>
-          to the Document Stack, as well as
-          <a [routerLink]="['/api']" class="font-black hover:text-orange-600">
-          explore the FormKiQ Document Stack API</a>.
-        </p>
-      </section>
+      <div *ngIf="configurationService.formkiqEdition && (configurationService.formkiqEdition === 'pro' || configurationService.formkiqEdition === 'enterprise')">
+        <h2 class="text-3xl tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:text-4xl mb-4">
+          FormKiQ Stacks Console
+        </h2>
+      </div>
+      <div *ngIf="!configurationService.formkiqEdition || configurationService.formkiqEdition === 'core'">
+        <img class="lg:w-2/3" src="../../../assets/images/formkiq-core-logo.png" />  
+        <h2 class="text-3xl tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:text-4xl mt-4 mb-4">
+          FormKiQ Core Console
+        </h2>
+        <section class="lg:w-full mb-12">
+          <p class="mt-3 text-base text-gray-700 sm:mt-5 sm:text-lg md:mt-5 md:text-xl lg:mx-0">
+            You can
+            <a [routerLink]="['/documents']" class="font-black hover:text-orange-600">
+            search documents</a>
+            or
+            <a [routerLink]="['/documents/add']" class="font-black hover:text-orange-600">
+            add new documents</a>, as well as
+            <a [routerLink]="['/api']" class="font-black hover:text-orange-600">
+            explore the FormKiQ Core API</a>.
+          </p>
+        </section>
+      </div>
     </div>
   </div>
 </div>
