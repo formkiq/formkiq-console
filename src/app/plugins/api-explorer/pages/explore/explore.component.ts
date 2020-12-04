@@ -13,7 +13,7 @@ export class ExploreComponent implements OnInit {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private configurationService: ConfigurationService,
+    public configurationService: ConfigurationService,
     public navigationService: NavigationService
   ) { }
 

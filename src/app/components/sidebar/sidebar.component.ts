@@ -28,7 +28,7 @@ export class SidebarComponent implements OnInit {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private configurationService: ConfigurationService,
+    public configurationService: ConfigurationService,
     private navigationService: NavigationService,
     private router: Router,
     private renderer: Renderer2
