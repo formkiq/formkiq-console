@@ -152,8 +152,8 @@ export class SearchbarComponent implements OnInit, HttpErrorCallback {
   }
 
   calculatePickerDays() {
-    const daysInMonth = new Date(this.dateForPicker.year, this.dateForPicker.month + 1, 0).getDate();
-    const dayOfWeek = new Date(this.dateForPicker.year, this.dateForPicker.month).getDay();
+    const daysInMonth = new Date(this.dateForPicker.year, this.dateForPicker.month, 0).getDate();
+    const dayOfWeek = new Date(this.dateForPicker.year, this.dateForPicker.month - 1).getDay();
     this.blankDaysBeforeMonth = [];
     for (let i = 1; i <= dayOfWeek; i++) {
       this.blankDaysBeforeMonth.push(i);
