@@ -6,6 +6,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../../services/api.service';
 import * as moment from 'moment-timezone';
+import JsonViewer from 'json-viewer-js';
 
 @Component({
   selector: 'app-docs-info',
@@ -32,6 +33,7 @@ export class InfoComponent implements OnInit, AfterViewInit {
   documentEmbedUrl = '';
   quickLookExpanded = false;
   quickLookLoaded = false;
+  jsonDataLoaded = false;
   results$: any;
   form: FormGroup;
   tagToSearch: any;
@@ -73,8 +75,9 @@ export class InfoComponent implements OnInit, AfterViewInit {
       this.currentDocument = result;
       if (this.currentDocument.contentType === 'application/json') {
         this.apiService.getDocumentContent(this.documentId, '', this).subscribe(result => {
-          this.currentDocument.content = result.content;
+          this.currentDocument.content = JSON.parse(result.content);
           this.showJsonDataTab = true;
+          console.log(this.currentDocument.content);
           if (this.currentDocument.content.formName) {
             this.showFormDataTab = true;
             this.changeTab('formData');
@@ -94,6 +97,17 @@ export class InfoComponent implements OnInit, AfterViewInit {
       this.openForQuickLook();
     } else {
       this.closeQuickLook();
+    }
+    if (currentTab === 'jsonData') {
+      if (!this.jsonDataLoaded) {
+        this.jsonDataLoaded = true;
+        const jsonViewer = new JsonViewer({
+          container: document.getElementById('jsonContainer'), 
+          data: JSON.stringify(this.currentDocument.content), 
+          theme: 'light', 
+          expand: true
+        });
+      }
     }
   }
 

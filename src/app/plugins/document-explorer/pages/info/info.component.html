@@ -8,7 +8,7 @@
         Document Explorer
       </a>
     </h3>
-    <h2 class="text-2xl tracking-tight leading-10 text-gray-900 sm:leading-none md:text-4xl mb-4">
+    <h2 class="text-xl tracking-tight leading-10 text-gray-900 sm:leading-none md:text-2xl mb-4">
       <span class="font-bold">
         Document:
       </span>
@@ -335,11 +335,55 @@
         </div>
       </form>
     </section>
-    <section [hidden]="currentTab !== 'formData'" class="border lg:w-full mb-4 md:mb-8 p-2">
-      FORM
+    <section *ngIf="showFormDataTab && currentDocument.content" [hidden]="currentTab !== 'formData'" class="border lg:w-full mb-4 md:mb-8 p-2">
+      <h4
+        class="mx-4 md:mx-6 mr-4 mt-6 mb-2 text-xl tracking-tight leading-10 font-bold sm:leading-none md:text-2xl"
+        >
+        {{ currentDocument.content.formName }}
+      </h4>
+      <h6
+        class="mx-4 md:mx-6 mr-4 mb-2 md:mb-8 text-base tracking-tight leading-10 font-bold sm:leading-none"
+        >
+        {{ currentDocument.path }}
+      </h6>
+      <table
+        class="border-collapse w-full"
+        >
+        <tbody>
+          <tr
+            *ngIf="!currentDocument.content.formFields.length"
+            class="bg-gray-100 flex text-center py-2 px-1 lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0"
+            >
+            <td
+              colspan="100%"
+              >
+              No form fields were submitted as part of this web form.
+            </td>
+          </tr>
+          <tr
+            *ngFor="let field of currentDocument.content.formFields"
+            class="bg-white flex lg:table-row flex-row flex-wrap mb-2 "
+            >
+            <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
+              <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">{{ field.fieldName }}</span>
+              <span class="font-bold">
+                {{ field.value }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h5
+        class="mx-4 md:mx-6 mr-4 mt-6 mb-2 text-lg tracking-tight leading-10 font-bold sm:leading-none md:text-xl"
+        >
+        Attachments
+        <small class="text-sm">
+          (to be added)
+        </small>
+      </h5>
     </section>
     <section [hidden]="currentTab !== 'jsonData'" class="border lg:w-full mb-4 md:mb-8 p-2">
-      JSON
+      <div id="jsonContainer"></div>
     </section>
   </div>
 </div>
