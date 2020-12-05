@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import * as ExpiredStorage from 'expired-storage';
 import { ApiService, HttpErrorCallback } from '../../../../services/api.service';
+import { ConfigurationService } from '../../../../services/configuration.service';
 import { LibraryService } from '../../../../services/library.service';
 import { Preset } from '../../../../services/api.schema';
 import { NotificationService } from '../../../../services/notification.service';
@@ -28,6 +29,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
+    private configurationService: ConfigurationService,
     private libraryService: LibraryService,
     private notificationService: NotificationService,
     private searchService: SearchService
@@ -108,28 +110,33 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       this.taggingPresets = this.expiredStorage.getJson('presets');
       return true;
     }
-    this.apiService.getAllPresets('', this).subscribe((result) => {
-      const presetResponse: any = result;
-      if (presetResponse.presets) {
-        const presetTagPromises: Promise<any>[]  = [];
-        presetResponse.presets.forEach((preset: Preset) => {
-          presetTagPromises.push(new Promise((resolve) => {
-            this.apiService.getPresetTags(preset.id, '', this).subscribe((tagsResult) => {
-              const presetTagsResult: any = tagsResult;
-              if (presetTagsResult.tags) {
-                preset.tags = presetTagsResult.tags;
-              }
-              this.taggingPresets.push(preset);
-              resolve();
-            });
-          }));
-        });
-        Promise.all(presetTagPromises).then(() => {
-          this.sortByName(this.taggingPresets);
-          this.expiredStorage.setJson('presets', this.taggingPresets, this.presetCacheInSeconds);
-        });
-      }
-    });
+    if (
+      this.configurationService.formkiqEdition && 
+      (this. configurationService.formkiqEdition === 'pro' || this. configurationService.formkiqEdition === 'enterprise')
+      ) {
+      this.apiService.getAllPresets('', this).subscribe((result) => {
+        const presetResponse: any = result;
+        if (presetResponse.presets) {
+          const presetTagPromises: Promise<any>[]  = [];
+          presetResponse.presets.forEach((preset: Preset) => {
+            presetTagPromises.push(new Promise((resolve) => {
+              this.apiService.getPresetTags(preset.id, '', this).subscribe((tagsResult) => {
+                const presetTagsResult: any = tagsResult;
+                if (presetTagsResult.tags) {
+                  preset.tags = presetTagsResult.tags;
+                }
+                this.taggingPresets.push(preset);
+                resolve();
+              });
+            }));
+          });
+          Promise.all(presetTagPromises).then(() => {
+            this.sortByName(this.taggingPresets);
+            this.expiredStorage.setJson('presets', this.taggingPresets, this.presetCacheInSeconds);
+          });
+        }
+      });
+    }
   }
 
   sortByName(arrayToSort) {

@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { timer, Subscription } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { timer, Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { ApiService } from '../../services/api.service';
 import { AuthenticationService } from '../../plugins/authentication/services/authentication.service';
 import { ConfigurationService } from '../../services/configuration.service';
 import { LibraryService } from '../../services/library.service';
@@ -42,8 +44,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   currentRouteUrl = null;
 
   constructor(
+    private apiService: ApiService,
     public authenticationService: AuthenticationService,
-    private configurationService: ConfigurationService,
+    public configurationService: ConfigurationService,
     private libraryService: LibraryService,
     private notificationService: NotificationService,
     private router: Router,
@@ -69,6 +72,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
         }
       }
     );
+    if (!this.configurationService.formkiqEdition && this.authenticationService.loggedInUser) {
+      this.apiService.getVersion(this).subscribe((data: any) => {
+        if (data.type) {
+          this.configurationService.formkiqEdition = data.type;
+        }
+      });
+    }
     this.authenticationPageLoadSubscription = this.authenticationService.authenticationPageLoad$.subscribe(
       () => {
         setTimeout(() => {
@@ -86,8 +96,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
           }
           this.showDropdown = false;
           this.showHamburgerButton = false;
+          if (this.authenticationService.loggedInUser) {
+            this.apiService.getVersion(this).subscribe((data: any) => {
+              if (data.type) {
+                this.configurationService.formkiqEdition = data.type;
+              }
+            });
+          }
         } else {
           if (this.requireAuthenticationForRead) {
+            this.configurationService.formkiqEdition = null;
             this.router.navigate(['/authenticate']);
           } else {
             this.showDropdown = true;
@@ -158,6 +176,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   close(dropdown) {
     dropdown.close();
+  }
+
+  handleApiError(errorResponse: HttpErrorResponse) {
+    return Observable.create((observer) => {
+      observer.next(errorResponse);
+    });
   }
 
 }

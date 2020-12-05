@@ -102,14 +102,20 @@ export class ApiService {
 
   getDocumentUrl(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
-      .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/url' + queryString, this.getHttpOptions())
+      .get<any>(this.configurationService.apigateway.url + 'documents/' + documentID + '/url' + queryString, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
+  getDocumentContent(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<any> {
+    return this.httpClient
+      .get<any>(this.configurationService.apigateway.url + 'documents/' + documentID + '/content' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   postDocumentFormat(documentID: string, json: string, callback: HttpErrorCallback): Observable<any> {
     const body = JSON.parse(json);
-    console.log(body);
     return this.httpClient
       .post<any>(this.configurationService.apigateway.url + 'documents/' + documentID + '/formats', body, this.getHttpOptions())
       .pipe(shareReplay(1),
@@ -197,6 +203,14 @@ export class ApiService {
         catchError(callback.handleApiError));
   }
 
+  getVersion(callback: HttpErrorCallback): Observable<any> {
+    return this.httpClient
+      .get<any>(
+        this.configurationService.apigateway.url + 'version', this.getHttpOptions()
+      )
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
 
 }
 

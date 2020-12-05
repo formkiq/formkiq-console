@@ -13,7 +13,7 @@ export class ExploreComponent implements OnInit {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private configurationService: ConfigurationService,
+    public configurationService: ConfigurationService,
     public navigationService: NavigationService
   ) { }
 
@@ -21,12 +21,14 @@ export class ExploreComponent implements OnInit {
   searchFragment = 'search';
   sitesFragment = 'sites';
   presetsFragment = 'presets';
+  versionFragment = 'version';
 
   @ViewChild('header') headerElement: ElementRef;
   @ViewChild('headerDocuments') headerDocumentsElement: ElementRef;
   @ViewChild('headerSearch') headerSearchElement: ElementRef;
   @ViewChild('headerSites') headerSitesElement: ElementRef;
   @ViewChild('headerPresets') headerPresetsElement: ElementRef;
+  @ViewChild('headerVersion') headerVersionElement: ElementRef;
 
   getDocumentsApiItem: ApiItem = {
     apiServiceMethodName: 'getAllDocuments',
@@ -231,6 +233,28 @@ export class ExploreComponent implements OnInit {
     clickedSubscriptionName: 'apiGetDocumentUrlClicked',
     method: 'GET',
     path: '/documents/ DOCUMENT_ID /url',
+    username: 'Cognito User',
+    token: this.authenticationService.loggedInAccessToken,
+    host: this.configurationService.apigateway.url,
+    hasNoParams: false,
+    requiresAuthentication: true,
+    requiresDocumentID: true,
+    requiresPresetID: false,
+    requiresTagKey: false,
+    requiresPostJson: false,
+    requiresFileUpload: false,
+    allowsVersionID: true,
+    allowsDate: false,
+    allowsLimit: false,
+    hasPagingTokens: false,
+    allowsPath: false
+  };
+
+  getDocumentContentApiItem: ApiItem = {
+    apiServiceMethodName: 'getDocumentContent',
+    clickedSubscriptionName: 'apiGetDocumentContentClicked',
+    method: 'GET',
+    path: '/documents/ DOCUMENT_ID /content',
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
@@ -503,6 +527,28 @@ export class ExploreComponent implements OnInit {
     requiresDocumentID: false,
     requiresPresetID: true,
     requiresTagKey: true,
+    requiresPostJson: false,
+    requiresFileUpload: false,
+    allowsVersionID: false,
+    allowsDate: false,
+    allowsLimit: false,
+    hasPagingTokens: false,
+    allowsPath: false
+  };
+
+  getVersionApiItem: ApiItem = {
+    apiServiceMethodName: 'getVersion',
+    clickedSubscriptionName: 'apiGetVersionClicked',
+    method: 'GET',
+    path: '/version',
+    username: 'Cognito User',
+    token: this.authenticationService.loggedInAccessToken,
+    host: this.configurationService.apigateway.url,
+    hasNoParams: false,
+    requiresAuthentication: true,
+    requiresDocumentID: false,
+    requiresPresetID: false,
+    requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
     allowsVersionID: false,

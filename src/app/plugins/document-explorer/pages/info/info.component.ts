@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ApiService } from '../../../../services/api.service';
 import * as moment from 'moment-timezone';
+import JsonViewer from 'json-viewer-js';
 
 @Component({
   selector: 'app-docs-info',
@@ -24,10 +25,17 @@ export class InfoComponent implements OnInit, AfterViewInit {
   currentTimezone: string;
   documentId = '';
   currentDocument: any;
+  currentTab = 'metadata';
+  showFormDataTab = false;
+  showJsonDataTab = false;
+  showViewDocumentTab = false;
   documentUrl$: Observable<any>;
   documentEmbedUrl = '';
   quickLookExpanded = false;
-  results$: any;
+  quickLookLoaded = false;
+  jsonDataLoaded = false;
+  tagResults$: any;
+  documentInfoLoaded$ = new Subject<boolean>();
   form: FormGroup;
   tagToSearch: any;
   explorePagingToken: null;
@@ -63,10 +71,75 @@ export class InfoComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
   }
 
-  getDocument() {
-    this.apiService.getDocument(this.documentId, this).subscribe(result => {
+  async getDocument() {
+
+    // TODO: add form field observable - attachments$ ??
+    
+    await this.apiService.getDocument(this.documentId, this).subscribe(result => {
       this.currentDocument = result;
+      if (this.currentDocument.contentType === 'application/json') {
+        this.apiService.getDocumentContent(this.documentId, '', this).subscribe(result => {
+          this.currentDocument.content = JSON.parse(result.content);
+          this.showJsonDataTab = true;
+          if (this.currentDocument.content.formName) {
+            if (this.currentDocument.documents && this.currentDocument.documents.length) {
+              const attachmentPromises = [];
+              this.currentDocument.documents.forEach(childDocument => {
+                const promise = new Promise(resolve => {
+                  this.apiService.getDocumentTag(childDocument.documentId, 'fieldName', this).subscribe(result => {
+                    if (result.value) {
+                      if (this.currentDocument.content.attachmentFields) {
+                        this.currentDocument.content.attachmentFields.forEach((attachmentField, i) => {
+                          if (attachmentField.fieldName === result.value) {
+                            this.currentDocument.content.attachmentFields[i].document = childDocument;
+                            return true;
+                          }
+                        });
+                      }
+                    }
+                    resolve();
+                  });
+                });
+                attachmentPromises.push(promise);
+              });
+              Promise.all(attachmentPromises).then(() => {
+                this.documentInfoLoaded$.next(true);
+              });
+            } else {
+              this.documentInfoLoaded$.next(true);
+            }
+            this.showFormDataTab = true;
+            this.changeTab('formData');
+          } else {
+            this.documentInfoLoaded$.next(true);
+            this.changeTab('jsonData');
+          }
+        });
+      } else {
+        this.documentInfoLoaded$.next(true);
+        this.showViewDocumentTab = true;
+      }
     });
+  }
+
+  changeTab(currentTab) {
+    this.currentTab = currentTab;
+    if (currentTab === 'viewDocument') {
+      this.openForQuickLook();
+    } else {
+      this.closeQuickLook();
+    }
+    if (currentTab === 'jsonData') {
+      if (!this.jsonDataLoaded) {
+        this.jsonDataLoaded = true;
+        const jsonViewer = new JsonViewer({
+          container: document.getElementById('jsonContainer'), 
+          data: JSON.stringify(this.currentDocument.content), 
+          theme: 'light', 
+          expand: true
+        });
+      }
+    }
   }
 
   loadTags(previousToken = '', nextToken = '') {
@@ -80,8 +153,8 @@ export class InfoComponent implements OnInit, AfterViewInit {
     }
     const container = this;
     this.isTagEditMode = false;
-    this.results$ = this.apiService.getDocumentTags(this.documentId, queryString, this);
-    this.results$.subscribe((result) => {
+    this.tagResults$ = this.apiService.getDocumentTags(this.documentId, queryString, this);
+    this.tagResults$.subscribe((result) => {
       if (result.previous) {
         this.previousToken = result.previous;
       }
@@ -156,24 +229,28 @@ export class InfoComponent implements OnInit, AfterViewInit {
   }
 
   openForQuickLook() {
-    document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
-    this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
-    this.documentUrl$.subscribe((result) => {
-      if (result.url) {
-        this.documentEmbedUrl = result.url;
-        this.quickLookExpanded = true;
-        document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
-        const heightAvailable = window.innerHeight - 240;
-        document.getElementById('documentFrame').setAttribute('style', 'height: ' + heightAvailable + 'px');
-      }
-    });
+    if (!this.quickLookLoaded) {
+      document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
+      this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
+      this.documentUrl$.subscribe((result) => {
+        if (result.url) {
+          this.documentEmbedUrl = result.url;
+          this.quickLookExpanded = true;
+          this.quickLookLoaded = true;
+          document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
+          const heightAvailable = window.innerHeight - 240;
+          document.getElementById('documentFrame').setAttribute('style', 'height: ' + heightAvailable + 'px');
+        }
+      });
+    } else {
+      this.quickLookExpanded = true;
+    }
   }
 
   closeQuickLook() {
     this.quickLookExpanded = false;
-    document.getElementById('documentFrame').removeAttribute('src');
   }
-
+  
   backToList() {
     const queryParams: any = {};
     if (this.explorePagingToken) {
