@@ -351,6 +351,16 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
           this.loading$.next(false);
         });
         break;
+      case 'getDocumentContent':
+        this.apiService.getDocumentContent(this.f.documentID.value, this.queryString, this).subscribe((data: any) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
       case 'postDocumentFormats':
         this.apiService.postDocumentFormat(this.f.documentID.value, this.f.postJson.value, this).subscribe((data: string) => {
           if (data.hasOwnProperty('status')) {

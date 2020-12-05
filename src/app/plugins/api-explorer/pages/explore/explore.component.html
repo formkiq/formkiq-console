@@ -72,6 +72,7 @@
         <app-api-item id="GET-document-tag" [apiItem]="getDocumentTagApiItem" [isCollapsed]="true"></app-api-item>
         <app-api-item id="DELETE-document-tag" [apiItem]="deleteDocumentTagApiItem" [isCollapsed]="true"></app-api-item>
         <app-api-item id="GET-document-url" [apiItem]="getDocumentUrlApiItem" [isCollapsed]="true"></app-api-item>
+        <app-api-item id="GET-document-content" [apiItem]="getDocumentContentApiItem" [isCollapsed]="true"></app-api-item>
         <app-api-item
           *ngIf="configurationService.formkiqEdition && (configurationService.formkiqEdition === 'pro' || configurationService.formkiqEdition === 'enterprise')"
           id="POST-document-formats" [apiItem]="postDocumentFormatsApiItem" [isCollapsed]="true"

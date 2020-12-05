@@ -250,6 +250,28 @@ export class ExploreComponent implements OnInit {
     allowsPath: false
   };
 
+  getDocumentContentApiItem: ApiItem = {
+    apiServiceMethodName: 'getDocumentContent',
+    clickedSubscriptionName: 'apiGetDocumentContentClicked',
+    method: 'GET',
+    path: '/documents/ DOCUMENT_ID /content',
+    username: 'Cognito User',
+    token: this.authenticationService.loggedInAccessToken,
+    host: this.configurationService.apigateway.url,
+    hasNoParams: false,
+    requiresAuthentication: true,
+    requiresDocumentID: true,
+    requiresPresetID: false,
+    requiresTagKey: false,
+    requiresPostJson: false,
+    requiresFileUpload: false,
+    allowsVersionID: true,
+    allowsDate: false,
+    allowsLimit: false,
+    hasPagingTokens: false,
+    allowsPath: false
+  };
+
   postDocumentFormatsApiItem: ApiItem = {
     apiServiceMethodName: 'postDocumentFormats',
     clickedSubscriptionName: 'apiPostDocumentFormatsClicked',

@@ -24,9 +24,14 @@ export class InfoComponent implements OnInit, AfterViewInit {
   currentTimezone: string;
   documentId = '';
   currentDocument: any;
+  currentTab = 'metadata';
+  showFormDataTab = false;
+  showJsonDataTab = false;
+  showViewDocumentTab = false;
   documentUrl$: Observable<any>;
   documentEmbedUrl = '';
   quickLookExpanded = false;
+  quickLookLoaded = false;
   results$: any;
   form: FormGroup;
   tagToSearch: any;
@@ -66,7 +71,30 @@ export class InfoComponent implements OnInit, AfterViewInit {
   getDocument() {
     this.apiService.getDocument(this.documentId, this).subscribe(result => {
       this.currentDocument = result;
+      if (this.currentDocument.contentType === 'application/json') {
+        this.apiService.getDocumentContent(this.documentId, '', this).subscribe(result => {
+          this.currentDocument.content = result.content;
+          this.showJsonDataTab = true;
+          if (this.currentDocument.content.formName) {
+            this.showFormDataTab = true;
+            this.changeTab('formData');
+          } else {
+            this.changeTab('jsonData');
+          }
+        });
+      } else {
+        this.showViewDocumentTab = true;
+      }
     });
+  }
+
+  changeTab(currentTab) {
+    this.currentTab = currentTab;
+    if (currentTab === 'viewDocument') {
+      this.openForQuickLook();
+    } else {
+      this.closeQuickLook();
+    }
   }
 
   loadTags(previousToken = '', nextToken = '') {
@@ -156,22 +184,26 @@ export class InfoComponent implements OnInit, AfterViewInit {
   }
 
   openForQuickLook() {
-    document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
-    this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
-    this.documentUrl$.subscribe((result) => {
-      if (result.url) {
-        this.documentEmbedUrl = result.url;
-        this.quickLookExpanded = true;
-        document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
-        const heightAvailable = window.innerHeight - 240;
-        document.getElementById('documentFrame').setAttribute('style', 'height: ' + heightAvailable + 'px');
-      }
-    });
+    if (!this.quickLookLoaded) {
+      document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
+      this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
+      this.documentUrl$.subscribe((result) => {
+        if (result.url) {
+          this.documentEmbedUrl = result.url;
+          this.quickLookExpanded = true;
+          this.quickLookLoaded = true;
+          document.getElementById('documentFrame').setAttribute('src', this.documentEmbedUrl);
+          const heightAvailable = window.innerHeight - 240;
+          document.getElementById('documentFrame').setAttribute('style', 'height: ' + heightAvailable + 'px');
+        }
+      });
+    } else {
+      this.quickLookExpanded = true;
+    }
   }
 
   closeQuickLook() {
     this.quickLookExpanded = false;
-    document.getElementById('documentFrame').removeAttribute('src');
   }
 
   backToList() {

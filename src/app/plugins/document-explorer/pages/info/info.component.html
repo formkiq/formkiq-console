@@ -30,7 +30,54 @@
       </svg>
       Back to Results
     </button>
-    <section class="lg:w-full mb-4 md:mb-8">
+    <ul class="list-reset flex">
+      <li class="-mb-px mr-1">
+        <a
+          class="inline-block cursor-pointer border-l border-t border-r rounded-t py-2 px-4 font-semibold"
+          [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'metadata'}"
+          (click)="changeTab('metadata')"
+          >
+          Metadata
+        </a>
+      </li>
+      <li class="-mb-px mr-1">
+        <a
+          class="inline-block cursor-pointer border-l border-t border-r rounded-t py-2 px-4 font-semibold"
+          [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'tags'}"
+          (click)="changeTab('tags')"
+          >
+          Tags
+        </a>
+      </li>
+      <li *ngIf="showViewDocumentTab" class="-mb-px mr-1">
+        <a
+          class="inline-block cursor-pointer border-l border-t border-r rounded-t py-2 px-4 font-semibold"
+          [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'viewDocument'}"
+          (click)="changeTab('viewDocument')"
+          >
+          View Document
+        </a>
+      </li>
+      <li *ngIf="showFormDataTab" class="-mb-px mr-1">
+        <a
+          class="inline-block cursor-pointer border-l border-t border-r rounded-t py-2 px-4 font-semibold"
+          [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'formData'}"
+          (click)="changeTab('formData')"
+          >
+          Form Data
+        </a>
+      </li>
+      <li *ngIf="showJsonDataTab" class="-mb-px mr-1">
+        <a
+          class="inline-block cursor-pointer border-l border-t border-r rounded-t py-2 px-4 font-semibold"
+          [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'jsonData'}"
+          (click)="changeTab('jsonData')"
+          >
+          JSON
+        </a>
+      </li>
+    </ul>
+    <section [hidden]="currentTab !== 'metadata'" class="border lg:w-full mb-4 md:mb-8 p-2">
       <table
         *ngIf="currentDocument"
         class="border-collapse w-full"
@@ -106,36 +153,17 @@
               </span>
             </td>
           </tr>
-          <tr
-            class="bg-white flex lg:table-row flex-row flex-wrap mb-2 "
-            >
-            <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
-              <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">View Document</span>
-              <span
-                *ngIf="!quickLookExpanded"
-                class="underline cursor-pointer"
-                (click)="openForQuickLook()"
-                >
-                click here to view document
-              </span>
-              <span
-                *ngIf="quickLookExpanded"
-                class="underline cursor-pointer"
-                (click)="closeQuickLook()"
-                >
-                close
-              </span>
-              <iframe
-                [hidden]="!quickLookExpanded"
-                id="documentFrame"
-                class="border w-full"
-                ></iframe>
-            </td>
-          </tr>
         </tbody>
       </table>
     </section>
-    <section class="lg:w-full mb-4 md:mb-8">
+    <section *ngIf="showViewDocumentTab" [hidden]="currentTab !== 'viewDocument'" class="border lg:w-full mb-4 md:mb-8 p-2">
+      <iframe
+        [hidden]="!quickLookExpanded"
+        id="documentFrame"
+        class="border w-full"
+        ></iframe>
+    </section>
+    <section [hidden]="currentTab !== 'tags'" class="border lg:w-full mb-4 md:mb-8 p-2">
       <div *ngIf="results$ | async as results" class="text-center">
         <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
       </div>
@@ -222,90 +250,96 @@
       <div *ngIf="results$ | async as results" class="text-center">
         <app-paging [results]="results" (previousEmitter)="loadPreviousPage()" (nextEmitter)="loadNextPage()"></app-paging>
       </div>
+      <form [formGroup]="form" (ngSubmit)="saveTag()">
+        <h6
+          id="formHeader"
+          class="mx-4 md:mx-6 mr-4 mt-6 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-bold text-orange-600 sm:leading-none md:text-2xl"
+          >
+          <span *ngIf="isTagEditMode">
+            Edit
+          </span>
+          <span *ngIf="!isTagEditMode">
+            New
+          </span>
+          Tag
+        </h6>
+        <div class="md:flex md:items-center mx-4 mb-4 relative">
+          <div class="md:w-1/6">
+            <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="tagKey">
+              Key
+            </label>
+          </div>
+          <div class="md:w-1/3">
+            <input
+              aria-label="Key"
+              name="tagKey"
+              formControlName="tagKey"
+              type="text"
+              class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
+                placeholder-gray-500 text-gray-900 rounded-t-md
+                focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+              [ngClass]="{ 'bg-red-200': this.formSubmitted && this.form.controls.tagKey.errors }"
+              />
+          </div>
+          <div class="md:w-1/6">
+            <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="tagValue">
+              Value
+            </label>
+          </div>
+          <div class="md:w-1/3">
+            <input
+              aria-label="Value"
+              name="tagValue"
+              formControlName="tagValue"
+              type="text"
+              class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
+                placeholder-gray-500 text-gray-900 rounded-t-md
+                focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+              [ngClass]="{ 'bg-red-200': this.formSubmitted && this.form.controls.tagValue.errors }"
+              />
+          </div>
+        </div>
+        <div class="md:flex md:items-center mx-4 mb-4 relative">
+          <div class="md:w-1/6">
+          </div>
+          <div class="md:w-5/6">
+            <button
+              (click)="saveTag()"
+              [disabled]="this.form.invalid"
+              class="px-2 md:px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+                text-white focus:outline-none focus:shadow-outline
+                transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+              [ngClass]="{
+                  'bg-green-600 hover:bg-green-500': !this.form.invalid,
+                  'bg-gray-500 hover:bg-gray-500': this.form.invalid
+                }"
+              >
+                <span *ngIf="isTagEditMode">
+                  Save
+                </span>
+                <span *ngIf="!isTagEditMode">
+                  Add
+                </span>
+            </button>
+            <button
+              *ngIf="isTagEditMode"
+              (click)="cancelEdit()"
+              class="px-2 md:px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+                text-white focus:outline-none focus:shadow-outline
+                bg-green-600 hover:bg-green-500
+                transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+              >
+                Cancel
+            </button>
+          </div>
+        </div>
+      </form>
     </section>
-    <form [formGroup]="form" (ngSubmit)="saveTag()">
-      <h6
-        id="formHeader"
-        class="mx-4 md:mx-6 mr-4 mt-6 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-bold text-orange-600 sm:leading-none md:text-2xl"
-        >
-        <span *ngIf="isTagEditMode">
-          Edit
-        </span>
-        <span *ngIf="!isTagEditMode">
-          New
-        </span>
-        Tag
-      </h6>
-      <div class="md:flex md:items-center mx-4 mb-4 relative">
-        <div class="md:w-1/6">
-          <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="tagKey">
-            Key
-          </label>
-        </div>
-        <div class="md:w-1/3">
-          <input
-            aria-label="Key"
-            name="tagKey"
-            formControlName="tagKey"
-            type="text"
-            class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
-              placeholder-gray-500 text-gray-900 rounded-t-md
-              focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
-            [ngClass]="{ 'bg-red-200': this.formSubmitted && this.form.controls.tagKey.errors }"
-            />
-        </div>
-        <div class="md:w-1/6">
-          <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="tagValue">
-            Value
-          </label>
-        </div>
-        <div class="md:w-1/3">
-          <input
-            aria-label="Value"
-            name="tagValue"
-            formControlName="tagValue"
-            type="text"
-            class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
-              placeholder-gray-500 text-gray-900 rounded-t-md
-              focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
-            [ngClass]="{ 'bg-red-200': this.formSubmitted && this.form.controls.tagValue.errors }"
-            />
-        </div>
-      </div>
-      <div class="md:flex md:items-center mx-4 mb-4 relative">
-        <div class="md:w-1/6">
-        </div>
-        <div class="md:w-5/6">
-          <button
-            (click)="saveTag()"
-            [disabled]="this.form.invalid"
-            class="px-2 md:px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
-              text-white focus:outline-none focus:shadow-outline
-              transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
-            [ngClass]="{
-                'bg-green-600 hover:bg-green-500': !this.form.invalid,
-                'bg-gray-500 hover:bg-gray-500': this.form.invalid
-              }"
-            >
-              <span *ngIf="isTagEditMode">
-                Save
-              </span>
-              <span *ngIf="!isTagEditMode">
-                Add
-              </span>
-          </button>
-          <button
-            *ngIf="isTagEditMode"
-            (click)="cancelEdit()"
-            class="px-2 md:px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
-              text-white focus:outline-none focus:shadow-outline
-              bg-green-600 hover:bg-green-500
-              transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
-            >
-              Cancel
-          </button>
-        </div>
-      </div>
-    </form>
+    <section [hidden]="currentTab !== 'formData'" class="border lg:w-full mb-4 md:mb-8 p-2">
+      FORM
+    </section>
+    <section [hidden]="currentTab !== 'jsonData'" class="border lg:w-full mb-4 md:mb-8 p-2">
+      JSON
+    </section>
   </div>
 </div>
