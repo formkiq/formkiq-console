@@ -1,13 +1,13 @@
 {
   "version": "0.dev",
   "cognito": {
-    "identityPoolId": "us-east-2:482832d4-72db-468c-9e08-eb9163ece3e4",
-    "userPoolId": "us-east-2_W8Kt8Hg5x",
-    "region": "us-east-1",
-    "clientId": "4u85cai42am19jvpr3c48ahdej",
+    "identityPoolId": "<REGION>:<ID>",
+    "userPoolId": "<REGION>_<ID>",
+    "region": "<REGION>",
+    "clientId": "<ID>",
     "allowUserSelfRegistration": false
   },
   "apigateway": {
-    "url": "https://rhwhb9xpsg.execute-api.us-east-2.amazonaws.com/"
+    "url": "https://<ID>.execute-api.<REGION>.amazonaws.com/"
   }
 }
