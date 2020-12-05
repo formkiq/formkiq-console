@@ -1,6 +1,6 @@
 {
   "name": "formkiq-console",
-  "version": "0.0.0",
+  "version": "0.dev",
   "scripts": {
     "ng": "ng",
     "preinstall": "npx npm-force-resolutions",
