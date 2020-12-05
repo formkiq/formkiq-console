@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ApiService } from '../../../../services/api.service';
 import * as moment from 'moment-timezone';
 import JsonViewer from 'json-viewer-js';
@@ -34,7 +34,8 @@ export class InfoComponent implements OnInit, AfterViewInit {
   quickLookExpanded = false;
   quickLookLoaded = false;
   jsonDataLoaded = false;
-  results$: any;
+  tagResults$: any;
+  documentInfoLoaded$ = new Subject<boolean>();
   form: FormGroup;
   tagToSearch: any;
   explorePagingToken: null;
@@ -70,22 +71,52 @@ export class InfoComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
   }
 
-  getDocument() {
-    this.apiService.getDocument(this.documentId, this).subscribe(result => {
+  async getDocument() {
+
+    // TODO: add form field observable - attachments$ ??
+    
+    await this.apiService.getDocument(this.documentId, this).subscribe(result => {
       this.currentDocument = result;
       if (this.currentDocument.contentType === 'application/json') {
         this.apiService.getDocumentContent(this.documentId, '', this).subscribe(result => {
           this.currentDocument.content = JSON.parse(result.content);
           this.showJsonDataTab = true;
-          console.log(this.currentDocument.content);
           if (this.currentDocument.content.formName) {
+            if (this.currentDocument.documents && this.currentDocument.documents.length) {
+              const attachmentPromises = [];
+              this.currentDocument.documents.forEach(childDocument => {
+                const promise = new Promise(resolve => {
+                  this.apiService.getDocumentTag(childDocument.documentId, 'fieldName', this).subscribe(result => {
+                    if (result.value) {
+                      if (this.currentDocument.content.attachmentFields) {
+                        this.currentDocument.content.attachmentFields.forEach((attachmentField, i) => {
+                          if (attachmentField.fieldName === result.value) {
+                            this.currentDocument.content.attachmentFields[i].document = childDocument;
+                            return true;
+                          }
+                        });
+                      }
+                    }
+                    resolve();
+                  });
+                });
+                attachmentPromises.push(promise);
+              });
+              Promise.all(attachmentPromises).then(() => {
+                this.documentInfoLoaded$.next(true);
+              });
+            } else {
+              this.documentInfoLoaded$.next(true);
+            }
             this.showFormDataTab = true;
             this.changeTab('formData');
           } else {
+            this.documentInfoLoaded$.next(true);
             this.changeTab('jsonData');
           }
         });
       } else {
+        this.documentInfoLoaded$.next(true);
         this.showViewDocumentTab = true;
       }
     });
@@ -122,8 +153,8 @@ export class InfoComponent implements OnInit, AfterViewInit {
     }
     const container = this;
     this.isTagEditMode = false;
-    this.results$ = this.apiService.getDocumentTags(this.documentId, queryString, this);
-    this.results$.subscribe((result) => {
+    this.tagResults$ = this.apiService.getDocumentTags(this.documentId, queryString, this);
+    this.tagResults$.subscribe((result) => {
       if (result.previous) {
         this.previousToken = result.previous;
       }
@@ -219,7 +250,7 @@ export class InfoComponent implements OnInit, AfterViewInit {
   closeQuickLook() {
     this.quickLookExpanded = false;
   }
-
+  
   backToList() {
     const queryParams: any = {};
     if (this.explorePagingToken) {
