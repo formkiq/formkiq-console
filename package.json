@@ -9,9 +9,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "release-major": "release-it -- major --ci --dry-run",
-    "release-minor": "release-it -- minor --ci --dry-run",
-    "release-patch": "release-it -- patch --ci --dry-run"
+    "release-major": "release-it -- major --ci --no-npm.publish --dry-run",
+    "release-minor": "release-it -- minor --ci --no-npm.publish --dry-run",
+    "release-patch": "release-it -- patch --ci --no-npm.publish --dry-run"
   },
   "private": true,
   "dependencies": {
