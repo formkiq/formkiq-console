@@ -1,5 +1,5 @@
 {
-  "version": "0.dev",
+  "version": "0.0.1",
   "cognito": {
     "identityPoolId": "<REGION>:<ID>",
     "userPoolId": "<REGION>_<ID>",
@@ -8,6 +8,6 @@
     "allowUserSelfRegistration": false
   },
   "apigateway": {
-    "url": "https://<ID>.execute-api.<REGION>.amazonaws.com/"
+    "url": "https://<ID>.execute-api.<REGION>.amazonaws.com"
   }
 }

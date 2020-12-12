@@ -578,6 +578,14 @@ export class ExploreComponent implements OnInit {
             setTimeout(() => {
               this.headerSitesElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 10);
+          } else if (navData.source === 'apiHeaderPresetsClicked') {
+            setTimeout(() => {
+              this.headerPresetsElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 10);
+          } else if (navData.source === 'apiHeaderVersionClicked') {
+            setTimeout(() => {
+              this.headerVersionElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 10);
           }
         }
       });

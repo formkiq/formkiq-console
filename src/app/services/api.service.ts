@@ -33,14 +33,14 @@ export class ApiService {
 
   getAllDocuments(queryString: string, callback: HttpErrorCallback): Observable<{} | Document[]> {
     return this.httpClient
-      .get<Document[]>(this.configurationService.apigateway.url + 'documents' + queryString, this.getHttpOptions())
+      .get<Document[]>(this.configurationService.apigateway.url + '/documents' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   getDocument(documentID: string, callback: HttpErrorCallback): Observable<{} | Document> {
     return this.httpClient
-      .get<Document>(this.configurationService.apigateway.url + 'documents/' + documentID, this.getHttpOptions())
+      .get<Document>(this.configurationService.apigateway.url + '/documents/' + documentID, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
@@ -48,7 +48,7 @@ export class ApiService {
   postDocument(json: string, callback: HttpErrorCallback): any {
     const body = JSON.parse(json);
     return this.httpClient
-      .post<Document>(this.configurationService.apigateway.url + 'documents', body, this.getHttpOptions())
+      .post<Document>(this.configurationService.apigateway.url + '/documents', body, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
@@ -56,20 +56,20 @@ export class ApiService {
   patchDocument(documentID: string, json: string, callback: HttpErrorCallback): any {
     const body = JSON.parse(json);
     return this.httpClient
-      .patch<Document>(this.configurationService.apigateway.url + 'documents/' + documentID, body, this.getHttpOptions())
+      .patch<Document>(this.configurationService.apigateway.url + '/documents/' + documentID, body, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   deleteDocument(documentID: string, callback: HttpErrorCallback): Observable<{} | Document> {
     return this.httpClient
-      .delete<Document>(this.configurationService.apigateway.url + 'documents/' + documentID, this.getHttpOptions())
+      .delete<Document>(this.configurationService.apigateway.url + '/documents/' + documentID, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
   getDocumentTags(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | Array<Tag>> {
     return this.httpClient
-      .get<Array<Tag>>(this.configurationService.apigateway.url + 'documents/' + documentID + '/tags' + queryString, this.getHttpOptions())
+      .get<Array<Tag>>(this.configurationService.apigateway.url + '/documents/' + documentID + '/tags' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
@@ -77,7 +77,7 @@ export class ApiService {
   postDocumentTag(documentID: string, json: string, callback: HttpErrorCallback): Observable<any> {
     const body = JSON.parse(json);
     return this.httpClient
-      .post<Tag>(this.configurationService.apigateway.url + 'documents/' + documentID + '/tags', body, this.getHttpOptions())
+      .post<Tag>(this.configurationService.apigateway.url + '/documents/' + documentID + '/tags', body, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
@@ -85,7 +85,7 @@ export class ApiService {
   getDocumentTag(documentID: string, key: string, callback: HttpErrorCallback): Observable<any> {
     return this.httpClient
       .get<Tag>(
-        this.configurationService.apigateway.url + 'documents/' + documentID + '/tags/' + encodeURIComponent(key), this.getHttpOptions()
+        this.configurationService.apigateway.url + '/documents/' + documentID + '/tags/' + encodeURIComponent(key), this.getHttpOptions()
       )
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
@@ -94,7 +94,7 @@ export class ApiService {
   deleteDocumentTag(documentID: string, key: string, callback: HttpErrorCallback): Observable<any> {
     return this.httpClient
       .delete<Tag>(
-        this.configurationService.apigateway.url + 'documents/' + documentID + '/tags/' + encodeURIComponent(key), this.getHttpOptions()
+        this.configurationService.apigateway.url + '/documents/' + documentID + '/tags/' + encodeURIComponent(key), this.getHttpOptions()
       )
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
@@ -102,14 +102,14 @@ export class ApiService {
 
   getDocumentUrl(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
-      .get<any>(this.configurationService.apigateway.url + 'documents/' + documentID + '/url' + queryString, this.getHttpOptions())
+      .get<any>(this.configurationService.apigateway.url + '/documents/' + documentID + '/url' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   getDocumentContent(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<any> {
     return this.httpClient
-      .get<any>(this.configurationService.apigateway.url + 'documents/' + documentID + '/content' + queryString, this.getHttpOptions())
+      .get<any>(this.configurationService.apigateway.url + '/documents/' + documentID + '/content' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
@@ -117,28 +117,28 @@ export class ApiService {
   postDocumentFormat(documentID: string, json: string, callback: HttpErrorCallback): Observable<any> {
     const body = JSON.parse(json);
     return this.httpClient
-      .post<any>(this.configurationService.apigateway.url + 'documents/' + documentID + '/formats', body, this.getHttpOptions())
+      .post<any>(this.configurationService.apigateway.url + '/documents/' + documentID + '/formats', body, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   getDocumentVersions(documentID: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
-      .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/versions', this.getHttpOptions())
+      .get<string>(this.configurationService.apigateway.url + '/documents/' + documentID + '/versions', this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   getDocumentsUpload(queryString: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
-      .get<string>(this.configurationService.apigateway.url + 'documents/upload' + queryString, this.getHttpOptions())
+      .get<string>(this.configurationService.apigateway.url + '/documents/upload' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   getDocumentUpload(documentID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | string> {
     return this.httpClient
-      .get<string>(this.configurationService.apigateway.url + 'documents/' + documentID + '/upload' + queryString, this.getHttpOptions())
+      .get<string>(this.configurationService.apigateway.url + '/documents/' + documentID + '/upload' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
@@ -146,21 +146,21 @@ export class ApiService {
   postSearch(json: string, queryString: string, callback: HttpErrorCallback): Observable<{} | Document[]> {
     const body = JSON.parse(json);
     return this.httpClient
-      .post<Array<Document>>(this.configurationService.apigateway.url + 'search' + queryString, body, this.getHttpOptions())
+      .post<Array<Document>>(this.configurationService.apigateway.url + '/search' + queryString, body, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   getAllSites(queryString: string, callback: HttpErrorCallback): Observable<{} | Site[]> {
     return this.httpClient
-      .get<Site[]>(this.configurationService.apigateway.url + 'sites' + queryString, this.getHttpOptions())
+      .get<Site[]>(this.configurationService.apigateway.url + '/sites' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   getAllPresets(queryString: string, callback: HttpErrorCallback): Observable<{} | Preset[]> {
     return this.httpClient
-      .get<Site[]>(this.configurationService.apigateway.url + 'presets' + queryString, this.getHttpOptions())
+      .get<Site[]>(this.configurationService.apigateway.url + '/presets' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
@@ -168,20 +168,20 @@ export class ApiService {
   postPreset(json: string, callback: HttpErrorCallback): any {
     const body = JSON.parse(json);
     return this.httpClient
-      .post<Preset>(this.configurationService.apigateway.url + 'presets', body, this.getHttpOptions())
+      .post<Preset>(this.configurationService.apigateway.url + '/presets', body, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
 
   deletePreset(presetID: string, callback: HttpErrorCallback): Observable<{} | Preset> {
     return this.httpClient
-      .delete<Preset>(this.configurationService.apigateway.url + 'presets/' + presetID, this.getHttpOptions())
+      .delete<Preset>(this.configurationService.apigateway.url + '/presets/' + presetID, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
   getPresetTags(presetID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | Array<Tag>> {
     return this.httpClient
-      .get<Array<Tag>>(this.configurationService.apigateway.url + 'presets/' + presetID + '/tags' + queryString, this.getHttpOptions())
+      .get<Array<Tag>>(this.configurationService.apigateway.url + '/presets/' + presetID + '/tags' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
@@ -189,7 +189,7 @@ export class ApiService {
   postPresetTag(presetID: string, json: string, callback: HttpErrorCallback): Observable<any> {
     const body = JSON.parse(json);
     return this.httpClient
-      .post<Tag>(this.configurationService.apigateway.url + 'presets/' + presetID + '/tags', body, this.getHttpOptions())
+      .post<Tag>(this.configurationService.apigateway.url + '/presets/' + presetID + '/tags', body, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
@@ -197,7 +197,7 @@ export class ApiService {
   deletePresetTag(presetID: string, key: string, callback: HttpErrorCallback): Observable<any> {
     return this.httpClient
       .delete<Tag>(
-        this.configurationService.apigateway.url + 'presets/' + presetID + '/tags/' + encodeURIComponent(key), this.getHttpOptions()
+        this.configurationService.apigateway.url + '/presets/' + presetID + '/tags/' + encodeURIComponent(key), this.getHttpOptions()
       )
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
@@ -206,7 +206,7 @@ export class ApiService {
   getVersion(callback: HttpErrorCallback): Observable<any> {
     return this.httpClient
       .get<any>(
-        this.configurationService.apigateway.url + 'version', this.getHttpOptions()
+        this.configurationService.apigateway.url + '/version', this.getHttpOptions()
       )
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
