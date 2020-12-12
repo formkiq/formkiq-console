@@ -18,7 +18,9 @@ const routes: Routes = [
     data: {
       title: 'Untagged Documents',
       tagToSearch: {
-        key: 'untagged'
+        key: 'untagged',
+        operator: 'eq',
+        value: 'true'
       }
     }
   },
