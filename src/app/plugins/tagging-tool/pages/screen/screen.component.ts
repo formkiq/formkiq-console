@@ -151,7 +151,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     const tagQuery: TagQuery = {
       key: 'untagged',
       operator: 'eq',
-      value: ''
+      value: 'true'
     };
     const searchParameters: SearchParameters = {
       searchType: SearchType.Tag,
