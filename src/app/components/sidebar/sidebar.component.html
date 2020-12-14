@@ -27,6 +27,19 @@
       </a>
     </li>
     <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/documents/explore/search' }"
+      class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/documents/explore/search']"
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        Document Search
+      </a>
+    </li>
+    <li
       [ngClass]="{'font-bold bg-orange-900': currentUrl == '/documents/explore/untagged' }"
       class="block pl-6 pr-2 py-2 text-base font-medium text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"

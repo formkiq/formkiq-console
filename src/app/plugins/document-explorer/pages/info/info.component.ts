@@ -29,6 +29,7 @@ export class InfoComponent implements OnInit, AfterViewInit {
   showFormDataTab = false;
   showJsonDataTab = false;
   showViewDocumentTab = false;
+  showChildDocumentsTab = false;
   documentUrl$: Observable<any>;
   documentEmbedUrl = '';
   quickLookExpanded = false;
@@ -72,11 +73,11 @@ export class InfoComponent implements OnInit, AfterViewInit {
   }
 
   async getDocument() {
-
-    // TODO: add form field observable - attachments$ ??
-    
     await this.apiService.getDocument(this.documentId, this).subscribe(result => {
       this.currentDocument = result;
+      if (this.currentDocument.documents && this.currentDocument.documents.length) {
+        this.showChildDocumentsTab = true;
+      }
       if (this.currentDocument.contentType === 'application/json') {
         this.apiService.getDocumentContent(this.documentId, '', this).subscribe(result => {
           this.currentDocument.content = JSON.parse(result.content);
@@ -132,12 +133,14 @@ export class InfoComponent implements OnInit, AfterViewInit {
     if (currentTab === 'jsonData') {
       if (!this.jsonDataLoaded) {
         this.jsonDataLoaded = true;
-        const jsonViewer = new JsonViewer({
-          container: document.getElementById('jsonContainer'), 
-          data: JSON.stringify(this.currentDocument.content), 
-          theme: 'light', 
-          expand: true
-        });
+        setTimeout(() => {
+          const jsonViewer = new JsonViewer({
+            container: document.getElementById('jsonContainer'), 
+            data: JSON.stringify(this.currentDocument.content), 
+            theme: 'light', 
+            expand: true
+          });
+        }, 100);
       }
     }
   }
@@ -249,6 +252,10 @@ export class InfoComponent implements OnInit, AfterViewInit {
 
   closeQuickLook() {
     this.quickLookExpanded = false;
+  }
+
+  hasHistory() {
+    return window.history.length > 2;
   }
   
   backToList() {

@@ -13,6 +13,11 @@ const routes: Routes = [
     data: { title: 'Documents' }
   },
   {
+    path: 'explore/search',
+    component: ExploreComponent,
+    data: { title: 'Documents' }
+  },
+  {
     path: 'explore/untagged',
     component: ExploreComponent,
     data: {
