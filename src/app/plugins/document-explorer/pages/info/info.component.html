@@ -57,9 +57,9 @@
         transition duration-150 ease-in-out md:text-base"
       (click)="openTaggingTool(currentDocument.documentId)"
       >
-      Tagging Tool
+      Open in Tagging Tool
     </button>
-    <div *ngIf="documentInfoLoaded$ | async as loaded">
+    <div *ngIf="documentInfoLoaded$ | async as loaded" class="mt-4 md:mt-0">
       <ul class="list-reset flex">
         <li class="-mb-px mr-1">
           <a

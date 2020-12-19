@@ -282,6 +282,15 @@
           Document Tagging
           <span *ngIf="currentDocument" class="mt-2 block text-lg tracking-tight">
             Document:
+            <svg (click)="copyToClipboard(currentDocument.documentId, 'clipboardMessage-doc')" width="0.75em" height="0.75em" viewBox="0 0 600 600" class="cursor-pointer inline ml-1 -mt-1 fill-current"><g>
+              <g><path d="M341.333,85.333H51.2c-28.277,0-51.2,22.923-51.2,51.2v290.133c0,28.277,22.923,51.2,51.2,51.2h290.133
+              c28.277,0,51.2-22.923,51.2-51.2V136.533C392.533,108.256,369.61,85.333,341.333,85.333z M358.4,426.667
+              c0,9.426-7.641,17.067-17.067,17.067H51.2c-9.426,0-17.067-7.641-17.067-17.067V136.533c0-9.426,7.641-17.067,17.067-17.067
+              h290.133c9.426,0,17.067,7.641,17.067,17.067V426.667z"/></g></g><g><g><path d="M426.667,0h-307.2c-28.277,0-51.2,22.923-51.2,51.2c0,9.426,7.641,17.067,17.067,17.067S102.4,60.626,102.4,51.2
+              s7.641-17.067,17.067-17.067h307.2c9.426,0,17.067,7.641,17.067,17.067v307.2c0,9.426-7.641,17.067-17.067,17.067
+              s-17.067,7.641-17.067,17.067s7.641,17.067,17.067,17.067c28.277,0,51.2-22.923,51.2-51.2V51.2
+              C477.867,22.923,454.944,0,426.667,0z"/></g></g></svg>
+            <span id="clipboardMessage-doc" class="hidden text-sm bg-green-200 px-2 py-1 mt-4 absolute">copied to clipboard</span>
             <span class="font-normal">{{ currentDocument.documentId }}</span>
           </span>
         </h2>

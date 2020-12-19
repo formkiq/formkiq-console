@@ -30,4 +30,19 @@ export class ShareModalComponent implements OnInit, AfterViewInit {
     this.closeEmitter.emit(true);
   }
 
+  copyShareLinkToClipboard(clipboardMessage) {
+    const shareUrlTextarea: HTMLTextAreaElement = document.getElementById('shareUrlTextarea') as HTMLTextAreaElement;
+    console.log(shareUrlTextarea);
+    shareUrlTextarea.select();
+    shareUrlTextarea.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    const clipboardMessageElement = document.getElementById(clipboardMessage);
+    if (clipboardMessageElement) {
+      clipboardMessageElement.classList.remove('hidden');
+      setTimeout(() => {
+        clipboardMessageElement.classList.add('hidden');
+      }, 1000);
+    }
+  }
+
 }
