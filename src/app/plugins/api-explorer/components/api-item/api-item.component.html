@@ -3,8 +3,8 @@
   <h4
     #header
     (click)="navigationService.collapseSubmenuItem(apiItem.clickedSubscriptionName, !isCollapsed);"
-    class="mx-4 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-bold text-gray-900
-      hover:text-gray-700 sm:leading-none md:text-3xl cursor-pointer"
+    class="mx-4 mb-2 md:mb-8 text-lg tracking-tight leading-10 font-bold text-gray-900
+      hover:text-gray-700 sm:leading-none md:text-xl cursor-pointer"
     >
     {{ apiItem.method }}
     {{ apiItem.path }}
@@ -31,7 +31,7 @@
       <form [formGroup]="form">
         <div>
           <h6
-            class="mb-2 mx-4 md:mx-6 mr-4 mt-4 md:mb-8 text-xl tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:text-2xl"
+            class="mb-2 mx-4 md:mx-6 mr-4 mt-4 md:mb-8 text-lg tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:text-xl"
             >
             Authentication
           </h6>
@@ -54,7 +54,7 @@
         </div>
         <div *ngIf="!apiItem.hasNoParams">
           <h6
-            class="mx-4 md:mx-6 mr-4 mt-6 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:text-2xl"
+            class="mx-4 md:mx-6 mr-4 mt-6 mb-2 md:mb-8 text-lg tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:text-xl"
             >
             Parameters
           </h6>
@@ -337,18 +337,18 @@
       <div class="flex flex-rows w-full">
         <div class="flex-grow-0">
           <h6
-            class="mx-4 md:mx-6 mr-4 mt-4 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:text-2xl"
+            class="mx-4 md:mx-6 mr-4 mt-4 mb-2 md:mb-4 text-lg tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:text-xl"
             >
             Request
           </h6>
         </div>
-        <div class="flex-grow text-right mx-4 mb-4 relative">
+        <div class="flex-grow text-right mt-2 mb-2 relative">
           <button
             (click)="fetch()"
             [disabled]="this.form.invalid"
-            class="px-2 md:px-8 py-3 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+            class="px-2 md:px-4 py-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
               text-white focus:outline-none focus:shadow-outline
-              transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+              transition duration-150 ease-in-out"
             [ngClass]="{
                 'bg-green-600 hover:bg-green-500': !this.form.invalid,
                 'bg-gray-500 hover:bg-gray-500': this.form.invalid
@@ -418,7 +418,7 @@
             </div>
             <div *ngIf="responseData" [attr.id]="apiItem.apiServiceMethodName ? apiItem.apiServiceMethodName + 'Response' : ''">
               <h6
-                class="md:mx-2 mr-4 mt-4 md-2 md:mb-8 text-xl tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:text-2xl"
+                class="mr-4 mt-4 mb-2 md:mb-4 text-lg tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:text-xl"
                 >
                 Response
               </h6>

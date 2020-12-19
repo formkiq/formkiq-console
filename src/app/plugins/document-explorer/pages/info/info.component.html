@@ -1,9 +1,9 @@
 <div class="relative bg-white overflow-scroll-y mx-4">
   <div class="mt-4 max-w-screen-xl mx-auto relative">
-    <h3 class="mb-0 text-xl tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:mb-4 md:text-2xl">
+    <h3 class="mb-0 text-lg tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:mb-4 md:text-xl">
       <a
         [routerLink]="['/documents']"
-        class="rounded-md text-orange-600 hover:text-orange-900 focus:text-orange-900"
+        class="rounded-md"
         >
         Document Explorer
       </a>
@@ -12,6 +12,15 @@
       <span class="font-bold">
         Document:
       </span>
+      <svg (click)="copyToClipboard(documentId, 'clipboardMessage-doc')" width="0.75em" height="0.75em" viewBox="0 0 600 600" class="cursor-pointer inline ml-1 -mt-1 fill-current"><g>
+        <g><path d="M341.333,85.333H51.2c-28.277,0-51.2,22.923-51.2,51.2v290.133c0,28.277,22.923,51.2,51.2,51.2h290.133
+        c28.277,0,51.2-22.923,51.2-51.2V136.533C392.533,108.256,369.61,85.333,341.333,85.333z M358.4,426.667
+        c0,9.426-7.641,17.067-17.067,17.067H51.2c-9.426,0-17.067-7.641-17.067-17.067V136.533c0-9.426,7.641-17.067,17.067-17.067
+        h290.133c9.426,0,17.067,7.641,17.067,17.067V426.667z"/></g></g><g><g><path d="M426.667,0h-307.2c-28.277,0-51.2,22.923-51.2,51.2c0,9.426,7.641,17.067,17.067,17.067S102.4,60.626,102.4,51.2
+        s7.641-17.067,17.067-17.067h307.2c9.426,0,17.067,7.641,17.067,17.067v307.2c0,9.426-7.641,17.067-17.067,17.067
+        s-17.067,7.641-17.067,17.067s7.641,17.067,17.067,17.067c28.277,0,51.2-22.923,51.2-51.2V51.2
+        C477.867,22.923,454.944,0,426.667,0z"/></g></g></svg>
+      <span id="clipboardMessage-doc" class="hidden text-sm bg-green-200 px-2 py-1 mt-4 absolute">copied to clipboard</span>
       {{ documentId }}
     </h2>
     <h3
@@ -41,8 +50,17 @@
       </svg>
       Back to Results
     </button>
-    <div *ngIf="documentInfoLoaded$ | async as loaded">
-      <ul class="list-reset flex">
+    <button
+      class="mt-1 px-2 py-1 w-full md:w-auto mx-1 border border-transparent text-sm leading-6 font-medium rounded-md shadow
+        text-white focus:outline-none focus:shadow-outline
+        bg-green-600 hover:bg-green-500
+        transition duration-150 ease-in-out md:text-base"
+      (click)="openTaggingTool(currentDocument.documentId)"
+      >
+      Open in Tagging Tool
+    </button>
+    <div *ngIf="documentInfoLoaded$ | async as loaded" class="mt-4 md:mt-0">
+      <ul class="list-reset flex flex-wrap">
         <li class="-mb-px mr-1">
           <a
             class="inline-block cursor-pointer border-l border-t border-r rounded-t py-2 px-4 font-semibold"
@@ -67,7 +85,12 @@
             [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'viewDocument'}"
             (click)="changeTab('viewDocument')"
             >
-            View Document
+            <span class="inline md:hidden">
+              View
+            </span>
+            <span class="hidden md:inline">
+              View Document
+            </span>
           </a>
         </li>
         <li *ngIf="showChildDocumentsTab" class="-mb-px mr-1">
@@ -76,7 +99,12 @@
             [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'childDocuments'}"
             (click)="changeTab('childDocuments')"
             >
-            Child Documents
+            <span class="inline md:hidden">
+              Children
+            </span>
+            <span class="hidden md:inline">
+              Child Documents
+            </span>
           </a>
         </li>
         <li *ngIf="showFormDataTab" class="-mb-px mr-1">
@@ -85,7 +113,10 @@
             [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'formData'}"
             (click)="changeTab('formData')"
             >
-            Form Data
+            Form
+            <span class="hidden md:inline">
+              Data
+            </span>
           </a>
         </li>
         <li *ngIf="showJsonDataTab" class="-mb-px mr-1">
@@ -130,7 +161,7 @@
               <td class="w-full p-3 pt-8 lg:pt-2 lg:pl-48 text-gray-800 text-center lg:text-left border border-b block relative">
                 <span class="absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Checksum</span>
                 <span class="font-bold">
-                  {{ currentDocument.checksum }} bytes
+                  {{ currentDocument.checksum }}
                 </span>
               </td>
             </tr>
@@ -263,7 +294,7 @@
               <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                 <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Key</span>
                 {{ tag.key }}
-                <span *ngIf="tag.type === 'systemdefined'" class="block text-sm tracking-tight">(read-only)</span>
+                <span *ngIf="tag.type === 'systemdefined' && tag.key !== 'untagged'" class="block text-sm tracking-tight">(read-only)</span>
                 <div>
                   <button
                     *ngIf="f.tagKey.value != tag.key && tag.type !== 'systemdefined'"
@@ -276,7 +307,7 @@
                     Edit
                   </button>
                   <button
-                    *ngIf="f.tagKey.value != tag.key && tag.type !== 'systemdefined'"
+                    *ngIf="f.tagKey.value != tag.key && (tag.type !== 'systemdefined' || tag.key === 'untagged')"
                     class="mt-1 px-2 py-1 w-full md:w-auto mx-1 border border-transparent text-sm leading-6 font-medium rounded-md shadow
                       text-white focus:outline-none focus:shadow-outline
                       bg-green-600 hover:bg-green-500

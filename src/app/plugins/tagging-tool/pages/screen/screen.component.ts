@@ -12,7 +12,6 @@ import { NotificationService } from '../../../../services/notification.service';
 import { NotificationInfoType } from '../../../../services/notification.schema';
 import { SearchService } from '../../services/search.service';
 import { TagQuery, SearchParameters, SearchType } from '../../services/search.schema';
-import { isArray } from 'util';
 
 @Component({
   selector: 'app-tagtool-screen',
@@ -199,6 +198,10 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
   }
 
   getNextUntaggedDocuments(queryString) {
+    if (!this.searchQuery) {
+      this.router.navigate(['/tagging']);
+      return true;
+    }
     this.loading$.next(true);
     this.results$ = this.apiService.postSearch(JSON.stringify(this.searchQuery), queryString, this);
     this.results$.subscribe((results) => {
@@ -424,7 +427,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         this.notificationService.createNotification(
           NotificationInfoType.Success,
           result.message,
-          2000,
+          1000,
           false
         );
         this.loadTags();
@@ -454,7 +457,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       this.notificationService.createNotification(
         NotificationInfoType.Success,
         result.message,
-        2000,
+        1000,
         false
       );
       this.loadTags();
@@ -593,6 +596,16 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
   }
 
   markAsTagged() {
+    const tagsAdded = this.tags.filter((tag) => tag.key !== 'untagged');
+    let readyToMarkAsTagged = false;
+    if (tagsAdded.length) {
+      readyToMarkAsTagged = true;
+    } else {
+      readyToMarkAsTagged = confirm('Are you sure you want to mark as tagged? You have not added any tags to this document.');
+    }
+    if (!readyToMarkAsTagged) {
+      return true;
+    }
     const documentTagDeletePromises: Promise<any>[]  = [];
     documentTagDeletePromises.push(new Promise((resolve) => {
       this.buildPresetSavePromise(resolve);
@@ -607,6 +620,39 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       this.currentDocument = null;
       this.getNextUntaggedDocuments('?limit=' + this.resultsLimit);
     });
+  }
+
+  viewInfo() {
+    this.router.navigate([`/documents/${this.currentDocument.documentId}`]);
+  }
+
+  copyToClipboard(value, clipboardMessage) {
+    const copyInputElement: HTMLInputElement = document.createElement('INPUT') as HTMLInputElement;
+    copyInputElement.value = value;
+    const body = document.getElementsByTagName('BODY')[0];
+    body.appendChild(copyInputElement);
+    copyInputElement.select();
+    copyInputElement.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    body.removeChild(copyInputElement);
+    const clipboardMessageElement = document.getElementById(clipboardMessage);
+    if (clipboardMessageElement) {
+      clipboardMessageElement.classList.remove('hidden');
+      setTimeout(() => {
+        clipboardMessageElement.classList.add('hidden');
+      }, 1000);
+    }
+  }
+
+  showInfoModal() {
+    if (localStorage.getItem('hasShownTaggingToolInfoModal')) {
+      return false;
+    }
+    return true;
+  }
+
+  closeInfoModal() {
+    localStorage.setItem('hasShownTaggingToolInfoModal', 'TRUE');
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {

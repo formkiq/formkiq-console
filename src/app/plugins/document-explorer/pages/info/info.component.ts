@@ -272,4 +272,26 @@ export class InfoComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/documents'], { queryParams });
   }
 
+  openTaggingTool(documentId) {
+    this.router.navigate(['/tagging/' + documentId ]);
+  }
+
+  copyToClipboard(value, clipboardMessage) {
+    const copyInputElement: HTMLInputElement = document.createElement('INPUT') as HTMLInputElement;
+    copyInputElement.value = value;
+    const body = document.getElementsByTagName('BODY')[0];
+    body.appendChild(copyInputElement);
+    copyInputElement.select();
+    copyInputElement.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    body.removeChild(copyInputElement);
+    const clipboardMessageElement = document.getElementById(clipboardMessage);
+    if (clipboardMessageElement) {
+      clipboardMessageElement.classList.remove('hidden');
+      setTimeout(() => {
+        clipboardMessageElement.classList.add('hidden');
+      }, 1000);
+    }
+  }
+
 }

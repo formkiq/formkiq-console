@@ -14,7 +14,8 @@ module.exports = {
       inset: {
         '0': 0,
         auto: 'auto',
-        '1/3': '33%'
+        '1/3': '33%',
+        '1/4': '25%'
       },
       spacing: {
         px: '1px',
