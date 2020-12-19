@@ -1,9 +1,9 @@
 <div class="relative bg-white overflow-scroll-y mx-4">
   <div class="mt-4 max-w-screen-xl mx-auto relative">
-    <h3 class="mb-0 text-xl tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:mb-4 md:text-2xl">
+    <h3 class="mb-0 text-lg tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:mb-4 md:text-xl">
       <a
         [routerLink]="['/documents']"
-        class="rounded-md text-orange-600 hover:text-orange-900 focus:text-orange-900"
+        class="rounded-md"
         >
         Document Explorer
       </a>
@@ -60,7 +60,7 @@
       Open in Tagging Tool
     </button>
     <div *ngIf="documentInfoLoaded$ | async as loaded" class="mt-4 md:mt-0">
-      <ul class="list-reset flex">
+      <ul class="list-reset flex flex-wrap">
         <li class="-mb-px mr-1">
           <a
             class="inline-block cursor-pointer border-l border-t border-r rounded-t py-2 px-4 font-semibold"
@@ -85,7 +85,12 @@
             [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'viewDocument'}"
             (click)="changeTab('viewDocument')"
             >
-            View Document
+            <span class="inline md:hidden">
+              View
+            </span>
+            <span class="hidden md:inline">
+              View Document
+            </span>
           </a>
         </li>
         <li *ngIf="showChildDocumentsTab" class="-mb-px mr-1">
@@ -94,7 +99,12 @@
             [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'childDocuments'}"
             (click)="changeTab('childDocuments')"
             >
-            Child Documents
+            <span class="inline md:hidden">
+              Children
+            </span>
+            <span class="hidden md:inline">
+              Child Documents
+            </span>
           </a>
         </li>
         <li *ngIf="showFormDataTab" class="-mb-px mr-1">
@@ -103,7 +113,10 @@
             [ngClass]="{'font-bold bg-gray-200 dark-mode:bg-materialGray-600 cursor-text': currentTab == 'formData'}"
             (click)="changeTab('formData')"
             >
-            Form Data
+            Form
+            <span class="hidden md:inline">
+              Data
+            </span>
           </a>
         </li>
         <li *ngIf="showJsonDataTab" class="-mb-px mr-1">

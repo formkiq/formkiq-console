@@ -544,7 +544,7 @@ export class ExploreComponent implements OnInit {
     username: 'Cognito User',
     token: this.authenticationService.loggedInAccessToken,
     host: this.configurationService.apigateway.url,
-    hasNoParams: false,
+    hasNoParams: true,
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: false,

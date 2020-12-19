@@ -427,7 +427,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         this.notificationService.createNotification(
           NotificationInfoType.Success,
           result.message,
-          2000,
+          1000,
           false
         );
         this.loadTags();
@@ -457,7 +457,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
       this.notificationService.createNotification(
         NotificationInfoType.Success,
         result.message,
-        2000,
+        1000,
         false
       );
       this.loadTags();
@@ -622,6 +622,10 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     });
   }
 
+  viewInfo() {
+    this.router.navigate([`/documents/${this.currentDocument.documentId}`]);
+  }
+
   copyToClipboard(value, clipboardMessage) {
     const copyInputElement: HTMLInputElement = document.createElement('INPUT') as HTMLInputElement;
     copyInputElement.value = value;
@@ -638,6 +642,17 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         clipboardMessageElement.classList.add('hidden');
       }, 1000);
     }
+  }
+
+  showInfoModal() {
+    if (localStorage.getItem('hasShownTaggingToolInfoModal')) {
+      return false;
+    }
+    return true;
+  }
+
+  closeInfoModal() {
+    localStorage.setItem('hasShownTaggingToolInfoModal', 'TRUE');
   }
 
   handleApiError(errorResponse: HttpErrorResponse) {
