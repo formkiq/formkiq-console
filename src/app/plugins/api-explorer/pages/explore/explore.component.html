@@ -56,6 +56,16 @@
               Version
             </a>
           </li>
+          <li>
+            <a
+              [routerLink]="['/api']"
+              [fragment]="webhooksFragment"
+              (click)="navigationService.emitInlineNavItemClick('apiHeaderWebhooksClicked')"
+              class="font-bold text-orange-900 hover:text-orange-600"
+              >
+              Webhooks
+            </a>
+          </li>
         </ul>
       </nav>
       <section class="lg:w-full mb-12">
@@ -112,6 +122,14 @@
           Version
         </h3>
         <app-api-item id="GET-version" [apiItem]="getVersionApiItem"></app-api-item>
+      </section>
+      <section class="lg:w-full mb-12">
+        <h3 #headerWebhooks class="mx-4 mb-8 text-xl tracking-tight leading-10 font-bold text-orange-600 sm:leading-none md:text-2xl">
+          Webhooks
+        </h3>
+        <app-api-item id="GET-webhooks" [apiItem]="getWebhooksApiItem"></app-api-item>
+        <app-api-item id="POST-webhooks" [apiItem]="postWebhooksApiItem"></app-api-item>
+        <app-api-item id="DELETE-webhooks" [apiItem]="deleteWebhookApiItem"></app-api-item>
       </section>
     </div>
   </div>

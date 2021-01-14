@@ -26,6 +26,16 @@ export class Tag {
   constructor() {}
 }
 
+export class Webhook {
+  id: string;
+  insertedDate: Date;
+  name: string;
+  siteId: string;
+  userId: string;
+  url: string;
+  constructor() {}
+}
+
 export class ApiItem {
   apiServiceMethodName: string;
   clickedSubscriptionName: string;
@@ -38,6 +48,7 @@ export class ApiItem {
   requiresAuthentication: boolean;
   requiresDocumentID: boolean;
   requiresPresetID: boolean;
+  requiresWebhookID: boolean;
   requiresTagKey: boolean;
   requiresPostJson: boolean;
   requiresFileUpload: boolean;

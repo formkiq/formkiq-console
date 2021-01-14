@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, shareReplay, map } from 'rxjs/operators';
 import { AuthenticationService } from '../plugins/authentication/services/authentication.service';
 import { ConfigurationService } from '../services/configuration.service';
-import { Document, Preset, Site, Tag } from '../services/api.schema';
+import { Document, Preset, Site, Tag, Webhook } from '../services/api.schema';
 
 @Injectable({
   providedIn: 'root'
@@ -160,7 +160,7 @@ export class ApiService {
 
   getAllPresets(queryString: string, callback: HttpErrorCallback): Observable<{} | Preset[]> {
     return this.httpClient
-      .get<Site[]>(this.configurationService.apigateway.url + '/presets' + queryString, this.getHttpOptions())
+      .get<Preset[]>(this.configurationService.apigateway.url + '/presets' + queryString, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
@@ -179,6 +179,7 @@ export class ApiService {
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
+
   getPresetTags(presetID: string, queryString: string, callback: HttpErrorCallback): Observable<{} | Array<Tag>> {
     return this.httpClient
       .get<Array<Tag>>(this.configurationService.apigateway.url + '/presets/' + presetID + '/tags' + queryString, this.getHttpOptions())
@@ -208,6 +209,28 @@ export class ApiService {
       .get<any>(
         this.configurationService.apigateway.url + '/version', this.getHttpOptions()
       )
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
+  getAllWebhooks(queryString: string, callback: HttpErrorCallback): Observable<{} | Webhook[]> {
+    return this.httpClient
+      .get<Webhook[]>(this.configurationService.apigateway.url + '/webhooks' + queryString, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
+  postWebhook(json: string, callback: HttpErrorCallback): any {
+    const body = JSON.parse(json);
+    return this.httpClient
+      .post<Webhook>(this.configurationService.apigateway.url + '/webhooks', body, this.getHttpOptions())
+      .pipe(shareReplay(1),
+        catchError(callback.handleApiError));
+  }
+
+  deleteWebhook(webhookID: string, callback: HttpErrorCallback): Observable<{} | Preset> {
+    return this.httpClient
+      .delete<Webhook>(this.configurationService.apigateway.url + '/webhooks/' + webhookID, this.getHttpOptions())
       .pipe(shareReplay(1),
         catchError(callback.handleApiError));
   }
