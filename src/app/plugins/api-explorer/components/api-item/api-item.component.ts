@@ -56,6 +56,9 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     if (this.apiItem.requiresPresetID) {
       fieldsForFormBuilder.presetID = ['', [Validators.required, Validators.minLength(1)]];
     }
+    if (this.apiItem.requiresWebhookID) {
+      fieldsForFormBuilder.webhookID = ['', [Validators.required, Validators.minLength(1)]];
+    }
     if (this.apiItem.requiresTagKey) {
       fieldsForFormBuilder.tagKey = ['', [Validators.required, Validators.minLength(1)]];
     }
@@ -148,6 +151,11 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
         path = path.replace(' PRESET_ID ', this.f.presetID.value);
       }
     }
+    if (this.apiItem.requiresWebhookID) {
+      if (this.f.webhookID && this.f.webhookID.status === 'VALID') {
+        path = path.replace(' WEBHOOK_ID ', this.f.webhookID.value);
+      }
+    }
     if (this.apiItem.requiresTagKey) {
       if (this.f.tagKey && this.f.tagKey.status === 'VALID') {
         path = path.replace(' TAG_KEY ', this.f.tagKey.value);
@@ -156,6 +164,8 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
     this.httpRequest = this.apiItem.method + ' ' + path;
     if (this.apiItem.method === 'POST') {
       this.curlRequest = 'curl -X POST "' + host + path;
+    } else if (this.apiItem.method === 'DELETE') {
+      this.curlRequest = 'curl -X DELETE "' + host + path;
     } else {
       this.curlRequest = 'curl "' + host + path;
     }
@@ -483,6 +493,36 @@ export class ApiItemComponent implements OnInit, HttpErrorCallback {
         break;
       case 'getVersion':
         this.apiService.getVersion(this).subscribe((data: any) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
+      case 'getAllWebhooks':
+        this.apiService.getAllWebhooks(this.queryString, this).subscribe((data: Array<object>) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
+      case 'postWebhooks':
+        this.apiService.postWebhook(this.f.postJson.value, this).subscribe((data: object) => {
+          if (data.hasOwnProperty('status')) {
+            this.isErrorResponse = true;
+          }
+          this.responseData = data;
+          this.scrollToResponse(this.apiItem.apiServiceMethodName);
+          this.loading$.next(false);
+        });
+        break;
+      case 'deleteWebhook':
+        this.apiService.deleteWebhook(this.f.webhookID.value, this).subscribe((data: object) => {
           if (data.hasOwnProperty('status')) {
             this.isErrorResponse = true;
           }

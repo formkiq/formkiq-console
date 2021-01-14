@@ -22,6 +22,7 @@ export class ExploreComponent implements OnInit {
   sitesFragment = 'sites';
   presetsFragment = 'presets';
   versionFragment = 'version';
+  webhooksFragment = 'webhooks';
 
   @ViewChild('header') headerElement: ElementRef;
   @ViewChild('headerDocuments') headerDocumentsElement: ElementRef;
@@ -29,6 +30,7 @@ export class ExploreComponent implements OnInit {
   @ViewChild('headerSites') headerSitesElement: ElementRef;
   @ViewChild('headerPresets') headerPresetsElement: ElementRef;
   @ViewChild('headerVersion') headerVersionElement: ElementRef;
+  @ViewChild('headerWebhooks') headerWebhooksElement: ElementRef;
 
   getDocumentsApiItem: ApiItem = {
     apiServiceMethodName: 'getAllDocuments',
@@ -42,6 +44,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -64,6 +67,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -86,6 +90,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: true,
     requiresFileUpload: false,
@@ -108,6 +113,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: true,
     requiresFileUpload: false,
@@ -130,6 +136,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -152,6 +159,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -174,6 +182,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: true,
     requiresFileUpload: false,
@@ -196,6 +205,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: true,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -218,6 +228,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: true,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -240,6 +251,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -262,6 +274,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -284,6 +297,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: true,
     requiresFileUpload: false,
@@ -306,6 +320,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -328,6 +343,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -350,6 +366,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: true,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -372,6 +389,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: true,
     requiresFileUpload: false,
@@ -394,6 +412,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -416,6 +435,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -438,6 +458,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: false,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: true,
     requiresFileUpload: false,
@@ -460,6 +481,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: true,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -482,6 +504,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: true,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -504,6 +527,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: true,
+    requiresWebhookID: false,
     requiresTagKey: false,
     requiresPostJson: true,
     requiresFileUpload: false,
@@ -526,6 +550,7 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: true,
+    requiresWebhookID: false,
     requiresTagKey: true,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -548,6 +573,76 @@ export class ExploreComponent implements OnInit {
     requiresAuthentication: true,
     requiresDocumentID: false,
     requiresPresetID: false,
+    requiresWebhookID: false,
+    requiresTagKey: false,
+    requiresPostJson: false,
+    requiresFileUpload: false,
+    allowsVersionID: false,
+    allowsDate: false,
+    allowsLimit: false,
+    hasPagingTokens: false,
+    allowsPath: false
+  };
+
+  getWebhooksApiItem: ApiItem = {
+    apiServiceMethodName: 'getAllWebhooks',
+    clickedSubscriptionName: 'apiGetWebhooksClicked',
+    method: 'GET',
+    path: '/webhooks',
+    username: 'Cognito User',
+    token: this.authenticationService.loggedInAccessToken,
+    host: this.configurationService.apigateway.url,
+    hasNoParams: false,
+    requiresAuthentication: true,
+    requiresDocumentID: false,
+    requiresPresetID: false,
+    requiresWebhookID: false,
+    requiresTagKey: false,
+    requiresPostJson: false,
+    requiresFileUpload: false,
+    allowsVersionID: false,
+    allowsDate: false,
+    allowsLimit: false,
+    hasPagingTokens: false,
+    allowsPath: false
+  };
+
+  postWebhooksApiItem: ApiItem = {
+    apiServiceMethodName: 'postWebhooks',
+    clickedSubscriptionName: 'apiPostWebhooksClicked',
+    method: 'POST',
+    path: '/webhooks',
+    username: 'Cognito User',
+    token: this.authenticationService.loggedInAccessToken,
+    host: this.configurationService.apigateway.url,
+    hasNoParams: false,
+    requiresAuthentication: true,
+    requiresDocumentID: false,
+    requiresPresetID: false,
+    requiresWebhookID: false,
+    requiresTagKey: false,
+    requiresPostJson: true,
+    requiresFileUpload: false,
+    allowsVersionID: false,
+    allowsDate: false,
+    allowsLimit: false,
+    hasPagingTokens: false,
+    allowsPath: false
+  };
+
+  deleteWebhookApiItem: ApiItem = {
+    apiServiceMethodName: 'deleteWebhook',
+    clickedSubscriptionName: 'apiDeletePresetTagClicked',
+    method: 'DELETE',
+    path: '/webhooks/ WEBHOOK_ID ',
+    username: 'Cognito User',
+    token: this.authenticationService.loggedInAccessToken,
+    host: this.configurationService.apigateway.url,
+    hasNoParams: false,
+    requiresAuthentication: true,
+    requiresDocumentID: false,
+    requiresPresetID: false,
+    requiresWebhookID: true,
     requiresTagKey: false,
     requiresPostJson: false,
     requiresFileUpload: false,
@@ -585,6 +680,10 @@ export class ExploreComponent implements OnInit {
           } else if (navData.source === 'apiHeaderVersionClicked') {
             setTimeout(() => {
               this.headerVersionElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 10);
+          } else if (navData.source === 'apiHeaderWebhooksClicked') {
+            setTimeout(() => {
+              this.headerWebhooksElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 10);
           }
         }

@@ -6,10 +6,10 @@ export const environment = {
 	production: false,
 
 	region: 'us-east-1',
-	url: 'https://71upvkak4h.execute-api.us-east-1.amazonaws.com/prod',
-	identityPoolId: 'us-east-1:2927fbc1-6ab3-4031-864f-837081982622',
-	userPoolId: 'us-east-1_fC9EAO1D0',
-	clientId: '79eqaraqip1bh1pfi7hbnk6uc3',
+	url: '',
+	identityPoolId: '',
+	userPoolId: '',
+	clientId: '',
 	cognito_idp_endpoint: '',
 	cognito_identity_endpoint: '',
 };
