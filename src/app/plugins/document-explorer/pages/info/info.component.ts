@@ -7,6 +7,7 @@ import { Observable, Subject } from 'rxjs';
 import { ApiService } from '../../../../services/api.service';
 import * as moment from 'moment-timezone';
 import JsonViewer from 'json-viewer-js';
+import FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-docs-info',
@@ -98,7 +99,7 @@ export class InfoComponent implements OnInit, AfterViewInit {
                         });
                       }
                     }
-                    resolve();
+                    resolve(true);
                   });
                 });
                 attachmentPromises.push(promise);
@@ -213,6 +214,15 @@ export class InfoComponent implements OnInit, AfterViewInit {
     this.form.reset();
   }
 
+  downloadFile() {
+    this.documentUrl$ = this.apiService.getDocumentUrl(this.currentDocument.documentId, '', this);
+    this.documentUrl$.subscribe((result) => {
+      if (result.url) {
+        FileSaver.saveAs(result.url, 'application/force-download');
+      }
+    });
+  }
+
   handleApiError(errorResponse: HttpErrorResponse) {
     return Observable.create((observer) => {
       observer.next(errorResponse);
@@ -272,8 +282,8 @@ export class InfoComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/documents'], { queryParams });
   }
 
-  openTaggingTool(documentId) {
-    this.router.navigate(['/tagging/' + documentId ]);
+  openTaggingTool() {
+    this.router.navigate(['/tagging/' + this.currentDocument.documentId ]);
   }
 
   copyToClipboard(value, clipboardMessage) {
