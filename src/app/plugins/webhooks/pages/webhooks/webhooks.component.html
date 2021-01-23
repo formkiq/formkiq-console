@@ -1,0 +1,155 @@
+<div class="relative bg-white overflow-scroll-y mx-4">
+  <div class="mt-8">
+    <div class="max-w-screen-xl mx-auto relative mb-4">
+      <h3 class="mb-0 text-lg tracking-tight leading-10 font-bold text-gray-900 sm:leading-none md:mb-4 md:text-xl">
+        Webhooks
+      </h3>
+      <p class="mt-4">
+        By posting an HTML web form or any other data to a webhook URL, FormKiQ will process that data and add it as a new document. You can then add triggers on documents from specific webhooks to add custom actions for any document created through that webhook.
+      </p>
+    </div>
+    <div class="mb-4">
+      <button
+        class="mt-1 px-2 py-1 w-full md:w-auto mx-1 border border-transparent text-sm leading-6 font-medium rounded-md shadow
+          text-white focus:outline-none focus:shadow-outline
+          bg-green-600 hover:bg-green-500
+          transition duration-150 ease-in-out md:text-base"
+        (click)="showWebhookAddForm = true"
+        >
+        Add New Webhook
+      </button>
+    </div>
+    <div *ngIf="showWebhookAddForm" class="mb-8">
+      <form [formGroup]="form" (ngSubmit)="addWebhook()">
+        <h6
+          id="formHeader"
+          class="mx-4 md:mx-6 mr-4 mt-6 mb-2 md:mb-8 text-xl tracking-tight leading-10 font-bold text-orange-600"
+          >
+          New Webhook
+        </h6>
+        <div class="md:flex md:items-center mx-4 mb-4 relative">
+          <div class="md:w-1/6">
+            <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="name">
+              Name
+            </label>
+          </div>
+          <div class="md:w-1/3">
+            <input
+              aria-label="Name"
+              name="name"
+              formControlName="name"
+              type="text"
+              class="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600
+                placeholder-gray-500 text-gray-900 rounded-t-md
+                focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-xl sm:leading-5"
+              [ngClass]="{ 'bg-red-200': this.formSubmitted && this.form.controls.name.errors }"
+              />
+          </div>
+        </div>
+        <div class="md:flex md:items-center mx-4 mb-4 relative">
+          <div class="md:w-1/6">
+          </div>
+          <div class="md:w-5/6">
+            <button
+              [disabled]="this.form.invalid"
+              class="px-2 md:px-4 py-2 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+                text-white focus:outline-none focus:shadow-outline
+                transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+              [ngClass]="{
+                  'bg-green-600 hover:bg-green-500': !this.form.invalid,
+                  'bg-gray-500 hover:bg-gray-500': this.form.invalid
+                }"
+              >
+                Add Webhook
+            </button>
+            <button
+              (click)="showWebhookAddForm = false"
+              class="px-2 md:px-4 py-2 mx-1 border border-transparent text-base leading-6 font-medium rounded-md shadow
+                text-white focus:outline-none focus:shadow-outline
+                bg-green-600 hover:bg-green-500
+                transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+              >
+                Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <table
+      *ngIf="webhookResults$ | async as webhookResults"
+      class="border-collapse w-full"
+      >
+      <thead>
+        <tr>
+          <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+            Webhook ID
+          </th>
+          <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+            Name
+          </th>
+          <th class="p-3 font-bold uppercase bg-gray-200 text-gray-900 border border-gray-300 hidden lg:table-cell">
+            Webhook URL
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngIf="!webhookResults.webhooks || !webhookResults.webhooks.length"
+          class="bg-gray-100 flex text-center py-2 px-1 lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0"
+          >
+          <td
+            colspan="100%"
+            >
+            No webhooks have been created.
+          </td>
+        </tr>
+        <tr
+          *ngFor="let webhook of this.webhooks"
+          class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0"
+          >
+          <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+            <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Webhook ID</span>
+            <svg (click)="copyToClipboard(webhook.id, 'clipboardMessage-webhook-' + webhook.id)" width="0.75em" height="0.75em" viewBox="0 0 600 600" class="cursor-pointer inline ml-1 -mt-1 fill-current"><g>
+              <g><path d="M341.333,85.333H51.2c-28.277,0-51.2,22.923-51.2,51.2v290.133c0,28.277,22.923,51.2,51.2,51.2h290.133
+              c28.277,0,51.2-22.923,51.2-51.2V136.533C392.533,108.256,369.61,85.333,341.333,85.333z M358.4,426.667
+              c0,9.426-7.641,17.067-17.067,17.067H51.2c-9.426,0-17.067-7.641-17.067-17.067V136.533c0-9.426,7.641-17.067,17.067-17.067
+              h290.133c9.426,0,17.067,7.641,17.067,17.067V426.667z"/></g></g><g><g><path d="M426.667,0h-307.2c-28.277,0-51.2,22.923-51.2,51.2c0,9.426,7.641,17.067,17.067,17.067S102.4,60.626,102.4,51.2
+              s7.641-17.067,17.067-17.067h307.2c9.426,0,17.067,7.641,17.067,17.067v307.2c0,9.426-7.641,17.067-17.067,17.067
+              s-17.067,7.641-17.067,17.067s7.641,17.067,17.067,17.067c28.277,0,51.2-22.923,51.2-51.2V51.2
+              C477.867,22.923,454.944,0,426.667,0z"/></g></g></svg>
+            <span id="clipboardMessage-webhook-{{ webhook.id }}" class="hidden text-sm bg-green-200 px-2 py-1 mt-4 absolute">copied to clipboard</span>
+            {{ webhook.id }}
+            <div>
+              <button
+                class="mt-1 px-2 py-1 w-full md:w-auto mx-1 border border-transparent text-sm leading-6 font-medium rounded-md shadow
+                  text-white focus:outline-none focus:shadow-outline
+                  bg-green-600 hover:bg-green-500
+                  transition duration-150 ease-in-out md:text-base"
+                (click)="deleteWebhook(webhook.id)"
+                >
+                Delete
+              </button>
+            </div>
+          </td>
+          <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3  text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+            <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">Name</span>
+            {{ webhook.name }}
+          </td>
+          <td class="w-full lg:w-auto p-3 pt-8 lg:pt-3  text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+            <span class="lg:hidden absolute top-0 left-0 bg-gray-200 px-2 py-1 text-xs font-bold uppercase">URL</span>
+            <svg (click)="copyToClipboard(webhook.url, 'clipboardMessage-webhookUrl-' + webhook.url)" width="0.75em" height="0.75em" viewBox="0 0 600 600" class="cursor-pointer inline ml-1 -mt-1 fill-current"><g>
+              <g><path d="M341.333,85.333H51.2c-28.277,0-51.2,22.923-51.2,51.2v290.133c0,28.277,22.923,51.2,51.2,51.2h290.133
+              c28.277,0,51.2-22.923,51.2-51.2V136.533C392.533,108.256,369.61,85.333,341.333,85.333z M358.4,426.667
+              c0,9.426-7.641,17.067-17.067,17.067H51.2c-9.426,0-17.067-7.641-17.067-17.067V136.533c0-9.426,7.641-17.067,17.067-17.067
+              h290.133c9.426,0,17.067,7.641,17.067,17.067V426.667z"/></g></g><g><g><path d="M426.667,0h-307.2c-28.277,0-51.2,22.923-51.2,51.2c0,9.426,7.641,17.067,17.067,17.067S102.4,60.626,102.4,51.2
+              s7.641-17.067,17.067-17.067h307.2c9.426,0,17.067,7.641,17.067,17.067v307.2c0,9.426-7.641,17.067-17.067,17.067
+              s-17.067,7.641-17.067,17.067s7.641,17.067,17.067,17.067c28.277,0,51.2-22.923,51.2-51.2V51.2
+              C477.867,22.923,454.944,0,426.667,0z"/></g></g></svg>
+            <span id="clipboardMessage-webhookUrl-{{ webhook.url }}" class="hidden text-sm bg-green-200 px-2 py-1 mt-4 absolute">copied to clipboard</span>
+            {{ webhook.url }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
