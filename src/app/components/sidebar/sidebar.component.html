@@ -79,6 +79,19 @@
       </a>
     </li>
     <li
+      [ngClass]="{'font-bold bg-orange-900': currentUrl == '/webhooks' }"
+      class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
+        focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"
+      >
+      <a
+        [routerLink]="['/webhooks']"
+        (click)="emitSidebarItemClick()"
+        class="cursor-pointer"
+        >
+        Webhooks
+      </a>
+    </li>
+    <li
       [ngClass]="{'font-bold bg-orange-900': currentUrl == '/api' }"
       class="block px-2 py-2 text-lg font-semibold text-yellowGray-500 hover:bg-orange-700
         focus:outline-none focus:text-yellowGray-500 focus:bg-orange-800"

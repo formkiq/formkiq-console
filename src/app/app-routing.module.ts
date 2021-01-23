@@ -66,6 +66,16 @@ const routes: Routes = [
     canActivate: [AuthenticationGuardService]
   },
   {
+    path: 'webhooks',
+    loadChildren: () =>
+      import('./plugins/webhooks/webhooks.module')
+        .then(m => m.WebhooksModule),
+    data: {
+      title: 'Webhooks'
+    },
+    canActivate: [AuthenticationGuardService]
+  },
+  {
     path: 'signOut',
     component: AuthenticateComponent,
     data: { title: 'Authentication' }

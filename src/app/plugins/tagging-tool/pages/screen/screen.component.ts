@@ -125,7 +125,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
                   preset.tags = presetTagsResult.tags;
                 }
                 this.taggingPresets.push(preset);
-                resolve();
+                resolve(true);
               });
             }));
           });
@@ -495,7 +495,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         presetTagSavePromises.push(new Promise((resolve) => {
           this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this).subscribe((result) => {
             // TODO: handle bad result
-            resolve();
+            resolve(true);
           });
         }));
       }
@@ -526,10 +526,10 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
             value: this.currentTaggingPreset.id
           };
           this.apiService.postDocumentTag(this.currentDocument.documentId, JSON.stringify(json), this).subscribe((result) => {
-            resolve();
+            resolve(true);
           });
         } else {
-          resolve();
+          resolve(true);
         }
       } else {
         const presetTags = this.tags.filter((tag) =>
@@ -537,14 +537,14 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
         );
         if (presetTags.length) {
           this.apiService.deleteDocumentTag(this.currentDocument.documentId, 'TAGGING:presetId', this).subscribe((result) => {
-            resolve();
+            resolve(true);
           });
         } else {
-          resolve();
+          resolve(true);
         }
       }
     } else {
-      resolve();
+      resolve(true);
     }
   }
 
@@ -612,7 +612,7 @@ export class ScreenComponent implements OnInit, AfterViewInit, HttpErrorCallback
     }));
     documentTagDeletePromises.push(new Promise((resolve) => {
       this.apiService.deleteDocumentTag(this.currentDocument.documentId, 'untagged', this).subscribe(result => {
-        resolve();
+        resolve(true);
       });
     }));
     Promise.all(documentTagDeletePromises).then(() => {

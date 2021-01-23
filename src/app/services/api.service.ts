@@ -228,7 +228,7 @@ export class ApiService {
         catchError(callback.handleApiError));
   }
 
-  deleteWebhook(webhookID: string, callback: HttpErrorCallback): Observable<{} | Preset> {
+  deleteWebhook(webhookID: string, callback: HttpErrorCallback): any {
     return this.httpClient
       .delete<Webhook>(this.configurationService.apigateway.url + '/webhooks/' + webhookID, this.getHttpOptions())
       .pipe(shareReplay(1),
