@@ -117,6 +117,25 @@ export class InfoComponent implements OnInit, AfterViewInit {
             this.changeTab('jsonData');
           }
         });
+      } else if (this.currentDocument.contentType === 'application/x-www-form-urlencoded') {
+        this.apiService.getDocumentContent(this.documentId, '', this).subscribe(result => {
+          let contentChunks = result.content.split('&');
+          const content = {
+            formName: '',
+            formFields: []
+          };
+          contentChunks.forEach(chunk => {
+            const explodedChunk = chunk.split('=');
+            content.formFields.push({
+              fieldName: decodeURIComponent(explodedChunk[0]),
+              value: decodeURIComponent(explodedChunk[1])
+            });
+          });          
+          this.currentDocument.content = content;
+          this.documentInfoLoaded$.next(true);
+          this.showFormDataTab = true;
+          this.changeTab('formData');
+        });
       } else {
         this.documentInfoLoaded$.next(true);
         this.showViewDocumentTab = true;
