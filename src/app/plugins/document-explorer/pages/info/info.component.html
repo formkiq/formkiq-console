@@ -437,16 +437,31 @@
         </form>
       </section>
       <section *ngIf="showFormDataTab && currentDocument.content" [hidden]="currentTab !== 'formData'" class="border lg:w-full mb-4 md:mb-8 p-2">
-        <h4
-          class="mx-4 md:mx-6 mr-4 mt-6 mb-2 text-xl tracking-tight leading-10 font-bold sm:leading-none md:text-2xl"
-          >
-          {{ currentDocument.content.formName }}
-        </h4>
-        <h6
-          class="mx-4 md:mx-6 mr-4 mb-2 md:mb-8 text-base tracking-tight leading-10 font-bold sm:leading-none"
-          >
-          {{ currentDocument.path }}
-        </h6>
+        <div *ngIf="currentDocument.content.formName.length">
+          <h4
+            class="mx-4 md:mx-6 mr-4 mt-6 mb-2 text-xl tracking-tight leading-10 font-bold sm:leading-none md:text-2xl"
+            >
+            {{ currentDocument.content.formName }}
+          </h4>
+          <h6
+            class="mx-4 md:mx-6 mr-4 mb-2 md:mb-8 text-base tracking-tight leading-10 font-bold sm:leading-none"
+            >
+            {{ currentDocument.path }}
+          </h6>
+        </div>
+        <div *ngIf="!currentDocument.content.formName.length">
+          <h4
+            class="mx-4 md:mx-6 mr-4 mt-6 mb-2 text-xl tracking-tight leading-10 font-bold sm:leading-none md:text-2xl"
+            >
+            HTML Web Form
+            - {{ currentDocument.userId }}
+          </h4>
+          <h6
+              class="mx-4 md:mx-6 mr-4 mb-2 md:mb-8 text-base tracking-tight leading-10 font-bold sm:leading-none"
+              >
+            From: {{ currentDocument.path }}
+          </h6>
+        </div>
         <table
           class="border-collapse w-full"
           >
@@ -489,7 +504,7 @@
           >
           <tbody>
             <tr
-              *ngIf="!currentDocument.content.formFields.length"
+              *ngIf="!currentDocument.content.attachmentFields || !currentDocument.content.formFields.length"
               class="bg-gray-100 flex text-center py-2 px-1 lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0"
               >
               <td
