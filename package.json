@@ -25,7 +25,7 @@
     "@angular/platform-browser-dynamic": "~9.0.0",
     "@angular/router": "~9.0.0",
     "amazon-cognito-identity-js": "^3.2.4",
-    "aws-sdk": "^2.615.0",
+    "aws-sdk": "^2.814.0",
     "expired-storage": "^1.0.2",
     "file-saver": "^2.0.5",
     "hamburgers": "^1.1.3",
